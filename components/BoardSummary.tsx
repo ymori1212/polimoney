@@ -19,7 +19,7 @@ export function BoardSummary({summary}: Props) {
         <HStack gap={5} minW={'250px'}>
           <Avatar.Root size={'2xl'}>
             <Avatar.Fallback name={summary.name}/>
-            <Avatar.Image src="https://i.pravatar.cc/300?u=2"/>
+            <Avatar.Image src={summary.image}/>
           </Avatar.Root>
           <Stack gap={0}>
             <Text fontSize={'xs'}>{summary.title}</Text>

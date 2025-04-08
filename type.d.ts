@@ -4,6 +4,7 @@ export type Summary = {
   support: string
   party: string
   district: string
+  image: string
   in: number
   out: number
   transfer: number
