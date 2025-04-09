@@ -14,6 +14,7 @@ export function BoardSummary({summary}: Props) {
       mb={5}
       p={6}
       boxShadow={'sm'}
+      border={'none'}
     >
       <Stack direction={{base: 'column', lg: 'row'}} gap={5} alignItems={'center'}>
         <HStack gap={5} minW={'250px'}>

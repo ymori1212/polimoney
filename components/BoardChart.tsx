@@ -58,6 +58,7 @@ export function BoardChart({flows}: Props) {
       mb={5}
       p={8}
       boxShadow={'sm'}
+      border={'none'}
     >
       <Heading size={'md'} mb={5}>収支の流れ</Heading>
       <Box w={'full'} h={'500px'}>

@@ -12,7 +12,8 @@ export function Footer() {
           <Text
             className={'textLink'}
             cursor={'pointer'}
-            fontSize={'sm'}
+            fontSize={'xs'}
+            fontWeight={'bold'}
             borderBottom={'1px dashed #777'}
           >デジタル民主主義2030プロジェクトについて</Text>
         </Drawer.Trigger>

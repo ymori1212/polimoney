@@ -1,26 +1,42 @@
-import {Box, Heading, HStack, Image, Stack} from '@chakra-ui/react'
-import {BoardSummary} from '@/components/BoardSummary'
-import {BoardChart} from '@/components/BoardChart'
-import {BoardBalance} from '@/components/BoardBalance'
-import {Footer} from '@/components/Footer'
-import {summary, flows, inTransactions,outTransactions } from '@/app/data'
+import {Badge, Box, Card, HStack, Image, SimpleGrid, Stack, Text} from '@chakra-ui/react'
+import Link from 'next/link'
 
-export default function Home() {
+const results = ['example']
+
+export default function Page() {
   return (
-    <Box>
-      <Box maxW="1200px" mx="auto" px={5}>
-        <HStack my={6}>
-          <Image src="logo.png" alt="Logo" h={'50px'} mr={2}/>
-          <Heading>政治資金ボード(仮)</Heading>
-        </HStack>
-        <BoardSummary summary={summary}/>
-        <BoardChart flows={flows}/>
-        <Stack direction={{base: 'column', lg: 'row'}} gap={5} mb={5}>
-          <BoardBalance direction={'in'} transactions={inTransactions}/>
-          <BoardBalance direction={'out'} transactions={outTransactions}/>
-        </Stack>
-      </Box>
-      <Footer/>
-    </Box>
+    <SimpleGrid columns={{ base: 1, lg: 2 }} gap={5}>
+      {results.map((result) => (
+        <Link href={`/${result}`} key={result}>
+          <Card.Root
+            flexDirection={'row'}
+            boxShadow={'sm'}
+            border={'none'}
+          >
+            <Image
+              objectFit="cover"
+              maxW="150px"
+              src="https://i.pravatar.cc/300?u=2"
+              alt="example"
+              borderTopLeftRadius="md"
+              borderBottomLeftRadius="md"
+            />
+            <Box>
+              <Card.Body>
+                <Stack gap={0}>
+                  <Text fontSize={'xs'}>衆議院議員</Text>
+                  <Text fontSize={'2xl'} fontWeight={'bold'}>政治資金太郎</Text>
+                  <Text fontSize={'xs'}>政治資金太郎をみまもる会</Text>
+                  <HStack mt={1}>
+                    <Badge variant={'outline'} colorPalette={'red'}>政治資金党</Badge>
+                    <Badge variant={'outline'}>東京１区</Badge>
+                  </HStack>
+                </Stack>
+              </Card.Body>
+            </Box>
+          </Card.Root>
+        </Link>
+      ))}
+    </SimpleGrid>
   )
 }

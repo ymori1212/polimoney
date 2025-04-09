@@ -16,6 +16,7 @@ export function BoardBalance({transactions, direction}: Props) {
       w={'full'}
       p={8}
       boxShadow={'sm'}
+      border={'none'}
     >
       <Heading size={'md'} mb={5}>主な{direction === 'in' ? '収入' : '支出'}</Heading>
 
