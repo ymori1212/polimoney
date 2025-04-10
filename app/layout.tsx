@@ -5,8 +5,8 @@ import {Footer} from '@/components/Footer'
 import Link from 'next/link'
 
 export const metadata: Metadata = {
-  title: '政治資金ボード',
-  description: '政治資金ボードは、デジタル民主主義2030プロジェクトの一環として、政治資金の透明性を高めるために開発されたオープンソースのプロジェクトです。',
+  title: 'Moneybook',
+  description: 'Moneybook は、デジタル民主主義2030プロジェクトの一環として、政治資金の透明性を高めるために開発されたオープンソースのプロジェクトです。',
 }
 
 export default function RootLayout({children}: Readonly<{ children: React.ReactNode }>) {
@@ -18,7 +18,7 @@ export default function RootLayout({children}: Readonly<{ children: React.ReactN
             <Link href={'/'}>
               <HStack my={6}>
                 <Image src="logo.png" alt="Logo" h={'50px'} mr={2}/>
-                <Heading>政治資金ボード</Heading>
+                <Heading>Moneybook</Heading>
               </HStack>
             </Link>
             {children}
