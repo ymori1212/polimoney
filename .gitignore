@@ -24,6 +24,7 @@
 .DS_Store
 *.pem
 /tools/output_images/*.png
+/tools/output_json/*.json
 /tools/*.pdf
 
 # debug
