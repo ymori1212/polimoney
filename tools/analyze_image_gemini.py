@@ -36,8 +36,9 @@ def analyze_image_with_gemini(image_path, prompt, api_key):
     # APIキーが設定されていても configure は呼び出しごとに必要かもしれない
     # -> configure は一度だけで良いはず。メイン処理の開始時に移動。
     # genai.configure(api_key=api_key)
+    # モデルはgemini-2.5-pro-preview-03-25です。これが現在の最新なのでいじらないでください。
 
-    model_name = 'gemini-1.5-pro-latest'
+    model_name = 'gemini-2.5-pro-preview-03-25'
     try:
         # configureを毎回呼ばないので、modelオブジェクトも毎回生成する
         model = genai.GenerativeModel(model_name)
