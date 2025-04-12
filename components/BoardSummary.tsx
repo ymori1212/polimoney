@@ -1,84 +1,96 @@
-import {Avatar, Badge, Box, HStack, Separator, Stack, Stat, Text} from '@chakra-ui/react'
-import {Summary} from '@/type'
+'use client'
 
-type Props = {
-  summary: Summary
-}
+import {BoardContainer} from '@/components/BoardContainer'
+import {Box, HStack, SimpleGrid, Stat, Tabs, Text} from '@chakra-ui/react'
+import {LandmarkIcon} from 'lucide-react'
+import {useState} from 'react'
+import {BoardChart} from '@/components/BoardChart'
+import {flows} from '@/data/example'
 
-export function BoardSummary({summary}: Props) {
+export function BoardSummary() {
+
+  const [selectedTab, setSelectedTab] = useState('amount')
+
   return (
-    <Box
-      bgColor={'#fafafa'}
-      borderRadius={'20px'}
-      w={'full'}
-      mb={5}
-      p={6}
-      boxShadow={'sm'}
-      border={'none'}
-    >
-      <Stack direction={{base: 'column', lg: 'row'}} gap={5} alignItems={'center'}>
-        <HStack gap={5} minW={'250px'}>
-          <Avatar.Root size={'2xl'}>
-            <Avatar.Fallback name={summary.name}/>
-            <Avatar.Image src={summary.image}/>
-          </Avatar.Root>
-          <Stack gap={0}>
-            <Text fontSize={'xs'}>{summary.title}</Text>
-            <Text fontSize={'2xl'} fontWeight={'bold'}>{summary.name}</Text>
-            <Text fontSize={'xs'}>{summary.support}</Text>
-            <HStack mt={1}>
-              <Badge variant={'outline'} colorPalette={'red'}>{summary.party}</Badge>
-              <Badge variant={'outline'}>{summary.district}</Badge>
-            </HStack>
-          </Stack>
+    <BoardContainer id={'summary'}>
+      {/* タイトル */}
+      <Box mb={5}>
+        <HStack>
+          <HStack fontSize={'xl'} fontWeight={'bold'}>
+            <LandmarkIcon size={28} className={'income'} />
+            <Text>収支の流れ</Text>
+          </HStack>
         </HStack>
-        <Separator
-          orientation={{base: 'horizontal', lg: 'vertical'}}
-          w={{base: 'full', lg: '1px'}}
-          h={{base: '1px', lg: '80px'}}
-        />
-        <Stat.Root>
-          <Stat.Label>収入総額</Stat.Label>
-          <Stat.ValueText alignItems={'baseline'} fontSize={'3xl'}>
-            {summary.in.toLocaleString()}<Stat.ValueUnit>円</Stat.ValueUnit>
-          </Stat.ValueText>
-        </Stat.Root>
-        <Separator
-          orientation={{base: 'horizontal', lg: 'vertical'}}
-          w={{base: 'full', lg: '1px'}}
-          h={{base: '1px', lg: '80px'}}
-        />
-        <Stat.Root>
-          <Stat.Label>支出総額</Stat.Label>
-          <Stat.ValueText alignItems={'baseline'} fontSize={'3xl'}>
-            {summary.out.toLocaleString()}<Stat.ValueUnit>円</Stat.ValueUnit>
-          </Stat.ValueText>
-        </Stat.Root>
-        <Separator
-          orientation={{base: 'horizontal', lg: 'vertical'}}
-          w={{base: 'full', lg: '1px'}}
-          h={{base: '1px', lg: '80px'}}
-        />
-        <Stat.Root>
-          <Stat.Label>翌年繰越額</Stat.Label>
-          <Stat.ValueText alignItems={'baseline'} fontSize={'3xl'}>
-            {summary.transfer.toLocaleString()}<Stat.ValueUnit>円</Stat.ValueUnit>
-          </Stat.ValueText>
-        </Stat.Root>
-        <Separator
-          orientation={{base: 'horizontal', lg: 'vertical'}}
-          w={{base: 'full', lg: '1px'}}
-          h={{base: '1px', lg: '80px'}}
-        />
-        <Box w={'80px'}>
-          <Stat.Root>
-            <Stat.Label>最終更新日</Stat.Label>
-            <Stat.ValueText alignItems={'baseline'} fontSize={'xl'}>
-              {summary.year}<Stat.ValueUnit>年</Stat.ValueUnit>
-            </Stat.ValueText>
-          </Stat.Root>
-        </Box>
-      </Stack>
-    </Box>
+      </Box>
+      {/* サマリー */}
+      <Box mb={5}>
+        <SimpleGrid columns={{base: 1, md: 3}} gap={5}>
+          <Box border={'1px solid #dddddd'} borderRadius={'lg'} p={5} minW={'200px'}>
+            <Stat.Root>
+              <Stat.Label
+                className={'income'}
+                fontWeight={'bold'}
+                fontSize={'sm'}
+              >収入総額</Stat.Label>
+              <Stat.ValueText alignItems="baseline" fontSize={'2xl'}>
+                3118
+                <Stat.ValueUnit>万円</Stat.ValueUnit>
+              </Stat.ValueText>
+            </Stat.Root>
+          </Box>
+          <Box border={'1px solid #dddddd'} borderRadius={'lg'} p={5} minW={'200px'}>
+            <Stat.Root>
+              <Stat.Label
+                className={'expense'}
+                fontWeight={'bold'}
+                fontSize={'sm'}
+              >支出総額</Stat.Label>
+              <Stat.ValueText alignItems="baseline" fontSize={'2xl'}>
+                3118
+                <Stat.ValueUnit>万円</Stat.ValueUnit>
+              </Stat.ValueText>
+            </Stat.Root>
+          </Box>
+          <Box border={'1px solid #dddddd'} borderRadius={'lg'} p={5} minW={'200px'}>
+            <Stat.Root>
+              <Stat.Label
+                fontWeight={'bold'}
+                fontSize={'sm'}
+              >年間収支</Stat.Label>
+              <Stat.ValueText alignItems="baseline" fontSize={'2xl'} >
+                +3118
+                <Stat.ValueUnit>万円</Stat.ValueUnit>
+              </Stat.ValueText>
+            </Stat.Root>
+          </Box>
+        </SimpleGrid>
+      </Box>
+      {/* タブ */}
+      <Box mb={5}>
+        <Tabs.Root
+          value={selectedTab}
+          onValueChange={(e) => setSelectedTab(e.value)}
+        >
+          <Tabs.List>
+            <Tabs.Trigger
+              value="amount"
+              fontWeight={'bold'}
+              className={selectedTab === 'amount' ? 'income' : ''}
+            >
+              金額(円)
+            </Tabs.Trigger>
+            <Tabs.Trigger
+              value="percentage"
+              fontWeight={'bold'}
+              className={selectedTab === 'percentage' ? 'income' : ''}
+            >
+              割合(%)
+            </Tabs.Trigger>
+          </Tabs.List>
+        </Tabs.Root>
+      </Box>
+      {/* チャート */}
+      <BoardChart flows={flows} />
+    </BoardContainer>
   )
 }

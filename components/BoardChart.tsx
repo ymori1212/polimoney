@@ -1,6 +1,6 @@
 'use client'
 
-import {Box, Heading} from '@chakra-ui/react'
+import {Box} from '@chakra-ui/react'
 import {Flow} from '@/type'
 import {ResponsiveSankey, SankeyLayerId, SankeyNodeDatum} from '@nivo/sankey'
 
@@ -51,27 +51,16 @@ export function BoardChart({flows}: Props) {
   }
 
   return (
-    <Box
-      bgColor={'#fafafa'}
-      borderRadius={'20px'}
-      w={'full'}
-      mb={5}
-      p={8}
-      boxShadow={'sm'}
-      border={'none'}
-    >
-      <Heading size={'md'} mb={5}>収支の流れ</Heading>
-      <Box w={'full'} h={'500px'}>
-        <ResponsiveSankey
-          data={data}
-          colors={node => node.direction === 'in' ? '#00BCD4' : '#E91E63'}
-          label={node => `${node.id}: ${node.value.toLocaleString()}`}
-          margin={{top: 20, right: 20, bottom: 20, left: 20}}
-          layers={['links', 'nodes', CustomLabelsLayer as unknown as SankeyLayerId]}
-          nodeSpacing={40}
-          isInteractive={false}
-        />
-      </Box>
+    <Box w={'full'} h={'500px'}>
+      <ResponsiveSankey
+        data={data}
+        colors={node => node.direction === 'in' ? '#00BCD4' : '#E91E63'}
+        label={node => `${node.id}: ${node.value.toLocaleString()}`}
+        margin={{top: 20, right: 20, bottom: 20, left: 20}}
+        layers={['links', 'nodes', CustomLabelsLayer as unknown as SankeyLayerId]}
+        nodeSpacing={40}
+        isInteractive={false}
+      />
     </Box>
   )
 }
