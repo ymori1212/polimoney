@@ -11,6 +11,18 @@ export type Summary = {
   year: number
 }
 
+export type Metadata = {
+  source: string
+  orgType: string
+  orgName: string
+  activityArea: string
+  representative: string
+  fundManagementOrg: string
+  accountingManager: string
+  administrativeManager: string
+  lastUpdate: string
+}
+
 export type Flow = {
   id: string
   direction: 'income'|'expense'

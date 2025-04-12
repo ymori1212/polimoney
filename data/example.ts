@@ -1,4 +1,4 @@
-import {Flow, Summary, Transaction} from '@/type'
+import {Flow, Metadata, Summary, Transaction} from '@/type'
 
 export const summary: Summary = {
   name: '政治資金太郎',
@@ -11,6 +11,18 @@ export const summary: Summary = {
   expense: 13262929,
   balance: 127434080,
   year: 2024,
+}
+
+export const metadata: Metadata = {
+  source: '2024年政治資金収支報告書',
+  orgType: 'その他の政治団体',
+  orgName: '政治太郎講演会',
+  activityArea: '２以上の都道府県の区域など',
+  representative: '政治太郎',
+  fundManagementOrg: '有り/衆議院議員(現職)政治太郎',
+  accountingManager: '中村太郎',
+  administrativeManager: '佐藤太郎',
+  lastUpdate: '2024年3月31日',
 }
 
 export const flows: Flow[] = [
