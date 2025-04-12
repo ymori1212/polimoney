@@ -1,9 +1,10 @@
 'use client'
 
 import {BoardContainer} from '@/components/BoardContainer'
-import {Box, HStack, Tabs, Text} from '@chakra-ui/react'
+import {Box, HStack, Table, Tabs, Text} from '@chakra-ui/react'
 import {BanknoteArrowDownIcon} from 'lucide-react'
 import {useState} from 'react'
+import {inTransactions} from '@/data/example'
 
 export function BoardIncome() {
 
@@ -44,6 +45,31 @@ export function BoardIncome() {
             </Tabs.Trigger>
           </Tabs.List>
         </Tabs.Root>
+      </Box>
+      {/* テーブル */}
+      <Box>
+        <Table.Root size={'lg'}>
+          <Table.Header>
+            <Table.Row fontSize={'sm'}>
+              <Table.ColumnHeader fontWeight={'bold'}>収入項目</Table.ColumnHeader>
+              <Table.ColumnHeader fontWeight={'bold'}>カテゴリー</Table.ColumnHeader>
+              <Table.ColumnHeader fontWeight={'bold'}>金額</Table.ColumnHeader>
+              <Table.ColumnHeader fontWeight={'bold'}>割合</Table.ColumnHeader>
+              <Table.ColumnHeader fontWeight={'bold'}>日付</Table.ColumnHeader>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>
+            {inTransactions.map((item) => (
+              <Table.Row key={item.id} fontSize={'sm'}>
+                <Table.Cell>{item.id}</Table.Cell>
+                <Table.Cell>{item.category}</Table.Cell>
+                <Table.Cell>{item.value}</Table.Cell>
+                <Table.Cell>{item.percentage}</Table.Cell>
+                <Table.Cell>{item.date}</Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table.Root>
       </Box>
     </BoardContainer>
   )
