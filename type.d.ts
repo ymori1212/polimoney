@@ -5,15 +5,15 @@ export type Summary = {
   party: string
   district: string
   image: string
-  in: number
-  out: number
-  transfer: number
+  income: number
+  expense: number
+  balance: number
   year: number
 }
 
 export type Flow = {
   id: string
-  direction: 'in'|'out'
+  direction: 'income'|'expense'
   value: number
   parent: string | null
 }

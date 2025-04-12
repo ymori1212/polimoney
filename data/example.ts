@@ -7,33 +7,33 @@ export const summary: Summary = {
   party: '政治資金党',
   district: '東京1区',
   image: 'https://i.pravatar.cc/300?u=2',
-  in: 141180683,
-  out: 13262929,
-  transfer: 127434080,
+  income: 141180683,
+  expense: 13262929,
+  balance: 127434080,
   year: 2024,
 }
 
 export const flows: Flow[] = [
   // 収入
-  {id: '個人からの寄付', direction: 'in', value: 1560000, parent: '寄付'},
-  {id: '政治団体からの寄付', direction: 'in', value: 100000, parent: '寄付'},
-  {id: '寄付', direction: 'in', value: 1660000, parent: '総収入'},
-  {id: '機関紙誌の発行その他の事業による収入', direction: 'in', value: 29910000, parent: '総収入'},
-  {id: '前年度からの繰越', direction: 'in', value: 109597655, parent: '総収入'},
+  {id: '個人からの寄付', direction: 'income', value: 1560000, parent: '寄付'},
+  {id: '政治団体からの寄付', direction: 'income', value: 100000, parent: '寄付'},
+  {id: '寄付', direction: 'income', value: 1660000, parent: '総収入'},
+  {id: '機関紙誌の発行その他の事業による収入', direction: 'income', value: 29910000, parent: '総収入'},
+  {id: '前年度からの繰越', direction: 'income', value: 109597655, parent: '総収入'},
   // 総収入
-  {id: '総収入', direction: 'out', value: 141180683, parent: null},
+  {id: '総収入', direction: 'expense', value: 141180683, parent: null},
   // 支出
-  {id: '経常経費', direction: 'out', value: 483674, parent: '総収入'},
-  {id: '人件費', direction: 'out', value: 57800, parent: '経常経費'},
-  {id: '備品・消耗品費', direction: 'out', value: 319314, parent: '経常経費'},
-  {id: '事務所費', direction: 'out', value: 106560, parent: '経常経費'},
-  {id: '政治活動費', direction: 'out', value: 13262929, parent: '総収入'},
-  {id: '組織活動費', direction: 'out', value: 4473026, parent: '政治活動費'},
-  {id: '機関紙の発行その他の事業費', direction: 'out', value: 8751150, parent: '政治活動費'},
-  {id: '政治資金パーティー開催事業費', direction: 'out', value: 8751150, parent: '機関紙の発行その他の事業費'},
-  {id: '調査研究費', direction: 'out', value: 28753, parent: '政治活動費'},
-  {id: '寄付・交付金', direction: 'out', value: 10000, parent: '政治活動費'},
-  {id: '翌年への繰越', direction: 'out', value: 127434080, parent: '総収入'},
+  {id: '経常経費', direction: 'expense', value: 483674, parent: '総収入'},
+  {id: '人件費', direction: 'expense', value: 57800, parent: '経常経費'},
+  {id: '備品・消耗品費', direction: 'expense', value: 319314, parent: '経常経費'},
+  {id: '事務所費', direction: 'expense', value: 106560, parent: '経常経費'},
+  {id: '政治活動費', direction: 'expense', value: 13262929, parent: '総収入'},
+  {id: '組織活動費', direction: 'expense', value: 4473026, parent: '政治活動費'},
+  {id: '機関紙の発行その他の事業費', direction: 'expense', value: 8751150, parent: '政治活動費'},
+  {id: '政治資金パーティー開催事業費', direction: 'expense', value: 8751150, parent: '機関紙の発行その他の事業費'},
+  {id: '調査研究費', direction: 'expense', value: 28753, parent: '政治活動費'},
+  {id: '寄付・交付金', direction: 'expense', value: 10000, parent: '政治活動費'},
+  {id: '翌年への繰越', direction: 'expense', value: 127434080, parent: '総収入'},
 ]
 
 export const inTransactions: Transaction[] = [
@@ -146,27 +146,27 @@ export const outTransactions: Transaction[] = [
 //
 // export const flows: Flow[] = [
 //   // 収入
-//   { id: '個人からの寄付', direction: 'in', value: 1560000, parent: '寄付' },
-//   { id: '政治団体からの寄付', direction: 'in', value: 100000, parent: '寄付' },
-//   { id: '寄付', direction: 'in', value: 1660000, parent: '本年の収入' },
-//   { id: '機関紙誌の発行その他の事業による収入', direction: 'in', value: 29910000, parent: '本年の収入' },
-//   { id: 'その他の収入（1件10万円未満）', direction: 'in', value: 13028, parent: '本年の収入' },
-//   { id: '本年の収入', direction: 'in', value: 31583028, parent: '総収入' },
-//   { id: '前年度からの繰越', direction: 'in', value: 109597655, parent: '総収入' },
-//   { id: '総収入', direction: 'out', value: 141180683, parent: null },
+//   { id: '個人からの寄付', direction: 'income', value: 1560000, parent: '寄付' },
+//   { id: '政治団体からの寄付', direction: 'income', value: 100000, parent: '寄付' },
+//   { id: '寄付', direction: 'income', value: 1660000, parent: '本年の収入' },
+//   { id: '機関紙誌の発行その他の事業による収入', direction: 'income', value: 29910000, parent: '本年の収入' },
+//   { id: 'その他の収入（1件10万円未満）', direction: 'income', value: 13028, parent: '本年の収入' },
+//   { id: '本年の収入', direction: 'income', value: 31583028, parent: '総収入' },
+//   { id: '前年度からの繰越', direction: 'income', value: 109597655, parent: '総収入' },
+//   { id: '総収入', direction: 'expense', value: 141180683, parent: null },
 //
 //   // 支出
-//   { id: '経常経費', direction: 'out', value: 483674, parent: '総収入' },
-//   { id: '人件費', direction: 'out', value: 57800, parent: '経常経費' },
-//   { id: '備品・消耗品費', direction: 'out', value: 319314, parent: '経常経費' },
-//   { id: '事務所費', direction: 'out', value: 106560, parent: '経常経費' },
-//   { id: '政治活動費', direction: 'out', value: 13262929, parent: '総収入' },
-//   { id: '組織活動費', direction: 'out', value: 4473026, parent: '政治活動費' },
-//   { id: '機関紙誌の発行その他の事業費', direction: 'out', value: 8751150, parent: '政治活動費' },
-//   { id: '政治資金パーティー開催事業費', direction: 'out', value: 8751150, parent: '機関紙誌の発行その他の事業費' },
-//   { id: '調査研究費', direction: 'out', value: 28753, parent: '政治活動費' },
-//   { id: '寄付・交付金', direction: 'out', value: 10000, parent: '政治活動費' },
-//   { id: '翌年への繰越', direction: 'out', value: 127434080, parent: '総収入' },
+//   { id: '経常経費', direction: 'expense', value: 483674, parent: '総収入' },
+//   { id: '人件費', direction: 'expense', value: 57800, parent: '経常経費' },
+//   { id: '備品・消耗品費', direction: 'expense', value: 319314, parent: '経常経費' },
+//   { id: '事務所費', direction: 'expense', value: 106560, parent: '経常経費' },
+//   { id: '政治活動費', direction: 'expense', value: 13262929, parent: '総収入' },
+//   { id: '組織活動費', direction: 'expense', value: 4473026, parent: '政治活動費' },
+//   { id: '機関紙誌の発行その他の事業費', direction: 'expense', value: 8751150, parent: '政治活動費' },
+//   { id: '政治資金パーティー開催事業費', direction: 'expense', value: 8751150, parent: '機関紙誌の発行その他の事業費' },
+//   { id: '調査研究費', direction: 'expense', value: 28753, parent: '政治活動費' },
+//   { id: '寄付・交付金', direction: 'expense', value: 10000, parent: '政治活動費' },
+//   { id: '翌年への繰越', direction: 'expense', value: 127434080, parent: '総収入' },
 // ]
 //
 // export const inTransactions: Transaction[] = [
@@ -212,21 +212,21 @@ export const outTransactions: Transaction[] = [
 //
 // export const flows: Flow[] = [
 //   // 収入
-//   { id: '党費又は会費', direction: 'in', value: 440000, parent: '本年の収入' },
-//   { id: '政治団体からの寄付', direction: 'in', value: 326000, parent: '寄付' },
-//   { id: '寄付', direction: 'in', value: 326000, parent: '本年の収入' },
-//   { id: 'その他の収入（10万円未満）', direction: 'in', value: 4, parent: '本年の収入' },
-//   { id: '本年の収入', direction: 'in', value: 766004, parent: '総収入' },
-//   { id: '前年からの繰越', direction: 'in', value: 543682, parent: '総収入' },
-//   { id: '総収入', direction: 'out', value: 1309686, parent: null },
+//   { id: '党費又は会費', direction: 'income', value: 440000, parent: '本年の収入' },
+//   { id: '政治団体からの寄付', direction: 'income', value: 326000, parent: '寄付' },
+//   { id: '寄付', direction: 'income', value: 326000, parent: '本年の収入' },
+//   { id: 'その他の収入（10万円未満）', direction: 'income', value: 4, parent: '本年の収入' },
+//   { id: '本年の収入', direction: 'income', value: 766004, parent: '総収入' },
+//   { id: '前年からの繰越', direction: 'income', value: 543682, parent: '総収入' },
+//   { id: '総収入', direction: 'expense', value: 1309686, parent: null },
 //
 //   // 支出
-//   { id: '経常経費', direction: 'out', value: 53350, parent: '総収入' },
-//   { id: '事務所費', direction: 'out', value: 53350, parent: '経常経費' },
-//   { id: '政治活動費', direction: 'out', value: 759414, parent: '総収入' },
-//   { id: '組織活動費', direction: 'out', value: 101433, parent: '政治活動費' },
-//   { id: '機関紙誌の発行その他の事業費', direction: 'out', value: 657981, parent: '政治活動費' },
-//   { id: '翌年への繰越', direction: 'out', value: 496922, parent: '総収入' },
+//   { id: '経常経費', direction: 'expense', value: 53350, parent: '総収入' },
+//   { id: '事務所費', direction: 'expense', value: 53350, parent: '経常経費' },
+//   { id: '政治活動費', direction: 'expense', value: 759414, parent: '総収入' },
+//   { id: '組織活動費', direction: 'expense', value: 101433, parent: '政治活動費' },
+//   { id: '機関紙誌の発行その他の事業費', direction: 'expense', value: 657981, parent: '政治活動費' },
+//   { id: '翌年への繰越', direction: 'expense', value: 496922, parent: '総収入' },
 // ]
 //
 // export const inTransactions: Transaction[] = [
