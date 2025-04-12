@@ -1,7 +1,12 @@
 import {BoardContainer} from '@/components/BoardContainer'
 import {HStack, SimpleGrid, Text} from '@chakra-ui/react'
+import {Metadata} from '@/type'
 
-export function BoardMetadata() {
+type Props = {
+  metadata: Metadata
+}
+
+export function BoardMetadata({metadata}: Props) {
   return (
     <BoardContainer>
       <Text fontSize={'sm'} fontWeight={'bold'} mb={4}>
@@ -10,7 +15,7 @@ export function BoardMetadata() {
       <SimpleGrid columns={{base: 1, md: 2}} gap={2}>
         <HStack>
           <dt>データ引用元</dt>
-          <dd>2024年政治資金収支報告書</dd>
+          <dd>{metadata.source}</dd>
         </HStack>
         <HStack>
           <dt>政治団体の区分</dt>

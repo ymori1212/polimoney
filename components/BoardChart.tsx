@@ -25,25 +25,25 @@ type DataLink = {
 export function BoardChart({flows}: Props) {
   const data: Data = {
     nodes: flows.map(item => ({
-      id: item.id,
+      id: item.name,
       direction: item.direction,
       value: item.value
     })),
     links: flows.map(item => {
-      if (item.id === '総収入') {
+      if (item.name === '総収入') {
         return null
       }
-      if (item.direction === 'in') {
+      if (item.direction === 'income') {
         return {
-          source: item.id,
+          source: item.name,
           target: item.parent,
           value: item.value
         }
       }
-      if (item.direction === 'out') {
+      if (item.direction === 'expense') {
         return {
           source: item.parent,
-          target: item.id,
+          target: item.name,
           value: item.value
         }
       }
@@ -54,7 +54,7 @@ export function BoardChart({flows}: Props) {
     <Box w={'full'} h={'500px'}>
       <ResponsiveSankey
         data={data}
-        colors={node => node.direction === 'in' ? '#00BCD4' : '#E91E63'}
+        colors={node => node.direction === 'income' ? '#00BCD4' : '#E91E63'}
         label={node => `${node.id}: ${node.value.toLocaleString()}`}
         margin={{top: 20, right: 20, bottom: 20, left: 20}}
         layers={['links', 'nodes', CustomLabelsLayer as unknown as SankeyLayerId]}
@@ -82,7 +82,7 @@ const CustomLabelsLayer = ({nodes}: { nodes: SankeyNodeDatum<DataNode, DataLink>
           labelX = node.x0 + (nodeWidth - labelWidth) / 2
           labelY = node.y0 + nodeHeight / 2 - labelHeight / 2
         } else {
-          labelX = node.direction === 'in' ? node.x1 + 5 : node.x0 - labelWidth - 5
+          labelX = node.direction === 'income' ? node.x1 + 5 : node.x0 - labelWidth - 5
           labelY = node.y0 + nodeHeight / 2 - labelHeight / 2
         }
         return (

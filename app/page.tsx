@@ -6,6 +6,7 @@ import {BoardSummary} from '@/components/BoardSummary'
 import {Header} from '@/components/Header'
 import {Footer} from '@/components/Footer'
 import {BoardProfile} from '@/components/BoardProfile'
+import {metadata} from '@/data/example'
 
 export async function generateStaticParams() {
   const slugs = ['example']
@@ -20,7 +21,7 @@ export default function Page() {
       <BoardSummary />
       <BoardIncome />
       <BoardExpense />
-      <BoardMetadata />
+      <BoardMetadata metadata={metadata} />
       <Footer />
     </Box>
   )
