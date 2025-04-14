@@ -51,16 +51,18 @@ export function BoardChart({flows}: Props) {
   }
 
   return (
-    <Box w={'full'} h={'500px'}>
-      <ResponsiveSankey
-        data={data}
-        colors={node => node.direction === 'income' ? '#00BCD4' : '#E91E63'}
-        label={node => `${node.id}: ${node.value.toLocaleString()}`}
-        margin={{top: 20, right: 20, bottom: 20, left: 20}}
-        layers={['links', 'nodes', CustomLabelsLayer as unknown as SankeyLayerId]}
-        nodeSpacing={40}
-        isInteractive={false}
-      />
+    <Box w={'full'} overflowX={'auto'}>
+      <Box w={'940px'} h={'500px'}>
+        <ResponsiveSankey
+          data={data}
+          colors={node => node.direction === 'income' ? '#00BCD4' : '#E91E63'}
+          label={node => `${node.id}: ${node.value.toLocaleString()}`}
+          margin={{top: 20, right: 20, bottom: 20, left: 20}}
+          layers={['links', 'nodes', CustomLabelsLayer as unknown as SankeyLayerId]}
+          nodeSpacing={40}
+          isInteractive={false}
+        />
+      </Box>
     </Box>
   )
 }
