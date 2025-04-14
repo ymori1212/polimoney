@@ -65,7 +65,7 @@ export function BoardTransactions({direction, transactions}: Props) {
               fontWeight={'bold'}
               className={selectedTab === 'direction' ? direction : ''}
             >
-              {direction === 'income' ? '収入' : '支出'}先別
+              {direction === 'income' ? '収入元' : '支出先'}別
             </Tabs.Trigger>
           </Tabs.List>
         </Tabs.Root>
