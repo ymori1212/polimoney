@@ -1,20 +1,38 @@
 import {BoardContainer} from '@/components/BoardContainer'
-import {Avatar, HStack, Stack, Text} from '@chakra-ui/react'
+import {Avatar, Badge, HStack, NativeSelect, Stack, Text} from '@chakra-ui/react'
+import {Profile, Support} from '@/type'
 
-export function BoardProfile() {
+type Props = {
+  profile: Profile
+  supports: Support[]
+}
+
+export function BoardProfile({profile, supports}: Props) {
   return (
     <BoardContainer>
-      <HStack alignItems={'center'} gap={5}>
+      <HStack alignItems={'center'} justify={'space-between'} gap={5}>
         <HStack gap={5} minW={'250px'}>
-          <Avatar.Root w={'50px'} h={'50px'}>
-            <Avatar.Fallback name={'政治 太郎'}/>
-            <Avatar.Image src={'//i.pravatar.cc/200?u=2'}/>
+          <Avatar.Root w={'80px'} h={'80px'}>
+            <Avatar.Fallback name={profile.name}/>
+            <Avatar.Image src={profile.image}/>
           </Avatar.Root>
           <Stack gap={0}>
-            <Text fontSize={'xs'}>{'衆議院議員'}</Text>
-            <Text fontSize={'2xl'} fontWeight={'bold'}>{'政治 太郎'}</Text>
+            <Text fontSize={'xs'}>{profile.title}</Text>
+            <Text fontSize={'2xl'} fontWeight={'bold'}>{profile.name}</Text>
+            <HStack mt={1}>
+              <Badge variant={'outline'} colorPalette={'red'}>ダミー党</Badge>
+              <Badge variant={'outline'}>東京１区</Badge>
+            </HStack>
           </Stack>
         </HStack>
+        <NativeSelect.Root w={'300px'}>
+          <NativeSelect.Field>
+            {supports.map((support) => (
+              <option key={support.id} value={support.id}>{support.name}</option>
+            ))}
+          </NativeSelect.Field>
+          <NativeSelect.Indicator />
+        </NativeSelect.Root>
       </HStack>
     </BoardContainer>
   )

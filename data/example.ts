@@ -1,12 +1,22 @@
-import {Flow, Metadata, Summary, Transaction} from '@/type'
+import {Flow, Metadata, Profile, Summary, Support, Transaction} from '@/type'
 
-export const summary: Summary = {
-  name: '政治資金太郎',
+export const profile: Profile = {
+  name: '政治 太郎',
   title: '衆議院議員',
   support: '政治資金太郎をみまもる会',
   party: '政治資金党',
   district: '東京1区',
   image: 'https://i.pravatar.cc/300?u=2',
+}
+
+export const supports: Support[] = [
+  {
+    id: 'example',
+    name: '政治資金太郎をみまもる会',
+  }
+]
+
+export const summary: Summary = {
   income: 141180683,
   expense: 13262929,
   balance: 127434080,
@@ -48,11 +58,11 @@ export const flows: Flow[] = [
   {id: 'xxxh', name: '翌年への繰越', direction: 'expense', value: 127434080, parent: '総収入'},
 ]
 
-export const inTransactions: Transaction[] = [
+export const incomeTransactions: Transaction[] = [
   {
     id: 'xxx1',
     name: 'AAAAA',
-    date: '2023.1.1',
+    date: '2024/12/31',
     category: '前年繰越',
     value: 109597655,
     percentage: 72,
@@ -60,7 +70,7 @@ export const inTransactions: Transaction[] = [
   {
     id: 'xxx2',
     name: 'BBBBB',
-    date: '2023.10.23',
+    date: '2024/12/31',
     category: '事業収入',
     value: 29440000,
     percentage: 20,
@@ -68,7 +78,7 @@ export const inTransactions: Transaction[] = [
   {
     id: 'xxx3',
     name: 'CCCCC',
-    date: '2023.12.11',
+    date: '2024/12/31',
     category: '個人寄付',
     value: 1000000,
     percentage: 2,
@@ -76,7 +86,7 @@ export const inTransactions: Transaction[] = [
   {
     id: 'xxx4',
     name: 'DDDDD',
-    date: '2023.12.11',
+    date: '2024/12/31',
     category: '個人寄付',
     value: 500000,
     percentage: 2,
@@ -84,7 +94,7 @@ export const inTransactions: Transaction[] = [
   {
     id: 'xxx5',
     name: 'EEEEE',
-    date: '2023.12.11',
+    date: '2024/12/31',
     category: '事業収入',
     value: 470000,
     percentage: 2,
@@ -92,18 +102,18 @@ export const inTransactions: Transaction[] = [
   {
     id: 'xxx6',
     name: 'FFFFF',
-    date: '2023.12.11',
+    date: '2024/12/31',
     category: '事業収入',
     value: 100000,
     percentage: 1,
   },
 ]
 
-export const outTransactions: Transaction[] = [
+export const expenseTransactions: Transaction[] = [
   {
     id: 'xxx1',
     name: 'AAAAA',
-    date: '2023.1.1',
+    date: '2024/12/31',
     category: '前年繰越',
     value: 109597655,
     percentage: 72,
@@ -111,7 +121,7 @@ export const outTransactions: Transaction[] = [
   {
     id: 'xxx2',
     name: 'BBBBB',
-    date: '2023.10.23',
+    date: '2024/12/31',
     category: '事業収入',
     value: 29440000,
     percentage: 20,
@@ -119,7 +129,7 @@ export const outTransactions: Transaction[] = [
   {
     id: 'xxx3',
     name: 'CCCCC',
-    date: '2023.12.11',
+    date: '2024/12/31',
     category: '個人寄付',
     value: 1000000,
     percentage: 2,
@@ -127,7 +137,7 @@ export const outTransactions: Transaction[] = [
   {
     id: 'xxx4',
     name: 'DDDDD',
-    date: '2023.12.11',
+    date: '2024/12/31',
     category: '個人寄付',
     value: 500000,
     percentage: 2,
@@ -135,7 +145,7 @@ export const outTransactions: Transaction[] = [
   {
     id: 'xxx5',
     name: 'EEEEE',
-    date: '2023.12.11',
+    date: '2024/12/31',
     category: '事業収入',
     value: 470000,
     percentage: 2,
@@ -143,7 +153,7 @@ export const outTransactions: Transaction[] = [
   {
     id: 'xxx6',
     name: 'FFFFF',
-    date: '2023.12.11',
+    date: '2024/12/31',
     category: '事業収入',
     value: 100000,
     percentage: 1,
