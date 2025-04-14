@@ -24,7 +24,7 @@ export function Header() {
           <Heading fontSize={'3xl'}>Polimoney</Heading>
         </Link>
         {pathname !== '/' && (
-          <HStack fontSize={'sm'} fontWeight={'bold'} gap={8}>
+          <HStack fontSize={'sm'} fontWeight={'bold'} gap={8} display={{ base: 'none', lg: 'flex' }}>
             <Link href={'#summary'}>収支の流れ</Link>
             <Link href={'#income'}>収入の一覧</Link>
             <Link href={'#expense'}>支出の一覧</Link>

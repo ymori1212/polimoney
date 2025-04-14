@@ -10,7 +10,12 @@ type Props = {
 export function BoardProfile({profile, supports}: Props) {
   return (
     <BoardContainer>
-      <HStack alignItems={'center'} justify={'space-between'} gap={5}>
+      <Stack
+        direction={{base: 'column', lg: 'row'}}
+        alignItems={'center'}
+        justify={'space-between'}
+        gap={5}
+      >
         <HStack gap={5} minW={'250px'}>
           <Avatar.Root w={'80px'} h={'80px'}>
             <Avatar.Fallback name={profile.name}/>
@@ -33,7 +38,7 @@ export function BoardProfile({profile, supports}: Props) {
           </NativeSelect.Field>
           <NativeSelect.Indicator />
         </NativeSelect.Root>
-      </HStack>
+      </Stack>
     </BoardContainer>
   )
 }

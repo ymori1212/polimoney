@@ -70,8 +70,44 @@ export function BoardTransactions({direction, transactions}: Props) {
           </Tabs.List>
         </Tabs.Root>
       </Box>
-      {/* テーブル */}
-      <Box>
+      {/* テーブル (smartphone) */}
+      <Box display={{base: 'block', lg: 'none'}} mb={5}>
+        {paginatedTransactions.map((item) => (
+          <HStack
+            key={item.id}
+            borderBottom={'1px solid #E2E8F0'}
+            py={4}
+          >
+            <Box w={'full'}>
+              <HStack>
+                <Badge>{item.category}</Badge>
+                <Text fontSize={'xs'}>{item.date}</Text>
+              </HStack>
+              <HStack justifyContent={'space-between'} my={1}>
+                <Text fontWeight={'bold'}>{item.name}</Text>
+                <Text fontWeight={'bold'}>{item.value.toLocaleString()}</Text>
+              </HStack>
+              <Progress.Root
+                defaultValue={item.percentage}
+                size={'xs'}
+                colorPalette={direction === 'income' ? 'cyan' : 'pink'}
+              >
+                <HStack gap="5">
+                  <Progress.Track flex="1">
+                    <Progress.Range />
+                  </Progress.Track>
+                  <Progress.ValueText w={'28px'}>{item.percentage}%</Progress.ValueText>
+                </HStack>
+              </Progress.Root>
+            </Box>
+            <IconButton variant={'ghost'} size={'xs'}>
+              <CircleChevronDownIcon className={direction} />
+            </IconButton>
+          </HStack>
+        ))}
+      </Box>
+      {/* テーブル (laptop) */}
+      <Box display={{base: 'none', lg: 'block'}} mb={5}>
         <Table.Root size={'lg'}>
           <Table.Header>
             <Table.Row fontSize={'sm'}>
@@ -80,7 +116,7 @@ export function BoardTransactions({direction, transactions}: Props) {
               <Table.ColumnHeader fontWeight={'bold'}>金額</Table.ColumnHeader>
               <Table.ColumnHeader fontWeight={'bold'}>割合</Table.ColumnHeader>
               <Table.ColumnHeader fontWeight={'bold'}>日付</Table.ColumnHeader>
-              <Table.ColumnHeader w={'50px'} />
+              <Table.ColumnHeader w={'32px'} />
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -107,7 +143,9 @@ export function BoardTransactions({direction, transactions}: Props) {
                 </Table.Cell>
                 <Table.Cell>{item.date}</Table.Cell>
                 <Table.Cell>
-                  <CircleChevronDownIcon size={18} className={direction} />
+                  <IconButton variant={'ghost'} size={'xs'}>
+                    <CircleChevronDownIcon className={direction} />
+                  </IconButton>
                 </Table.Cell>
               </Table.Row>
             ))}

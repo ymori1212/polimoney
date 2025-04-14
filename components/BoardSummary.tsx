@@ -35,7 +35,7 @@ export function BoardSummary({summary, flows}: Props) {
       </Box>
       {/* サマリー */}
       <Box mb={5}>
-        <SimpleGrid columns={{base: 1, md: 3}} gap={5}>
+        <SimpleGrid columns={{base: 1, lg: 3}} gap={5}>
           <Box border={'1px solid #dddddd'} borderRadius={'lg'} p={5} minW={'200px'}>
             <Stat.Root>
               <Stat.Label
