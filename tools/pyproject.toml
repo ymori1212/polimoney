@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "pdf-image-analyzer-gemini"
+version = "0.1.0"
+description = "Tools to convert PDF pages to images and analyze them using Google Gemini API."
+authors = ["Your Name <you@example.com>"] # 作者情報を適宜変更してください
+readme = "README.md"
+license = "MIT" # または適切なライセンスを選択
+packages = [{include = "pdf_image_analyzer_gemini"}] # パッケージ名が必要な場合
+
+[tool.poetry.dependencies]
+python = "^3.8" # 要求するPythonのバージョン
+pdf2image = "^1.17.0"
+google-generativeai = "^0.5.4" # 最新バージョンを確認して指定
+Pillow = "^10.3.0" # pdf2image や PIL.Image のために明示
+
+[tool.poetry.group.dev.dependencies]
+# 開発時に便利なツールがあればここに追加 (例: black, flake8, pytest)
+# black = "^24.4.2"
+# flake8 = "^7.0.0"
+python-dotenv = "^1.0.1" # .env ファイルを使う場合に便利
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+# スクリプトをコマンドとして実行可能にする場合 (例)
+# pdf-to-images = "pdf_image_analyzer_gemini.pdf_to_images:main_cli_function"
+# analyze-images = "pdf_image_analyzer_gemini.analyze_image_gemini:main_cli_function"
+# 上記を使用するには、現在のスクリプトを関数ベースにリファクタリングする必要があります
