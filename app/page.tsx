@@ -2,8 +2,11 @@ import {Badge, Box, Card, HStack, Image, SimpleGrid, Stack, Text} from '@chakra-
 import {Header} from '@/components/Header'
 import {Footer} from '@/components/Footer'
 import Link from 'next/link'
+import example from '@/data/example'
 
-const results = ['example']
+const results = [
+  example
+]
 
 export default function Page() {
   return (
@@ -11,7 +14,7 @@ export default function Page() {
       <Header />
       <SimpleGrid columns={{ base: 1, lg: 2 }} gap={5} mb={5} p={2}>
         {results.map((result) => (
-          <Link href={`/${result}`} key={result}>
+          <Link href={`/${result.id}`} key={result.id}>
             <Card.Root
               flexDirection={'row'}
               boxShadow={'xs'}
@@ -20,7 +23,7 @@ export default function Page() {
               <Image
                 objectFit="cover"
                 maxW="130px"
-                src="https://i.pravatar.cc/300?u=2"
+                src={result.profile.image}
                 alt="example"
                 borderTopLeftRadius="md"
                 borderBottomLeftRadius="md"
@@ -28,11 +31,11 @@ export default function Page() {
               <Box>
                 <Card.Body>
                   <Stack gap={0}>
-                    <Text fontSize={'xs'}>衆議院議員</Text>
-                    <Text fontSize={'2xl'} fontWeight={'bold'}>政治太郎</Text>
+                    <Text fontSize={'xs'}>{result.profile.title}</Text>
+                    <Text fontSize={'2xl'} fontWeight={'bold'}>{result.profile.name}</Text>
                     <HStack mt={1}>
-                      <Badge variant={'outline'} colorPalette={'red'}>ダミー党</Badge>
-                      <Badge variant={'outline'}>東京１区</Badge>
+                      <Badge variant={'outline'} colorPalette={'red'}>{result.profile.party}</Badge>
+                      {result.profile.district && (<Badge variant={'outline'}>{result.profile.district}</Badge>)}
                     </HStack>
                   </Stack>
                 </Card.Body>

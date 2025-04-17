@@ -159,3 +159,14 @@ export const expenseTransactions: Transaction[] = [
     percentage: 1,
   },
 ]
+
+export default {
+  id: 'example',
+  profile,
+  supports,
+  summary,
+  metadata,
+  flows,
+  incomeTransactions,
+  expenseTransactions,
+}

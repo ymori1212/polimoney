@@ -1,9 +1,8 @@
 'use client'
 
 import {BoardContainer} from '@/components/BoardContainer'
-import {Box, HStack, NativeSelect, SimpleGrid, Stat, Tabs, Text} from '@chakra-ui/react'
+import {Box, HStack, NativeSelect, SimpleGrid, Stat, Text} from '@chakra-ui/react'
 import {LandmarkIcon} from 'lucide-react'
-import {useState} from 'react'
 import {BoardChart} from '@/components/BoardChart'
 import {Flow, Summary} from '@/type'
 
@@ -14,7 +13,7 @@ type Props = {
 
 export function BoardSummary({summary, flows}: Props) {
 
-  const [selectedTab, setSelectedTab] = useState('amount')
+  // const [selectedTab, setSelectedTab] = useState('amount')
 
   return (
     <BoardContainer id={'summary'}>
@@ -77,29 +76,29 @@ export function BoardSummary({summary, flows}: Props) {
         </SimpleGrid>
       </Box>
       {/* タブ */}
-      <Box mb={5}>
-        <Tabs.Root
-          value={selectedTab}
-          onValueChange={(e) => setSelectedTab(e.value)}
-        >
-          <Tabs.List>
-            <Tabs.Trigger
-              value="amount"
-              fontWeight={'bold'}
-              className={selectedTab === 'amount' ? 'income' : ''}
-            >
-              金額(円)
-            </Tabs.Trigger>
-            <Tabs.Trigger
-              value="percentage"
-              fontWeight={'bold'}
-              className={selectedTab === 'percentage' ? 'income' : ''}
-            >
-              割合(%)
-            </Tabs.Trigger>
-          </Tabs.List>
-        </Tabs.Root>
-      </Box>
+      {/*<Box mb={5}>*/}
+      {/*  <Tabs.Root*/}
+      {/*    value={selectedTab}*/}
+      {/*    onValueChange={(e) => setSelectedTab(e.value)}*/}
+      {/*  >*/}
+      {/*    <Tabs.List>*/}
+      {/*      <Tabs.Trigger*/}
+      {/*        value="amount"*/}
+      {/*        fontWeight={'bold'}*/}
+      {/*        className={selectedTab === 'amount' ? 'income' : ''}*/}
+      {/*      >*/}
+      {/*        金額(円)*/}
+      {/*      </Tabs.Trigger>*/}
+      {/*      <Tabs.Trigger*/}
+      {/*        value="percentage"*/}
+      {/*        fontWeight={'bold'}*/}
+      {/*        className={selectedTab === 'percentage' ? 'income' : ''}*/}
+      {/*      >*/}
+      {/*        割合(%)*/}
+      {/*      </Tabs.Trigger>*/}
+      {/*    </Tabs.List>*/}
+      {/*  </Tabs.Root>*/}
+      {/*</Box>*/}
       {/* チャート */}
       <BoardChart flows={flows} />
     </BoardContainer>

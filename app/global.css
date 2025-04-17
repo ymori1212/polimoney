@@ -18,4 +18,5 @@ dt {
 }
 dd {
   font-weight: bold;
+  white-space: pre-wrap;
 }

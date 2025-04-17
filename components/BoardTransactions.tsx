@@ -10,11 +10,10 @@ import {
   Pagination,
   Progress,
   Table,
-  Tabs,
   Text,
   VStack
 } from '@chakra-ui/react'
-import {BanknoteArrowUpIcon, ChevronLeftIcon, ChevronRightIcon, CircleChevronDownIcon} from 'lucide-react'
+import {BanknoteArrowUpIcon, ChevronLeftIcon, ChevronRightIcon} from 'lucide-react'
 import {useState} from 'react'
 import {Transaction} from '@/type'
 
@@ -25,12 +24,13 @@ type Props = {
 
 export function BoardTransactions({direction, transactions}: Props) {
 
-  const [selectedTab, setSelectedTab] = useState('category')
+  // const [selectedTab, setSelectedTab] = useState('category')
   const [page, setPage] = useState(1)
   const pageSize = 10
 
   // 現在のページに表示する transactions を計算
-  const paginatedTransactions = transactions.slice((page - 1) * pageSize, page * pageSize)
+  const sorted = transactions.sort((a, b) => b.value - a.value)
+  const paginated = sorted.slice((page - 1) * pageSize, page * pageSize)
 
   return (
     <BoardContainer id={direction}>
@@ -47,32 +47,32 @@ export function BoardTransactions({direction, transactions}: Props) {
         </Text>
       </Box>
       {/* タブ */}
-      <Box mb={5}>
-        <Tabs.Root
-          value={selectedTab}
-          onValueChange={(e) => setSelectedTab(e.value)}
-        >
-          <Tabs.List>
-            <Tabs.Trigger
-              value="category"
-              fontWeight={'bold'}
-              className={selectedTab === 'category' ? direction : ''}
-            >
-              カテゴリー別
-            </Tabs.Trigger>
-            <Tabs.Trigger
-              value="direction"
-              fontWeight={'bold'}
-              className={selectedTab === 'direction' ? direction : ''}
-            >
-              {direction === 'income' ? '収入元' : '支出先'}別
-            </Tabs.Trigger>
-          </Tabs.List>
-        </Tabs.Root>
-      </Box>
+      {/*<Box mb={5}>*/}
+      {/*  <Tabs.Root*/}
+      {/*    value={selectedTab}*/}
+      {/*    onValueChange={(e) => setSelectedTab(e.value)}*/}
+      {/*  >*/}
+      {/*    <Tabs.List>*/}
+      {/*      <Tabs.Trigger*/}
+      {/*        value="category"*/}
+      {/*        fontWeight={'bold'}*/}
+      {/*        className={selectedTab === 'category' ? direction : ''}*/}
+      {/*      >*/}
+      {/*        カテゴリー別*/}
+      {/*      </Tabs.Trigger>*/}
+      {/*      <Tabs.Trigger*/}
+      {/*        value="direction"*/}
+      {/*        fontWeight={'bold'}*/}
+      {/*        className={selectedTab === 'direction' ? direction : ''}*/}
+      {/*      >*/}
+      {/*        {direction === 'income' ? '収入元' : '支出先'}別*/}
+      {/*      </Tabs.Trigger>*/}
+      {/*    </Tabs.List>*/}
+      {/*  </Tabs.Root>*/}
+      {/*</Box>*/}
       {/* テーブル (smartphone) */}
       <Box display={{base: 'block', lg: 'none'}} mb={5}>
-        {paginatedTransactions.map((item) => (
+        {paginated.map((item) => (
           <HStack
             key={item.id}
             borderBottom={'1px solid #E2E8F0'}
@@ -100,9 +100,9 @@ export function BoardTransactions({direction, transactions}: Props) {
                 </HStack>
               </Progress.Root>
             </Box>
-            <IconButton variant={'ghost'} size={'xs'}>
-              <CircleChevronDownIcon className={direction} />
-            </IconButton>
+            {/*<IconButton variant={'ghost'} size={'xs'}>*/}
+            {/*  <CircleChevronDownIcon className={direction} />*/}
+            {/*</IconButton>*/}
           </HStack>
         ))}
       </Box>
@@ -115,19 +115,19 @@ export function BoardTransactions({direction, transactions}: Props) {
               <Table.ColumnHeader fontWeight={'bold'}>カテゴリー</Table.ColumnHeader>
               <Table.ColumnHeader fontWeight={'bold'}>金額</Table.ColumnHeader>
               <Table.ColumnHeader fontWeight={'bold'}>割合</Table.ColumnHeader>
-              <Table.ColumnHeader fontWeight={'bold'}>日付</Table.ColumnHeader>
-              <Table.ColumnHeader w={'32px'} />
+              {/*<Table.ColumnHeader fontWeight={'bold'}>日付</Table.ColumnHeader>*/}
+              {/*<Table.ColumnHeader w={'32px'} />*/}
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {paginatedTransactions.map((item) => (
+            {paginated.map((item) => (
               <Table.Row key={item.id} fontSize={'sm'}>
                 <Table.Cell fontWeight={'bold'}>{item.name}</Table.Cell>
                 <Table.Cell>
                   <Badge>{item.category}</Badge>
                 </Table.Cell>
                 <Table.Cell fontWeight={'bold'}>{item.value.toLocaleString()}</Table.Cell>
-                <Table.Cell>
+                <Table.Cell minW={'150px'}>
                   <Progress.Root
                     defaultValue={item.percentage}
                     size={'xs'}
@@ -141,12 +141,12 @@ export function BoardTransactions({direction, transactions}: Props) {
                     </HStack>
                   </Progress.Root>
                 </Table.Cell>
-                <Table.Cell>{item.date}</Table.Cell>
-                <Table.Cell>
-                  <IconButton variant={'ghost'} size={'xs'}>
-                    <CircleChevronDownIcon className={direction} />
-                  </IconButton>
-                </Table.Cell>
+                {/*<Table.Cell>{item.date}</Table.Cell>*/}
+                {/*<Table.Cell>*/}
+                {/*  <IconButton variant={'ghost'} size={'xs'}>*/}
+                {/*    <CircleChevronDownIcon className={direction} />*/}
+                {/*  </IconButton>*/}
+                {/*</Table.Cell>*/}
               </Table.Row>
             ))}
           </Table.Body>

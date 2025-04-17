@@ -19,35 +19,35 @@ export function BoardMetadata({metadata}: Props) {
         </HStack>
         <HStack>
           <dt>政治団体の区分</dt>
-          <dd>その他の政治団体</dd>
+          <dd>{metadata.orgType}</dd>
         </HStack>
         <HStack>
           <dt>政治団体の名称</dt>
-          <dd>政治太郎講演会</dd>
+          <dd>{metadata.orgName}</dd>
         </HStack>
         <HStack>
           <dt>活動区域の区分</dt>
-          <dd>２以上の都道府県の区域など</dd>
+          <dd>{metadata.activityArea}</dd>
         </HStack>
         <HStack>
           <dt>代表者</dt>
-          <dd>政治太郎</dd>
+          <dd>{metadata.representative}</dd>
         </HStack>
         <HStack>
           <dt>資金管理団体の指定</dt>
-          <dd>有り/衆議院議員(現職)政治太郎</dd>
+          <dd>{metadata.fundManagementOrg}</dd>
         </HStack>
         <HStack>
           <dt>会計責任者</dt>
-          <dd>中村太郎</dd>
+          <dd>{metadata.accountingManager}</dd>
         </HStack>
         <HStack>
           <dt>最終更新日</dt>
-          <dd>2025.3.31</dd>
+          <dd>{metadata.lastUpdate}</dd>
         </HStack>
         <HStack>
           <dt>事務担当者</dt>
-          <dd>中村太郎</dd>
+          <dd>{metadata.administrativeManager}</dd>
         </HStack>
       </SimpleGrid>
     </BoardContainer>

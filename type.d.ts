@@ -3,7 +3,7 @@ export type Profile = {
   title: string // 肩書
   support: string // 支援団体
   party: string // 政党
-  district: string // 選挙区
+  district?: string // 選挙区
   image: string // 画像URL
 }
 

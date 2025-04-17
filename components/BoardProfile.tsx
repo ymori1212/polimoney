@@ -25,8 +25,8 @@ export function BoardProfile({profile, supports}: Props) {
             <Text fontSize={'xs'}>{profile.title}</Text>
             <Text fontSize={'2xl'} fontWeight={'bold'}>{profile.name}</Text>
             <HStack mt={1}>
-              <Badge variant={'outline'} colorPalette={'red'}>ダミー党</Badge>
-              <Badge variant={'outline'}>東京１区</Badge>
+              <Badge variant={'outline'} colorPalette={'red'}>{profile.party}</Badge>
+              {profile.district && (<Badge variant={'outline'}>{profile.district}</Badge>)}
             </HStack>
           </Stack>
         </HStack>
