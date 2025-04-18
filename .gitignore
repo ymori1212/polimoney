@@ -25,6 +25,8 @@
 *.pem
 /tools/output_images/*.png
 /tools/output_json/*.json
+/tools/merged_files/*.json
+/tools/merged_files/*.csv
 /tools/*.pdf
 
 # debug

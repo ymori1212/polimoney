@@ -8,16 +8,18 @@ license = "MIT" # または適切なライセンスを選択
 packages = [{include = "pdf_image_analyzer_gemini"}] # パッケージ名が必要な場合
 
 [tool.poetry.dependencies]
-python = "^3.8" # 要求するPythonのバージョン
+python = "^3.10" # 要求するPythonのバージョン
 pdf2image = "^1.17.0"
 google-generativeai = "^0.5.4" # 最新バージョンを確認して指定
 Pillow = "^10.3.0" # pdf2image や PIL.Image のために明示
+pandas = "^2.2.3"
 
 [tool.poetry.group.dev.dependencies]
 # 開発時に便利なツールがあればここに追加 (例: black, flake8, pytest)
 # black = "^24.4.2"
 # flake8 = "^7.0.0"
 python-dotenv = "^1.0.1" # .env ファイルを使う場合に便利
+pandas-stubs = "^2.2.3.250308"
 
 [build-system]
 requires = ["poetry-core"]
