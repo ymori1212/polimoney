@@ -13,6 +13,22 @@
     *   政治資金収支報告書の画像からテキスト情報を抽出し、構造化されたJSON形式で出力するように設計されたデフォルトプロンプトが含まれています。プロンプトは引数で変更可能です。
     *   解析結果は指定されたディレクトリ（デフォルト: `output_json`）にJSONファイルとして保存されます (例: `document_page_001.json`)。
     *   APIからの応答に含まれる可能性のあるマークダウン指示子 (` ```json ` など) は自動的に除去されます。
+*  **画像ごとのJSONを一つにマージ（`merge_jsons.py`）**
+    *  output_json のファイルを merged_files に結合します
+
+```
+[ワークフロー]
+
+PDFファイル
+↓ pdf_to_image.py
+エクセルもしくはPDFのスクリーンショット群（output_images/*.png）
+↓ analyze_image_gemini.py
+パースされたJSONファイル群（output_json/*.json）
+↓ merge_jsons.py
+とりまとめられた単一のjsonとcsv
+
+```
+
 
 ## 必要なもの
 
