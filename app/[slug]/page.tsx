@@ -6,19 +6,19 @@ import {Footer} from '@/components/Footer'
 import {BoardProfile} from '@/components/BoardProfile'
 import {BoardTransactions} from '@/components/BoardTransactions'
 
-import example from '@/data/example'
+import demoTakahiroAnno2024 from '@/data/demo-takahiroanno'
 
 export async function generateStaticParams() {
   const slugs = [
-    'example'
+    'demo-takahiro-anno-2024'
   ]
   return slugs.map(slug => ({slug}))
 }
 
 async function getData(slug: string) {
   switch (slug) {
-    case 'example':
-      return example
+    case 'demo-takahiro-anno-2024':
+      return demoTakahiroAnno2024
     default:
       throw new Error('not found')
   }

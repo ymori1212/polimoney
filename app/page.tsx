@@ -2,10 +2,10 @@ import {Badge, Box, Card, HStack, Image, SimpleGrid, Stack, Text} from '@chakra-
 import {Header} from '@/components/Header'
 import {Footer} from '@/components/Footer'
 import Link from 'next/link'
-import example from '@/data/example'
+import demoTakahiroAnno2024 from '@/data/demo-takahiroanno'
 
 const results = [
-  example
+  demoTakahiroAnno2024
 ]
 
 export default function Page() {
@@ -24,7 +24,7 @@ export default function Page() {
                 objectFit="cover"
                 maxW="130px"
                 src={result.profile.image}
-                alt="example"
+                alt={result.profile.name}
                 borderTopLeftRadius="md"
                 borderBottomLeftRadius="md"
               />
