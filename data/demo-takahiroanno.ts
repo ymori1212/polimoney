@@ -113,7 +113,7 @@ export const expenseTransactions: Transaction[] = [
   },
   {
     id: '15-3',
-    name: 'ブロードリスニングAPI利用料(OpenAPI)',
+    name: 'ブロードリスニングAPI利用料(OpenAI)',
     date: '-',
     category: '組織活動費',
     value: 163808+166257+166257,
