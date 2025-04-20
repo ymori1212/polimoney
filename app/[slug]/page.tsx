@@ -7,10 +7,12 @@ import {BoardProfile} from '@/components/BoardProfile'
 import {BoardTransactions} from '@/components/BoardTransactions'
 
 import demoTakahiroAnno2024 from '@/data/demo-takahiroanno'
+import demoRyosukeIdei2024 from '@/data/demo-ryosukeidei'
 
 export async function generateStaticParams() {
   const slugs = [
-    'demo-takahiro-anno-2024'
+    'demo-takahiro-anno-2024',
+    'demo-ryosuke-idei-2024',
   ]
   return slugs.map(slug => ({slug}))
 }
@@ -19,6 +21,8 @@ async function getData(slug: string) {
   switch (slug) {
     case 'demo-takahiro-anno-2024':
       return demoTakahiroAnno2024
+    case 'demo-ryosuke-idei-2024':
+      return demoRyosukeIdei2024
     default:
       throw new Error('not found')
   }

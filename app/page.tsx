@@ -3,9 +3,11 @@ import {Header} from '@/components/Header'
 import {Footer} from '@/components/Footer'
 import Link from 'next/link'
 import demoTakahiroAnno2024 from '@/data/demo-takahiroanno'
+import demoRyosukeIdei2024 from '@/data/demo-ryosukeidei'
 
 const results = [
-  demoTakahiroAnno2024
+  demoTakahiroAnno2024,
+  demoRyosukeIdei2024
 ]
 
 export default function Page() {
