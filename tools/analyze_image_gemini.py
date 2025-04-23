@@ -31,15 +31,13 @@ class GeminiClient:
 
     def analyze_image_with_gemini(self, image_path):
         """
-        Uses the Gemini API to analyze an image based on a prompt.
+        指定した画像ファイルをGemini APIで解析し、Google推奨のJSON形式でテキスト情報を返します。
 
         Args:
-            image_path (str): Path to the image file.
-            prompt (str): The prompt to guide the analysis.
-            api_key (str): Your Google API Key.
+            image_path (str): 解析対象の画像ファイルのパス。
 
         Returns:
-            str: The cleaned analysis result from Gemini (expected JSON string), or an error message starting with "エラー:".
+            str: Geminiからの解析結果（JSON文字列を想定）。エラーの場合は "エラー:" で始まるメッセージを返します。
         """
         # genai.configure(api_key=api_key)
         # モデルはgemini-2.5-pro-preview-03-25です。これが現在の最新なのでいじらないでください。
@@ -269,6 +267,25 @@ def get_png_files_to_process(args):
 
 
 def main():
+    """スクリプトのエントリーポイント。
+
+    コマンドライン引数をパースし、指定されたPNG画像ファイルまたはディレクトリ内の全PNGファイルをGemini APIで解析し、
+    その結果をJSONファイルとして保存します。
+
+    Args:
+        なし（コマンドライン引数で指定）
+
+    Returns:
+        なし（標準出力・標準エラー出力、およびファイル出力）
+
+    Raises:
+        SystemExit: 必要な環境変数が未設定、またはファイル/ディレクトリが存在しない場合。
+
+    注意:
+        - GOOGLE_API_KEY環境変数が必要です。
+        - 画像ファイルはPNG形式のみ対応しています。
+        - 解析結果は指定した出力ディレクトリにJSONファイルとして保存されます。
+    """
     parser = argparse.ArgumentParser(description="Gemini APIを使用して画像の内容を解析し、結果をJSONファイルとして保存します。単一ファイルまたはディレクトリ内の全PNGファイルを処理できます。")
 
     # 入力ソースの排他グループ
