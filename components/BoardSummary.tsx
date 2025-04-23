@@ -1,22 +1,56 @@
 'use client'
 
 import {BoardContainer} from '@/components/BoardContainer'
-import {Box, HStack, NativeSelect, SimpleGrid, Stat, Text} from '@chakra-ui/react'
+import {Avatar, Badge, Box, HStack, NativeSelect, SimpleGrid, Stack, Stat, Text} from '@chakra-ui/react'
 import {LandmarkIcon} from 'lucide-react'
 import {BoardChart} from '@/components/BoardChart'
-import {Flow, Summary} from '@/type'
+import {Flow, Profile, Summary, Support} from '@/type'
 
 type Props = {
+  profile: Profile
+  supports: Support[]
   summary: Summary
   flows: Flow[]
 }
 
-export function BoardSummary({summary, flows}: Props) {
+export function BoardSummary({profile, supports, summary, flows}: Props) {
 
   // const [selectedTab, setSelectedTab] = useState('amount')
 
   return (
     <BoardContainer id={'summary'}>
+      {/* プロフィール */}
+      <Box mb={10}>
+        <Stack
+          direction={{base: 'column', lg: 'row'}}
+          alignItems={'center'}
+          justify={'space-between'}
+          gap={5}
+        >
+          <HStack gap={5} minW={'250px'}>
+            <Avatar.Root w={'80px'} h={'80px'}>
+              <Avatar.Fallback name={profile.name}/>
+              <Avatar.Image src={profile.image}/>
+            </Avatar.Root>
+            <Stack gap={0}>
+              <Text fontSize={'xs'}>{profile.title}</Text>
+              <Text fontSize={'2xl'} fontWeight={'bold'}>{profile.name}</Text>
+              <HStack mt={1}>
+                <Badge variant={'outline'} colorPalette={'red'}>{profile.party}</Badge>
+                {profile.district && (<Badge variant={'outline'}>{profile.district}</Badge>)}
+              </HStack>
+            </Stack>
+          </HStack>
+          <NativeSelect.Root w={'300px'}>
+            <NativeSelect.Field>
+              {supports.map((support) => (
+                <option key={support.id} value={support.id}>{support.name}</option>
+              ))}
+            </NativeSelect.Field>
+            <NativeSelect.Indicator />
+          </NativeSelect.Root>
+        </Stack>
+      </Box>
       {/* タイトル */}
       <Box mb={5}>
         <HStack justify={'space-between'} alignItems={'center'}>

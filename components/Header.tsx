@@ -11,7 +11,7 @@ export function Header() {
   return (
     <Box>
       <HStack
-        justify={'space-between'}
+        justify={{base: 'center', lg: 'space-between'}}
         alignItems={'center'}
         px={10}
         py={5}

@@ -3,7 +3,6 @@ import {BoardMetadata} from '@/components/BoardMetadata'
 import {BoardSummary} from '@/components/BoardSummary'
 import {Header} from '@/components/Header'
 import {Footer} from '@/components/Footer'
-import {BoardProfile} from '@/components/BoardProfile'
 import {BoardTransactions} from '@/components/BoardTransactions'
 
 import demoTakahiroAnno2024 from '@/data/demo-takahiroanno'
@@ -40,8 +39,7 @@ export default async function Page({ params }: PageProps) {
   return (
     <Box>
       <Header />
-      <BoardProfile profile={data.profile} supports={data.supports} />
-      <BoardSummary summary={data.summary} flows={data.flows} />
+      <BoardSummary profile={data.profile} supports={data.supports} summary={data.summary} flows={data.flows} />
       <BoardTransactions direction={'income'} transactions={data.incomeTransactions} />
       <BoardTransactions direction={'expense'} transactions={data.expenseTransactions} />
       <BoardMetadata metadata={data.metadata} />
