@@ -152,7 +152,12 @@ categoryの候補
             img = PIL.Image.open(image_path)
             # print("Gemini APIにリクエストを送信中...", file=sys.stderr) # ループ内で冗長なのでコメントアウト
 
-            response = self.model.generate_content([prompt, img])
+            response = self.model.generate_content(
+                contents=[prompt, img],
+                generation_config={
+                    "response_mime_type": "application/json",
+                }
+            )
 
             raw_result = None
             if hasattr(response, 'text') and response.text:
