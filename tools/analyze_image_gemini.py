@@ -54,7 +54,7 @@ class GeminiClient:
 # 期待するデータ形式
 
 {
-    items: [
+    "items": [
         {
             "flow_type": "",
             "category": "",
@@ -122,7 +122,7 @@ categoryの候補
 # 具体例
 
 {
-    items: [
+    "items": [
         {
             "flow_type": "income",
             "category": "個人からの寄附",
