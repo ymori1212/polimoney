@@ -6,6 +6,11 @@ import './global.css'
 export const metadata: Metadata = {
   title: 'Polimoney (ポリマネー)',
   description: 'Polimoney (ポリマネー) は、デジタル民主主義2030プロジェクトの一環として、政治資金の透明性を高めるために開発されたオープンソースのプロジェクトです。',
+  metadataBase: new URL(
+    process.env.NODE_ENV === 'production'
+      ? 'https://polimoney.dd2030.org'
+      : 'http://localhost:3000'
+  ),
 }
 
 export default function RootLayout({children}: Readonly<{ children: React.ReactNode }>) {
