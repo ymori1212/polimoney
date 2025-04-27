@@ -52,7 +52,7 @@ export function BoardChart({flows}: Props) {
 
   return (
     <Box w={'full'} overflowX={'auto'}>
-      <Box w={'940px'} h={'600px'}>
+      <Box w={'940px'} h={'600px'} className="sankey-chart">
         <ResponsiveSankey
           data={data}
           colors={node => node.direction === 'income' ? '#00BCD4' : '#E91E63'}
