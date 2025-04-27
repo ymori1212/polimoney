@@ -2,11 +2,15 @@ const fs = require('fs');
 const path = require('path');
 const puppeteer = require('puppeteer');
 
-// サンプルデータのスラッグ
-const slugs = [
-  'demo-takahiro-anno-2024',
-  'demo-ryosuke-idei-2024'
-];
+// dataディレクトリのパス
+const dataDir = path.join(__dirname, '../data');
+
+// .tsファイル名からslugを生成
+const slugs = fs.readdirSync(dataDir)
+  .filter(file => file.endsWith('.ts') && file.startsWith('demo-'))
+  .map(file => file.replace(/\.ts$/, ''));
+
+console.log('対象slug:', slugs);
 
 // グラフをキャプチャする関数
 async function captureGraph(slug) {
