@@ -47,3 +47,22 @@ export default async function Page({ params }: PageProps) {
     </Box>
   )
 }
+
+export async function generateMetadata({ params }: { params: { slug: string } }) {
+  const data = await getData(params.slug);
+  return {
+    title: `${data.profile.name} | Polimoney`,
+    description: `${data.profile.name}の政治資金の流れを可視化`,
+    openGraph: {
+      title: `${data.profile.name} | Polimoney`,
+      description: `${data.profile.name}の政治資金の流れを可視化`,
+      url: `https://polimoney.example.com/${params.slug}`,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary',
+      title: `${data.profile.name} | Polimoney`,
+      description: `${data.profile.name}の政治資金の流れを可視化`,
+    },
+  };
+}

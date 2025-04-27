@@ -10,6 +10,22 @@ const results = [
   demoRyosukeIdei2024
 ]
 
+export const metadata = {
+  title: 'Polimoney - 政治資金の透明性を高める',
+  description: 'Polimoneyは、デジタル民主主義2030プロジェクトの一環として、政治資金の透明性を高めるために開発されたオープンソースのプロジェクトです。',
+  openGraph: {
+    title: 'Polimoney - 政治資金の透明性を高める',
+    description: 'Polimoneyは、デジタル民主主義2030プロジェクトの一環として、政治資金の透明性を高めるために開発されたオープンソースのプロジェクトです。',
+    url: 'https://polimoney.example.com',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Polimoney - 政治資金の透明性を高める',
+    description: 'Polimoneyは、デジタル民主主義2030プロジェクトの一環として、政治資金の透明性を高めるために開発されたオープンソースのプロジェクトです。',
+  },
+};
+
 export default function Page() {
   return (
     <Box>
