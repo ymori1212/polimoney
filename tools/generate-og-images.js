@@ -92,4 +92,5 @@ async function main() {
 }
 
 // スクリプト実行
-main().catch(console.error); 
+main().catch(console.error);
+
