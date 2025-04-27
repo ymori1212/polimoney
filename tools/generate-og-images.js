@@ -23,8 +23,8 @@ async function captureGraph(slug) {
     
     // ビューポートサイズを設定
     await page.setViewport({
-      width: 1920,
-      height: 1080,
+      width: 1200,
+      height: 630,
       deviceScaleFactor: 2 // 高解像度でキャプチャ
     });
     
