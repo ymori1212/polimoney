@@ -49,8 +49,8 @@ export default async function Page({ params }: PageProps) {
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
-  const resolvedParams = await params;
-  const data = await getData(resolvedParams.slug);
+  const resolvedParams = await params
+  const data = await getData(resolvedParams.slug)
   return {
     title: `${data.profile.name} | Polimoney`,
     description: `${data.profile.name}の政治資金の流れを可視化`,
@@ -73,5 +73,5 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description: `${data.profile.name}の政治資金の流れを可視化`,
       images: [`/ogp/${resolvedParams.slug}.png`],
     },
-  };
+  }
 }
