@@ -23,8 +23,8 @@ async function captureGraph(slug) {
     
     // ビューポートサイズを設定
     await page.setViewport({
-      width: 1200,
-      height: 630,
+      width: 1920,
+      height: 1080,
       deviceScaleFactor: 2 // 高解像度でキャプチャ
     });
     
@@ -47,6 +47,18 @@ async function captureGraph(slug) {
       console.error(`Graph element not found for ${slug}`);
       return;
     }
+
+    // グラフ要素のサイズを取得
+    const boundingBox = await graphElement.boundingBox();
+    if (!boundingBox) {
+      console.error(`Could not get bounding box for ${slug}`);
+      return;
+    }
+
+    // 余白を追加
+    const padding = 40;
+    const width = Math.ceil(boundingBox.width + padding * 2);
+    const height = Math.ceil(boundingBox.height + padding * 2);
     
     // スクリーンショットを撮る
     const outputPath = path.join(__dirname, '../public/ogp', `${slug}.png`);
