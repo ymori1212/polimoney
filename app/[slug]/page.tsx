@@ -47,3 +47,31 @@ export default async function Page({ params }: PageProps) {
     </Box>
   )
 }
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = await params
+  const data = await getData(resolvedParams.slug)
+  return {
+    title: `${data.profile.name} | Polimoney`,
+    description: `${data.profile.name}の政治資金の流れを可視化`,
+    openGraph: {
+      title: `${data.profile.name} | Polimoney`,
+      description: `${data.profile.name}の政治資金の流れを可視化`,
+      url: `https://polimoney.dd2030.org/${resolvedParams.slug}`,
+      type: 'website',
+      images: [
+        {
+          url: `/ogp/${resolvedParams.slug}.png`,
+          width: 1200,
+          height: 630,
+        }
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${data.profile.name} | Polimoney`,
+      description: `${data.profile.name}の政治資金の流れを可視化`,
+      images: [`/ogp/${resolvedParams.slug}.png`],
+    },
+  }
+}
