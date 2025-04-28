@@ -54,13 +54,14 @@ class GeminiClient:
 # 期待するデータ形式
 
 {
-    items: [
+    "items": [
         {
-            "flow_type": ""
-            "category": ""
+            "flow_type": "",
+            "category": "",
             "name": "",
             "date": "",
             "value": 0,
+            "handwritten": bool,
             "fullData": {
                 # その項目から読み取れる全データを任意のkey-valueで構造化したもの
                 # keyは記載の通りの漢字でも問題なし。（例: "寄附者の氏名": "田中太郎"）
@@ -75,6 +76,11 @@ class GeminiClient:
 ## flow_typeについて
 
 flow_typeは "income", "expense" のどちらかを指定してください。
+
+## handwrittenについて
+
+手書き文字だと思われる場合、または手書き文字や印鑑が邪魔で読み取りにくい場合はTrueを選択してください。
+そうでない場合はFalseを選択してください。
 
 ## categoryについて
 
@@ -116,13 +122,14 @@ categoryの候補
 # 具体例
 
 {
-    items: [
+    "items": [
         {
-            "flow_type": "income"
-            "category": "個人からの寄附"
+            "flow_type": "income",
+            "category": "個人からの寄附",
             "name": "田中太郎",
             "date": "R6.6.29",
             "value": 10000,
+            "handwritten": False,
             "fullData": {
                 "住所": "東京都港区赤坂1-1-1",
                 "職業（又は代表者の氏名）": "会社役員",
@@ -133,8 +140,9 @@ categoryの候補
             "flow_type": "expense",
             "category": "宣伝事業費",
             "name": "発送費",
-            "date": "R6.9.30"
+            "date": "R6.9.30",
             "value": 1300000,
+            "handwritten": True,
             "fullData": {
                 "支出を受けたものの氏名（又は名称）": "株式会社エックス",
                 "支出を受けたものの住所（又は所在地）": "東京都港区赤坂1-1-1"
