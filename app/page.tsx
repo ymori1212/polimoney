@@ -5,6 +5,9 @@ import Link from 'next/link'
 import demoTakahiroAnno2024 from '@/data/demo-takahiroanno'
 import demoRyosukeIdei2024 from '@/data/demo-ryosukeidei'
 
+// 未使用の変数を宣言（ESLintエラー: @typescript-eslint/no-unused-vars）
+const unusedVariable = "これは使われていない変数です";
+
 const results = [
   demoTakahiroAnno2024,
   demoRyosukeIdei2024
