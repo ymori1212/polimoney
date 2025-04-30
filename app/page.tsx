@@ -4,11 +4,13 @@ import {Footer} from '@/components/Footer'
 import Link from 'next/link'
 import demoTakahiroAnno from '@/data/demo-takahiroanno'
 import demoRyosukeIdei from '@/data/demo-ryosukeidei'
+import demoExample from '@/data/demo-example'
 import {Notice} from '@/components/Notice'
 
 const results = [
   demoTakahiroAnno,
   demoRyosukeIdei,
+  demoExample
 ]
 
 export const metadata = {
