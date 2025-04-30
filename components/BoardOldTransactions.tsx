@@ -15,23 +15,21 @@ import {
 } from '@chakra-ui/react'
 import {BanknoteArrowDownIcon, BanknoteArrowUpIcon, ChevronLeftIcon, ChevronRightIcon} from 'lucide-react'
 import {useState} from 'react'
-import {Summary, Transaction} from '@/models/type'
+import {OldTransaction} from '@/models/type'
 
 type Props = {
   direction: 'income' | 'expense'
-  summary: Summary
-  transactions: Transaction[]
+  transactions: OldTransaction[]
 }
 
-export function BoardTransactions({direction, summary, transactions}: Props) {
+export function BoardOldTransactions({direction, transactions}: Props) {
 
-  // const [selectedTab, setSelectedTab] = useState('name')
+  // const [selectedTab, setSelectedTab] = useState('category')
   const [page, setPage] = useState(1)
   const pageSize = 10
-  const total = summary[direction]
 
   // 現在のページに表示する transactions を計算
-  const sorted = transactions.sort((a, b) => b.amount - a.amount)
+  const sorted = transactions.sort((a, b) => b.value - a.value)
   const paginated = sorted.slice((page - 1) * pageSize, page * pageSize)
 
   return (
@@ -62,28 +60,19 @@ export function BoardTransactions({direction, summary, transactions}: Props) {
       {/*  >*/}
       {/*    <Tabs.List>*/}
       {/*      <Tabs.Trigger*/}
-      {/*        value="name"*/}
-      {/*        fontWeight={'bold'}*/}
-      {/*        className={selectedTab === 'name' ? direction : ''}*/}
-      {/*      >*/}
-      {/*        {direction === 'income' ? '収入元' : '支出先'}別*/}
-      {/*      </Tabs.Trigger>*/}
-      {/*      <Tabs.Trigger*/}
       {/*        value="category"*/}
       {/*        fontWeight={'bold'}*/}
       {/*        className={selectedTab === 'category' ? direction : ''}*/}
       {/*      >*/}
       {/*        カテゴリー別*/}
       {/*      </Tabs.Trigger>*/}
-      {/*      {direction === 'expense' && (*/}
-      {/*        <Tabs.Trigger*/}
-      {/*          value="purpose"*/}
-      {/*          fontWeight={'bold'}*/}
-      {/*          className={selectedTab === 'purpose' ? direction : ''}*/}
-      {/*        >*/}
-      {/*          目的別*/}
-      {/*        </Tabs.Trigger>*/}
-      {/*      )}*/}
+      {/*      <Tabs.Trigger*/}
+      {/*        value="direction"*/}
+      {/*        fontWeight={'bold'}*/}
+      {/*        className={selectedTab === 'direction' ? direction : ''}*/}
+      {/*      >*/}
+      {/*        {direction === 'income' ? '収入元' : '支出先'}別*/}
+      {/*      </Tabs.Trigger>*/}
       {/*    </Tabs.List>*/}
       {/*  </Tabs.Root>*/}
       {/*</Box>*/}
@@ -96,19 +85,16 @@ export function BoardTransactions({direction, summary, transactions}: Props) {
             py={4}
           >
             <Box w={'full'}>
-              <HStack mb={2}>
-                <Badge>{item.category}：{item.subCategory}</Badge>
+              <HStack>
+                <Badge>{item.category}</Badge>
                 <Text fontSize={'xs'}>{item.date}</Text>
               </HStack>
-              {direction === 'expense' && (
-                <Text fontSize={'xs'} fontWeight={'bold'}>{item.purpose}</Text>
-              )}
-              <HStack justifyContent={'space-between'} mb={1}>
+              <HStack justifyContent={'space-between'} my={1}>
                 <Text fontWeight={'bold'}>{item.name}</Text>
-                <Text fontWeight={'bold'}>{item.amount.toLocaleString()}</Text>
+                <Text fontWeight={'bold'}>{item.value.toLocaleString()}</Text>
               </HStack>
               <Progress.Root
-                defaultValue={item.amount / total * 100}
+                defaultValue={item.percentage}
                 size={'xs'}
                 colorPalette={direction === 'income' ? 'cyan' : 'pink'}
               >
@@ -116,7 +102,7 @@ export function BoardTransactions({direction, summary, transactions}: Props) {
                   <Progress.Track flex="1">
                     <Progress.Range />
                   </Progress.Track>
-                  <Progress.ValueText w={'40px'}>{(item.amount / total * 100).toFixed(1)}%</Progress.ValueText>
+                  <Progress.ValueText w={'28px'}>{item.percentage}%</Progress.ValueText>
                 </HStack>
               </Progress.Root>
             </Box>
@@ -131,27 +117,25 @@ export function BoardTransactions({direction, summary, transactions}: Props) {
         <Table.Root size={'lg'}>
           <Table.Header>
             <Table.Row fontSize={'sm'}>
-              {direction === 'expense' && (<Table.ColumnHeader fontWeight={'bold'}>目的</Table.ColumnHeader>)}
               <Table.ColumnHeader fontWeight={'bold'}>{direction === 'income' ? '収入元' : '支出先'}</Table.ColumnHeader>
               <Table.ColumnHeader fontWeight={'bold'}>カテゴリー</Table.ColumnHeader>
-              <Table.ColumnHeader fontWeight={'bold'} textAlign="end">金額</Table.ColumnHeader>
+              <Table.ColumnHeader fontWeight={'bold'}>金額</Table.ColumnHeader>
               <Table.ColumnHeader fontWeight={'bold'}>割合</Table.ColumnHeader>
-              <Table.ColumnHeader fontWeight={'bold'}>日付</Table.ColumnHeader>
+              {/*<Table.ColumnHeader fontWeight={'bold'}>日付</Table.ColumnHeader>*/}
               {/*<Table.ColumnHeader w={'32px'} />*/}
             </Table.Row>
           </Table.Header>
           <Table.Body>
             {paginated.map((item) => (
               <Table.Row key={item.id} fontSize={'sm'}>
-                {direction === 'expense' && (<Table.Cell fontWeight={'bold'}>{item.purpose}</Table.Cell>)}
                 <Table.Cell fontWeight={'bold'}>{item.name}</Table.Cell>
                 <Table.Cell>
-                  <Badge>{item.category}：{item.subCategory}</Badge>
+                  <Badge>{item.category}</Badge>
                 </Table.Cell>
-                <Table.Cell fontWeight={'bold'} textAlign="end">{item.amount.toLocaleString()}</Table.Cell>
+                <Table.Cell fontWeight={'bold'}>{item.value.toLocaleString()}</Table.Cell>
                 <Table.Cell minW={'150px'}>
                   <Progress.Root
-                    defaultValue={item.amount / total * 100}
+                    defaultValue={item.percentage}
                     size={'xs'}
                     colorPalette={direction === 'income' ? 'cyan' : 'pink'}
                   >
@@ -159,11 +143,11 @@ export function BoardTransactions({direction, summary, transactions}: Props) {
                       <Progress.Track flex="1">
                         <Progress.Range />
                       </Progress.Track>
-                      <Progress.ValueText>{(item.amount / total * 100).toFixed(1)}%</Progress.ValueText>
+                      <Progress.ValueText>{item.percentage}%</Progress.ValueText>
                     </HStack>
                   </Progress.Root>
                 </Table.Cell>
-                <Table.Cell>{item.date}</Table.Cell>
+                {/*<Table.Cell>{item.date}</Table.Cell>*/}
                 {/*<Table.Cell>*/}
                 {/*  <IconButton variant={'ghost'} size={'xs'}>*/}
                 {/*    <CircleChevronDownIcon className={direction} />*/}

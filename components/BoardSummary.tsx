@@ -4,17 +4,19 @@ import {BoardContainer} from '@/components/BoardContainer'
 import {Avatar, Badge, Box, HStack, NativeSelect, SimpleGrid, Stack, Stat, Text} from '@chakra-ui/react'
 import {LandmarkIcon} from 'lucide-react'
 import {BoardChart} from '@/components/BoardChart'
-import {Flow, Profile, Summary, Support} from '@/type'
+import {Flow, Profile, Summary, Source} from '@/models/type'
+import {useRouter} from 'next/navigation'
 
 type Props = {
   profile: Profile
-  supports: Support[]
+  sources: Source[]
   summary: Summary
   flows: Flow[]
 }
 
-export function BoardSummary({profile, supports, summary, flows}: Props) {
+export function BoardSummary({profile, sources, summary, flows}: Props) {
 
+  const router = useRouter()
   // const [selectedTab, setSelectedTab] = useState('amount')
 
   return (
@@ -41,10 +43,17 @@ export function BoardSummary({profile, supports, summary, flows}: Props) {
               </HStack>
             </Stack>
           </HStack>
-          <NativeSelect.Root w={'300px'}>
+          <NativeSelect.Root
+            w={'300px'}
+            defaultValue={sources[0]?.id}
+            onChange={(e) => {
+              const target = e.target as HTMLSelectElement
+              router.push(`/${target.value}`)
+            }}
+          >
             <NativeSelect.Field>
-              {supports.map((support) => (
-                <option key={support.id} value={support.id}>{support.name}</option>
+              {sources.map((source) => (
+                <option key={source.id} value={source.id}>{source.year}年 {source.name}</option>
               ))}
             </NativeSelect.Field>
             <NativeSelect.Indicator />
@@ -58,12 +67,6 @@ export function BoardSummary({profile, supports, summary, flows}: Props) {
             <LandmarkIcon size={28} className={'income'} />
             <Text>収支の流れ</Text>
           </HStack>
-          <NativeSelect.Root w={'120px'}>
-            <NativeSelect.Field textAlign={'center'}>
-              <option value={2024}>2024年</option>
-            </NativeSelect.Field>
-            <NativeSelect.Indicator />
-          </NativeSelect.Root>
         </HStack>
       </Box>
       {/* サマリー */}

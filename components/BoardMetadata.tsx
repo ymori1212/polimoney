@@ -1,6 +1,6 @@
 import {BoardContainer} from '@/components/BoardContainer'
 import {HStack, SimpleGrid, Text} from '@chakra-ui/react'
-import {Metadata} from '@/type'
+import {Metadata} from '@/models/type'
 
 type Props = {
   metadata: Metadata

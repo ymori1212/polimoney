@@ -1,18 +1,18 @@
-import {Flow, Metadata, Profile, Summary, Support, Transaction} from '@/type'
+import {Flow, Metadata, Profile, Summary, Source, OldTransaction} from '@/models/type'
 
 export const profile: Profile = {
   name: '出井 良輔',
   title: '自由民主党',
-  support: '自由民主党東京都中野区第二十支部',
   party: '自由民主党',
   district: '東京都中野区',
   image: '/demo-ryosukeidei.jpg',
 }
 
-export const supports: Support[] = [
+export const sources: Source[] = [
   {
-    id: '1',
+    id: 'demo-ryosuke-idei-2024',
     name: '自由民主党東京都中野区第二十支部',
+    year: 2024
   }
 ]
 
@@ -20,7 +20,6 @@ export const summary: Summary = {
   income: 30874279,
   expense: 29974871,
   balance: 899408,
-  year: 2024,
 }
 
 export const metadata: Metadata = {
@@ -66,7 +65,7 @@ export const flows: Flow[] = [
   { id: 'e_next', name: '翌年への繰越', direction: 'expense', value: 899408, parent: '総収入' },
 ]
 
-export const incomeTransactions: Transaction[] = [
+export const incomeTransactions: OldTransaction[] = [
   {
     id: 'i1',
     name: '前年からの繰越額',
@@ -125,7 +124,7 @@ export const incomeTransactions: Transaction[] = [
   },
 ]
 
-export const expenseTransactions: Transaction[] = [
+export const expenseTransactions: OldTransaction[] = [
   {
     id: 'e1',
     name: '人件費',
@@ -210,5 +209,5 @@ export const expenseTransactions: Transaction[] = [
 
 export default {
   id: 'demo-ryosuke-idei-2024',
-  profile, supports, summary, metadata, flows, incomeTransactions, expenseTransactions,
+  profile, supports: sources, summary, metadata, flows, incomeTransactions, expenseTransactions,
 }
