@@ -1,7 +1,7 @@
 'use client'
 
 import {Box} from '@chakra-ui/react'
-import {Flow} from '@/type'
+import {Flow} from '@/models/type'
 import {ResponsiveSankey, SankeyLayerId, SankeyNodeDatum} from '@nivo/sankey'
 
 type Props = {
@@ -61,6 +61,7 @@ export function BoardChart({flows}: Props) {
           layers={['links', 'nodes', CustomLabelsLayer as unknown as SankeyLayerId]}
           nodeSpacing={40}
           isInteractive={false}
+          sort={(a, b) => a.index - b.index}
         />
       </Box>
     </Box>

@@ -18,7 +18,7 @@ export default function RootLayout({children}: Readonly<{ children: React.ReactN
     <html lang="ja" suppressHydrationWarning>
       <body>
         <Provider>
-          <Box maxW="1100px" mx="auto" p={{base: 5, lg: 10}}>
+          <Box maxW="1200px" mx="auto" p={{base: 5, lg: 10}}>
             {children}
           </Box>
         </Provider>

@@ -2,12 +2,15 @@ import {Badge, Box, Card, HStack, Image, SimpleGrid, Stack, Text} from '@chakra-
 import {Header} from '@/components/Header'
 import {Footer} from '@/components/Footer'
 import Link from 'next/link'
-import demoTakahiroAnno2024 from '@/data/demo-takahiroanno'
-import demoRyosukeIdei2024 from '@/data/demo-ryosukeidei'
+import demoTakahiroAnno from '@/data/demo-takahiroanno'
+import demoRyosukeIdei from '@/data/demo-ryosukeidei'
+import demoExample from '@/data/demo-example'
+import {Notice} from '@/components/Notice'
 
 const results = [
-  demoTakahiroAnno2024,
-  demoRyosukeIdei2024
+  demoTakahiroAnno,
+  demoRyosukeIdei,
+  demoExample
 ]
 
 export const metadata = {
@@ -51,6 +54,7 @@ export default function Page() {
           </Link>
         ))}
       </SimpleGrid>
+      <Notice />
       <Footer />
     </Box>
   )
