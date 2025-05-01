@@ -1,6 +1,6 @@
-import {Flow, Metadata, Profile, Summary, Source, OldTransaction} from '@/models/type'
+import {Flow, Profile, OldTransaction, Report} from '@/models/type'
 
-export const profile: Profile = {
+const profile: Profile = {
   name: '出井 良輔',
   title: '自由民主党',
   party: '自由民主党',
@@ -8,33 +8,27 @@ export const profile: Profile = {
   image: '/demo-ryosukeidei.jpg',
 }
 
-export const sources: Source[] = [
+const reports: Report[] = [
   {
     id: 'demo-ryosuke-idei-2024',
-    name: '自由民主党東京都中野区第二十支部',
-    year: 2024
+    totalIncome: 30874279,
+    totalExpense: 29974871,
+    totalBalance: 899408,
+    year: 2024,
+    orgType: '政党の支部',
+    orgName: '自由民主党東京都中野区第二十支部',
+    activityArea: '東京都内',
+    representative: '出井 良輔',
+    fundManagementOrg: '無し',
+    accountingManager: '栢森 高志',
+    administrativeManager: '出井 良輔',
+    lastUpdate: '令和7年2月13日',
   }
 ]
 
-export const summary: Summary = {
-  income: 30874279,
-  expense: 29974871,
-  balance: 899408,
-}
+const report = reports[0]
 
-export const metadata: Metadata = {
-  source: '令和6年政治資金収支報告書',
-  orgType: '政党の支部',
-  orgName: '自由民主党東京都中野区第二十支部',
-  activityArea: '東京都内',
-  representative: '出井 良輔',
-  fundManagementOrg: '無し',
-  accountingManager: '栢森 高志',
-  administrativeManager: '出井 良輔',
-  lastUpdate: '令和7年2月13日',
-}
-
-export const flows: Flow[] = [
+const flows: Flow[] = [
   // 収入
   { id: 'i1', name: '前年からの繰越額', direction: 'income', value: 3406179, parent: '総収入' },
   { id: 'i2', name: '個人の負担する党費又は会費', direction: 'income', value: 251100, parent: '本年の収入額' },
@@ -65,7 +59,7 @@ export const flows: Flow[] = [
   { id: 'e_next', name: '翌年への繰越', direction: 'expense', value: 899408, parent: '総収入' },
 ]
 
-export const incomeTransactions: OldTransaction[] = [
+const incomeTransactions: OldTransaction[] = [
   {
     id: 'i1',
     name: '前年からの繰越額',
@@ -124,7 +118,7 @@ export const incomeTransactions: OldTransaction[] = [
   },
 ]
 
-export const expenseTransactions: OldTransaction[] = [
+const expenseTransactions: OldTransaction[] = [
   {
     id: 'e1',
     name: '人件費',
@@ -208,6 +202,11 @@ export const expenseTransactions: OldTransaction[] = [
 ]
 
 export default {
-  id: 'demo-ryosuke-idei-2024',
-  profile, supports: sources, summary, metadata, flows, incomeTransactions, expenseTransactions,
+  id: report.id,
+  profile,
+  report,
+  reports,
+  flows,
+  incomeTransactions,
+  expenseTransactions,
 }

@@ -15,20 +15,19 @@ import {
 } from '@chakra-ui/react'
 import {BanknoteArrowDownIcon, BanknoteArrowUpIcon, ChevronLeftIcon, ChevronRightIcon} from 'lucide-react'
 import {useState} from 'react'
-import {Summary, Transaction} from '@/models/type'
+import {Transaction} from '@/models/type'
 
 type Props = {
   direction: 'income' | 'expense'
-  summary: Summary
+  total: number
   transactions: Transaction[]
 }
 
-export function BoardTransactions({direction, summary, transactions}: Props) {
+export function BoardTransactions({direction, total, transactions}: Props) {
 
   // const [selectedTab, setSelectedTab] = useState('name')
   const [page, setPage] = useState(1)
   const pageSize = 10
-  const total = summary[direction]
 
   // 現在のページに表示する transactions を計算
   const sorted = transactions.sort((a, b) => b.amount - a.amount)

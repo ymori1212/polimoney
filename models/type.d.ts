@@ -6,20 +6,12 @@ export type Profile = {
   image: string // 画像URL
 }
 
-export type Source = {
+export type Report = {
   id: string // ID
-  name: string // 支援団体名
+  totalIncome: number // 収入合計
+  totalExpense: number // 支出合計
+  totalBalance: number // 年間収支
   year: number // 対象年
-}
-
-export type Summary = {
-  income: number // 収入合計
-  expense: number // 支出合計
-  balance: number // 年間収支
-}
-
-export type Metadata = {
-  source: string // データ引用元
   orgType: string // 政治団体の区分
   orgName: string // 政治団体の名称
   activityArea: string // 活動区域の区分
@@ -38,15 +30,6 @@ export type Flow = {
   parent: string | null // 親要素のID
 }
 
-export type OldTransaction = {
-  id: string // ID
-  name: string // 項目名
-  category: string // カテゴリー名
-  date: string // 日付
-  value: number // 金額
-  percentage: number // 割合
-}
-
 export type Transaction = {
   id: string
   direction: string
@@ -56,4 +39,14 @@ export type Transaction = {
   name: string
   amount: number
   date: string
+}
+
+// deprecated - Transaction を利用してください
+export type OldTransaction = {
+  id: string // ID
+  name: string // 項目名
+  category: string // カテゴリー名
+  date: string // 日付
+  value: number // 金額
+  percentage: number // 割合
 }

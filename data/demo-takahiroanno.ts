@@ -1,39 +1,33 @@
-import {Flow, Metadata, Profile, Summary, Source, OldTransaction} from '@/models/type'
+import {Flow, Profile, OldTransaction, Report} from '@/models/type'
 
-export const profile: Profile = {
+const profile: Profile = {
   name: '安野貴博',
   title: 'AIエンジニア',
   party: '無所属',
   image: '/demo-takahiroanno.jpg',
 }
 
-export const sources: Source[] = [
+const reports: Report[] = [
   {
     id: 'demo-takahiro-anno-2024',
-    name: 'デジタル民主主義を考える会',
+    totalIncome: 18416736,
+    totalExpense: 7580065,
+    totalBalance: 10836671,
     year: 2024,
+    orgType: '政治資金規正法第18条の２第１項の規定による政治団体\nその他の政治団体',
+    orgName: 'デジタル民主主義を考える会',
+    activityArea: '東京都内',
+    representative: '安野 貴博',
+    fundManagementOrg: '有り/東京都知事候補 安野貴博',
+    accountingManager: '安野 貴博',
+    administrativeManager: '高山 聡史',
+    lastUpdate: '2024年3月31日',
   }
 ]
 
-export const summary: Summary = {
-  income: 18416736,
-  expense: 7580065,
-  balance: 10836671,
-}
+const report = reports[0]
 
-export const metadata: Metadata = {
-  source: '2024年政治資金収支報告書',
-  orgType: '政治資金規正法第18条の２第１項の規定による政治団体\nその他の政治団体',
-  orgName: 'デジタル民主主義を考える会',
-  activityArea: '東京都内',
-  representative: '安野 貴博',
-  fundManagementOrg: '有り/東京都知事候補 安野貴博',
-  accountingManager: '安野 貴博',
-  administrativeManager: '高山 聡史',
-  lastUpdate: '2024年3月31日',
-}
-
-export const flows: Flow[] = [
+const flows: Flow[] = [
   // 収入
   { id: 'i3', name: '個人からの寄附', direction: 'income', value: 16416736, parent: '総収入' },
   { id: 'i8', name: '借入金', direction: 'income', value: 2000000, parent: '総収入' },
@@ -50,7 +44,7 @@ export const flows: Flow[] = [
   { id: 'e_next', name: '翌年への繰越額', direction: 'expense', value: 10836671, parent: '総収入' },
 ]
 
-export const incomeTransactions: OldTransaction[] = [
+const incomeTransactions: OldTransaction[] = [
   {
     id: '4-1',
     name: '安野貴博',
@@ -69,7 +63,7 @@ export const incomeTransactions: OldTransaction[] = [
   },
 ]
 
-export const expenseTransactions: OldTransaction[] = [
+const expenseTransactions: OldTransaction[] = [
   {
     id: '14-1',
     name: 'コミュニケーションツール費用(slack)',
@@ -145,6 +139,11 @@ export const expenseTransactions: OldTransaction[] = [
 ]
 
 export default {
-  id: 'demo-takahiro-anno-2024',
-  profile, supports: sources, summary, metadata, flows, incomeTransactions, expenseTransactions,
+  id: report.id,
+  profile,
+  report,
+  reports,
+  flows,
+  incomeTransactions,
+  expenseTransactions,
 }

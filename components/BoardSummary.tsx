@@ -4,17 +4,17 @@ import {BoardContainer} from '@/components/BoardContainer'
 import {Avatar, Badge, Box, HStack, NativeSelect, SimpleGrid, Stack, Stat, Text} from '@chakra-ui/react'
 import {LandmarkIcon} from 'lucide-react'
 import {BoardChart} from '@/components/BoardChart'
-import {Flow, Profile, Summary, Source} from '@/models/type'
+import {Flow, Profile, Report} from '@/models/type'
 import {useRouter} from 'next/navigation'
 
 type Props = {
   profile: Profile
-  sources: Source[]
-  summary: Summary
+  report: Report
+  otherReports: Report[]
   flows: Flow[]
 }
 
-export function BoardSummary({profile, sources, summary, flows}: Props) {
+export function BoardSummary({profile, report, otherReports, flows}: Props) {
 
   const router = useRouter()
   // const [selectedTab, setSelectedTab] = useState('amount')
@@ -45,15 +45,15 @@ export function BoardSummary({profile, sources, summary, flows}: Props) {
           </HStack>
           <NativeSelect.Root
             w={'300px'}
-            defaultValue={sources[0]?.id}
+            defaultValue={report.id}
             onChange={(e) => {
               const target = e.target as HTMLSelectElement
               router.push(`/${target.value}`)
             }}
           >
             <NativeSelect.Field>
-              {sources.map((source) => (
-                <option key={source.id} value={source.id}>{source.year}年 {source.name}</option>
+              {otherReports.map((report) => (
+                <option key={report.id} value={report.id}>{report.year}年 {report.orgName}</option>
               ))}
             </NativeSelect.Field>
             <NativeSelect.Indicator />
@@ -80,7 +80,7 @@ export function BoardSummary({profile, sources, summary, flows}: Props) {
                 fontSize={'sm'}
               >収入総額</Stat.Label>
               <Stat.ValueText alignItems="baseline" fontSize={'2xl'}>
-                {Math.round(summary.income / 10000)}
+                {Math.round(report.totalIncome / 10000)}
                 <Stat.ValueUnit>万円</Stat.ValueUnit>
               </Stat.ValueText>
             </Stat.Root>
@@ -93,7 +93,7 @@ export function BoardSummary({profile, sources, summary, flows}: Props) {
                 fontSize={'sm'}
               >支出総額</Stat.Label>
               <Stat.ValueText alignItems="baseline" fontSize={'2xl'}>
-                {Math.round(summary.expense / 10000)}
+                {Math.round(report.totalExpense / 10000)}
                 <Stat.ValueUnit>万円</Stat.ValueUnit>
               </Stat.ValueText>
             </Stat.Root>
@@ -105,7 +105,7 @@ export function BoardSummary({profile, sources, summary, flows}: Props) {
                 fontSize={'sm'}
               >年間収支</Stat.Label>
               <Stat.ValueText alignItems="baseline" fontSize={'2xl'} >
-                {Math.round(summary.balance / 10000)}
+                {Math.round(report.totalBalance / 10000)}
                 <Stat.ValueUnit>万円</Stat.ValueUnit>
               </Stat.ValueText>
             </Stat.Root>

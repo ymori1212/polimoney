@@ -11,10 +11,10 @@ export default async function Page() {
   return (
     <Box>
       <Header />
-      <BoardSummary profile={data.profile} sources={data.supports} summary={data.summary} flows={data.flows} />
+      <BoardSummary profile={data.profile} report={data.report} otherReports={data.reports} flows={data.flows} />
       <BoardOldTransactions direction={'income'} transactions={data.incomeTransactions} />
       <BoardOldTransactions direction={'expense'} transactions={data.expenseTransactions} />
-      <BoardMetadata metadata={data.metadata} />
+      <BoardMetadata report={data.report} />
       <Notice />
       <Footer />
     </Box>

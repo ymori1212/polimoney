@@ -11,18 +11,18 @@ export default async function Page() {
   return (
     <Box>
       <Header />
-      <BoardSummary profile={data.profile} sources={data.supports} summary={data.summary} flows={data.flows} />
+      <BoardSummary profile={data.profile} report={data.report} otherReports={data.reports} flows={data.flows} />
       <BoardTransactions
         direction={'income'}
-        summary={data.summary}
+        total={data.report.totalIncome}
         transactions={data.transactions.filter(t => t.direction === '収入')}
       />
       <BoardTransactions
         direction={'expense'}
-        summary={data.summary}
+        total={data.report.totalExpense}
         transactions={data.transactions.filter(t => t.direction === '支出')}
       />
-      <BoardMetadata metadata={data.metadata} />
+      <BoardMetadata report={data.report} />
       <Notice />
       <Footer />
     </Box>

@@ -1,39 +1,33 @@
-import {Flow, Metadata, Profile, Summary, Source, Transaction} from '@/models/type'
+import {Flow, Profile, Transaction, Report} from '@/models/type'
 
-export const profile: Profile = {
+const profile: Profile = {
   name: 'テスト太郎',
   title: 'テスト党',
   party: 'テスト党',
   image: '/demo-example.png',
 }
 
-export const sources: Source[] = [
+const reports: Report[] = [
   {
     id: 'demo-example',
-    name: 'テストの会',
+    totalIncome: 111111,
+    totalExpense: 100000,
+    totalBalance: 11111,
     year: 2023,
+    orgType: 'その他の政治団体',
+    orgName: 'テストの会',
+    activityArea: '2以上の都道府県の区域等',
+    representative: 'テスト花子',
+    fundManagementOrg: '有/参議院議員(現職)テスト花子',
+    accountingManager: 'テスト花子',
+    administrativeManager: 'テスト花子',
+    lastUpdate: '2024年1月1日',
   }
 ]
 
-export const summary: Summary = {
-  income: 111111,
-  expense: 100000,
-  balance: 11111,
-}
+const report = reports[0]
 
-export const metadata: Metadata = {
-  source: '2023年政治資金収支報告書',
-  orgType: 'その他の政治団体',
-  orgName: 'テストの会',
-  activityArea: '2以上の都道府県の区域等',
-  representative: 'テスト花子',
-  fundManagementOrg: '有/参議院議員(現職)テスト花子',
-  accountingManager: 'テスト花子',
-  administrativeManager: 'テスト花子',
-  lastUpdate: '2024年1月1日',
-}
-
-export const flows: Flow[] = [
+const flows: Flow[] = [
   // 収入
   {id: 'i11', name: '個人からの寄附', direction: 'income', value: 111111, parent: '総収入'},
   {id: 'i99', name: '総収入', direction: 'expense', value: 111111, parent: null},
@@ -44,7 +38,7 @@ export const flows: Flow[] = [
   {id: 'e21', name: '人件費', direction: 'expense', value: 100000, parent: '経常経費'},
 ]
 
-export const transactions: Transaction[] = [
+const transactions: Transaction[] = [
   {
     'id': '7-1-1',
     'direction': '収入',
@@ -68,6 +62,10 @@ export const transactions: Transaction[] = [
 ]
 
 export default {
-  id: 'demo-example',
-  profile, supports: sources, summary, metadata, flows, transactions,
+  id: report.id,
+  profile,
+  report,
+  reports,
+  flows,
+  transactions,
 }
