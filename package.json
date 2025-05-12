@@ -6,8 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "biome check app components data models",
-    "check": "biome check --write app components data models"
+    "lint": "biome check .",
+    "check": "biome check --write ."
   },
   "dependencies": {
     "@biomejs/biome": "^1.9.4",
