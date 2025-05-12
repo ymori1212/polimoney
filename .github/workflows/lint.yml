@@ -32,7 +32,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: '20'
           cache: ${{ steps.detect-package-manager.outputs.manager }}
 
       - name: Restore cache
@@ -51,5 +51,10 @@ jobs:
             yarn install
           fi
 
-      - name: Run ESLint
-        run: ${{ steps.detect-package-manager.outputs.runner }} next lint
+      - name: Run lint
+        run: |
+          if [ "${{ steps.detect-package-manager.outputs.manager }}" = "npm" ]; then
+            npm run lint
+          else
+            yarn run lint
+          fi
