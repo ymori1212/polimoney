@@ -81,7 +81,7 @@ const expenseTransactions: OldTransaction[] = [
     percentage: 6,
   },
   {
-    id: '14-2',
+    id: '14-3',
     name: 'その他の経常経費',
     date: '-',
     category: '経常経費',
