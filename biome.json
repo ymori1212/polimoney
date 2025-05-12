@@ -14,13 +14,22 @@
     "indentStyle": "space",
     "indentWidth": 2
   },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single"
+    }
+  },
   "organizeImports": {
     "enabled": true
   },
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "suspicious": {
+        "noImplicitAnyLet": "warn",
+        "noExplicitAny": "warn"
+      }
     }
   }
 }
