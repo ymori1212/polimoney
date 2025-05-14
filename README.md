@@ -10,7 +10,7 @@ Polimoney は[デジタル民主主義2030](https://dd2030.org/)の一環とし�
 - **TypeScript**
 
 ```
-npm install
+npm install --legacy-peer-deps
 npm run dev
 ```
 
