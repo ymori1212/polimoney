@@ -74,8 +74,8 @@ function convert(data: InputData): OutputData {
     0,
   );
   const nextYearCategory = data.categories.find(
-    (c: InputCategory) => c.name === '翌年度への繰越',
-  );
+    (c: InputCategory) => c.name === '翌年への繰越額',
+  )
   const balanceTransaction = data.transactions.find(
     (t: InputTransaction) => t.category_id === nextYearCategory?.id,
   );
@@ -182,34 +182,34 @@ function validateInput(data: any): void {
     }
   }
 
-  if (!data.categories.find((c: any) => c.name === '前年度からの繰越')) {
-    throw new Error('カテゴリ「前年度からの繰越」が存在する必要があります');
+  if (!data.categories.find((c: any) => c.name === '前年からの繰越額')) {
+    throw new Error('カテゴリ「前年からの繰越額」が存在する必要があります')
   }
-  if (!data.categories.find((c: any) => c.name === '翌年度への繰越')) {
-    throw new Error('カテゴリ「翌年度への繰越」が存在する必要があります');
+  if (!data.categories.find((c: any) => c.name === '翌年への繰越額')) {
+    throw new Error('カテゴリ「翌年への繰越額」が存在する必要があります')
   }
 
   const previousYearCategory = data.categories.find(
-    (c: any) => c.name === '前年度からの繰越',
-  );
+    (c: any) => c.name === '前年からの繰越額',
+  )
   const nextYearCategory = data.categories.find(
-    (c: any) => c.name === '翌年度への繰越',
-  );
+    (c: any) => c.name === '翌年への繰越額',
+  )
   const previousYearTransactions = data.transactions.filter(
     (t: any) => t.category_id === previousYearCategory.id,
   );
   if (previousYearTransactions.length !== 1) {
     throw new Error(
-      '前年度からの繰越の transaction はちょうど1つである必要があります',
-    );
+      '前年からの繰越額の transaction はちょうど1つである必要があります',
+    )
   }
   const nextYearTransactions = data.transactions.filter(
     (t: any) => t.category_id === nextYearCategory.id,
   );
   if (nextYearTransactions.length !== 1) {
     throw new Error(
-      '翌年度への繰越の transaction はちょうど1つである必要があります',
-    );
+      '翌年への繰越額の transaction はちょうど1つである必要があります',
+    )
   }
 
   const incomeCategoryIds = data.categories
