@@ -5,7 +5,7 @@ description = "Tools to convert PDF pages to images and analyze them using Googl
 authors = ["Your Name <you@example.com>"] # 作者情報を適宜変更してください
 readme = "README.md"
 license = "MIT" # または適切なライセンスを選択
-packages = [{include = "pdf_image_analyzer_gemini"}] # パッケージ名が必要な場合
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.10" # 要求するPythonのバージョン
@@ -20,6 +20,8 @@ pandas = "^2.2.3"
 # flake8 = "^7.0.0"
 python-dotenv = "^1.0.1" # .env ファイルを使う場合に便利
 pandas-stubs = "^2.2.3.250308"
+ruff = "^0.11.9"
+pyright = "^1.1.400"
 
 [build-system]
 requires = ["poetry-core"]
@@ -30,3 +32,21 @@ build-backend = "poetry.core.masonry.api"
 # pdf-to-images = "pdf_image_analyzer_gemini.pdf_to_images:main_cli_function"
 # analyze-images = "pdf_image_analyzer_gemini.analyze_image_gemini:main_cli_function"
 # 上記を使用するには、現在のスクリプトを関数ベースにリファクタリングする必要があります
+
+[tool.ruff]
+extend-include = ["*.ipynb"]
+
+[tool.ruff.lint]
+# チェックしたいルール
+# https://docs.astral.sh/ruff/rules/
+# 最終的にALLにしたいが、現状はエラーが多いので徐々に対応していく
+# select = ["ALL"]
+select = []
+# 無視したいルール
+# ignore = []
+
+[tool.pyright]
+# VSCodeのデフォルトのモードにあわせる
+typeCheckingMode = "basic"
+venvPath = "."
+venv = ".venv"
