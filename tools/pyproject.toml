@@ -5,7 +5,6 @@ description = "Tools to convert PDF pages to images and analyze them using Googl
 authors = ["Your Name <you@example.com>"] # 作者情報を適宜変更してください
 readme = "README.md"
 license = "MIT" # または適切なライセンスを選択
-packages = [{include = "pdf_image_analyzer_gemini"}] # パッケージ名が必要な場合
 
 [tool.poetry.dependencies]
 python = "^3.10" # 要求するPythonのバージョン
