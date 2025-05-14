@@ -19,7 +19,6 @@
     -n, --name NAME           団体名（部分一致で検索）
     -e, --exact-match         団体名の完全一致で検索
     -d, --delay SECONDS       リクエスト間の待機時間（秒、デフォルト: 5、最小: 3）
-    -p, --parallel NUM        並列ダウンロード数（デフォルト: 1）
     -f, --force               既存ファイルを上書き
     -l, --log-level LEVEL     ログレベル（DEBUG, INFO, WARNING, ERROR、デフォルト: INFO）
     -v, --verbose             詳細な出力を表示（--log-level DEBUGと同等）
@@ -33,7 +32,7 @@ import logging
 from argparse import Namespace
 
 from .utils import setup_logger
-from .config import DEFAULT_OUTPUT_DIR, DEFAULT_DELAY, MIN_DELAY, DEFAULT_PARALLEL
+from .config import DEFAULT_OUTPUT_DIR, DEFAULT_DELAY, MIN_DELAY
 from .downloader import SeijishikinDownloader
 
 # ロガーの設定
@@ -83,13 +82,6 @@ def parse_arguments() -> Namespace:
         type=int,
         default=DEFAULT_DELAY,
         help=f"リクエスト間の待機時間（秒、最小: {MIN_DELAY}）"
-    )
-    
-    parser.add_argument(
-        "-p", "--parallel",
-        type=int,
-        default=DEFAULT_PARALLEL,
-        help="並列ダウンロード数"
     )
     
     parser.add_argument(
@@ -144,6 +136,10 @@ def main() -> int:
     """
     # 引数を解析
     args = parse_arguments()
+
+    # validate arguments
+    if args.delay < MIN_DELAY:
+        parser.error(f"待機時間は {MIN_DELAY} 秒以上である必要があります")
     
     # ロガーを設定
     setup_logger(args.log_level)

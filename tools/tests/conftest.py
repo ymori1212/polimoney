@@ -7,7 +7,7 @@ from unittest.mock import Mock, MagicMock
 import requests
 from bs4 import BeautifulSoup
 
-from downloader.page_parser import PageParser, YearUrl, PageLink, PdfLink, LinkType
+from downloader.page_parser import PageParser, YearPageUrl, PageLink, PdfLink 
 
 
 @pytest.fixture

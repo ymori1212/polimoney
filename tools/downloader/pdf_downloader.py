@@ -14,7 +14,7 @@ from tqdm import tqdm
 
 from .utils import create_directory, sanitize_filename
 from .metadata import FileMetadata
-
+from .page_parser import PdfLink
 # ロガーの設定
 logger = logging.getLogger(__name__)
 
@@ -23,7 +23,6 @@ logger = logging.getLogger(__name__)
 class DownloadPrepareResult:
     """ダウンロード準備結果"""
     save_path: str
-    category_dir: str
     metadata: FileMetadata
 
 
@@ -52,42 +51,37 @@ class PDFDownloader:
         self.delay = delay
         self.robots_checker = robots_checker
 
-    def prepare_download(self, pdf_url: str, org_name: str, year: str, 
-                        category: str) -> DownloadPrepareResult:
+    def prepare_download(self, pdf_link: PdfLink, year: str) -> DownloadPrepareResult:
         """ダウンロードの準備
 
         Args:
-            pdf_url: PDFファイルのURL
-            org_name: 団体名
+            pdf_link: PDFファイルのリンク
             year: 公表年
-            category: 団体カテゴリ
 
         Returns:
             DownloadPrepareResult: ダウンロード準備結果
         """
-        logger.info("PDFダウンロードを準備しています: %s", org_name)
+        logger.info("PDFダウンロードを準備しています: %s", pdf_link.text)
         
         # ファイル名を生成
-        filename = f"{org_name}.pdf"
-        safe_filename = sanitize_filename(filename)
+        link_name = f"{pdf_link.text}.pdf"
+        safe_link_name = sanitize_filename(link_name)
+        file_name = f"{year}_{pdf_link.category_name()}_{safe_link_name}"
         
         # 保存先パスを生成
-        year_dir = os.path.join(self.output_dir, f"{year}年分")
-        category_dir = os.path.join(year_dir, category)
-        save_path = os.path.join(category_dir, safe_filename)
+        save_path = os.path.join(self.output_dir, file_name)
         
         # メタデータを準備
         file_metadata = FileMetadata(
-            filename=os.path.join(f"{year}年分", category, safe_filename),
-            original_url=pdf_url,
-            organization=org_name,
-            category=category,
+            filename=file_name,
+            original_url=pdf_link.url,
+            organization=pdf_link.text,
+            category=pdf_link.category_name(),
             year=year
         )
         
         return DownloadPrepareResult(
             save_path=save_path,
-            category_dir=category_dir,
             metadata=file_metadata
         )
 
@@ -110,7 +104,7 @@ class PDFDownloader:
         
         return None
 
-    def download_pdf(self, pdf_url: str, save_path: str, category_dir: str, 
+    def download_pdf(self, pdf_url: str, save_path: str,
                     metadata: FileMetadata) -> FileMetadata:
         """PDFファイルをダウンロード
 
@@ -136,8 +130,8 @@ class PDFDownloader:
             return metadata
         
         # ディレクトリを作成
-        if not create_directory(category_dir):
-            logger.error("ディレクトリの作成に失敗したためスキップします: %s", category_dir)
+        if not create_directory(os.path.dirname(save_path)):
+            logger.error("ディレクトリの作成に失敗したためスキップします: %s", save_path)
             metadata.download_status = 'failed'
             metadata.error = 'ディレクトリの作成に失敗しました'
             return metadata

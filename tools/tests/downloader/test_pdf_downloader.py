@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 from downloader.pdf_downloader import PDFDownloader, DownloadPrepareResult
 from downloader.metadata import FileMetadata
-
+from downloader.page_parser import PdfLink
 
 class TestPDFDownloader(unittest.TestCase):
     """PDFDownloaderクラスのテスト"""
@@ -41,21 +41,18 @@ class TestPDFDownloader(unittest.TestCase):
         """prepare_downloadメソッドのテスト"""
         # メソッドの実行
         result = self.downloader.prepare_download(
-            pdf_url="https://example.com/test.pdf",
-            org_name="テスト団体",
+            pdf_link=PdfLink(url="https://example.com/test.pdf", text="テスト団体"),
             year="R5",
-            category="政党支部"
         )
         
         # 検証
         self.assertIsInstance(result, DownloadPrepareResult)
-        self.assertEqual(result.save_path, os.path.join("test_output", "R5年分", "政党支部", "テスト団体.pdf"))
-        self.assertEqual(result.category_dir, os.path.join("test_output", "R5年分", "政党支部"))
+        self.assertEqual(result.save_path, os.path.join("test_output", "R5_不明_テスト団体.pdf"))
         self.assertIsInstance(result.metadata, FileMetadata)
-        self.assertEqual(result.metadata.filename, os.path.join("R5年分", "政党支部", "テスト団体.pdf"))
+        self.assertEqual(result.metadata.filename, os.path.join("R5_不明_テスト団体.pdf"))
         self.assertEqual(result.metadata.original_url, "https://example.com/test.pdf")
         self.assertEqual(result.metadata.organization, "テスト団体")
-        self.assertEqual(result.metadata.category, "政党支部")
+        self.assertEqual(result.metadata.category, "不明")
         self.assertEqual(result.metadata.year, "R5")
         self.assertEqual(result.metadata.download_status, "pending")
 
@@ -123,7 +120,6 @@ class TestPDFDownloader(unittest.TestCase):
         result = self.downloader.download_pdf(
             pdf_url="https://example.com/test.pdf",
             save_path="test_output/test.pdf",
-            category_dir="test_output",
             metadata=metadata
         )
         
@@ -149,7 +145,6 @@ class TestPDFDownloader(unittest.TestCase):
         result = self.downloader.download_pdf(
             pdf_url="https://example.com/test.pdf",
             save_path="test_output/test.pdf",
-            category_dir="test_output",
             metadata=metadata
         )
         
@@ -181,7 +176,6 @@ class TestPDFDownloader(unittest.TestCase):
         result = self.downloader.download_pdf(
             pdf_url="https://example.com/test.pdf",
             save_path="test_output/test.pdf",
-            category_dir="test_output",
             metadata=metadata
         )
         
@@ -225,7 +219,6 @@ class TestPDFDownloader(unittest.TestCase):
             result = self.downloader.download_pdf(
                 pdf_url="https://example.com/test.pdf",
                 save_path="test_output/test.pdf",
-                category_dir="test_output",
                 metadata=metadata
             )
             

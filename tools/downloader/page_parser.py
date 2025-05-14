@@ -10,42 +10,50 @@ import logging
 import requests
 from dataclasses import dataclass
 from enum import Enum, auto
-from typing import List, Optional, Dict, Set, Callable
+from typing import List, Optional, Dict, Set, Callable, Union
 from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 
-from .config import BASE_URL, YEAR_PATTERNS, SPECIFIC_YEAR_MAPPING, CATEGORY_MAPPING
+from .config import BASE_URL, YEAR_PATTERNS 
 from .utils import extract_year_from_url
 
 # ロガーの設定
 logger = logging.getLogger(__name__)
 
 
-class LinkType(Enum):
-    """リンクタイプ"""
-    PDF = auto()
-    ORGANIZATION = auto()
-
+@dataclass
+class NameFilter:
+    name: str
+    exact_match: bool
 
 @dataclass
-class YearUrl:
+class YearPageUrl:
     """年度URL"""
     url: str
     year: str
 
+@dataclass
+class ReportListPageUrl:
+    """報告書一覧URL"""
+    url: str
+    text: str
+    category: str
+    year: str
 
 @dataclass
 class PageLink:
     """ページリンク"""
     url: str
     text: str
-    link_type: LinkType
 
-    @property
-    def is_pdf(self) -> bool:
-        """PDFリンクかどうか"""
-        return self.link_type == LinkType.PDF
-
+class Category(Enum):
+    """カテゴリ名"""
+    POLITICAL_PARTY_HEADQUARTER = '政党本部'
+    POLITICAL_PARTY_BRANCH = '政党支部'
+    POLITICAL_FUND_GROUP = '政治資金団体'
+    POLITICAL_GROUP = '国会議員関係政治団体'
+    OTHER_POLITICAL_GROUP = 'その他の政治団体'
+    UNKNOWN = '不明'
 
 @dataclass
 class PdfLink:
@@ -53,12 +61,39 @@ class PdfLink:
     url: str
     text: str
 
+    # PDFリンクURLに含まれるコード値からカテゴリを取得する
+    def category_id(self) -> str:
+        org_id = self.url.split('/')[-1]
+        return org_id[0:3]
+    
+    def category_name(self) -> str:
+        return self.category().value
+
+    def category(self) -> Category:
+        category_id = self.category_id()
+
+        match category_id:
+            case '000':
+                return Category.POLITICAL_PARTY_HEADQUARTER
+            case '001' | '002' | '003' | '004' | '005' | '006' | '007' | '008' | '009':
+                return Category.POLITICAL_PARTY_BRANCH
+            case '006':
+                return Category.POLITICAL_FUND_GROUP
+            case '100':
+                return Category.POLITICAL_GROUP
+            case '200':
+                return Category.OTHER_POLITICAL_GROUP
+            case _:
+                return Category.UNKNOWN
+
+
+
 
 class PageParser:
     """ページ解析クラス"""
 
-    def __init__(self, session: requests.Session, name_filter: Optional[str] = None,
-                 exact_match: bool = False, years: Optional[List[str]] = None,
+    def __init__(self, session: requests.Session, name_filter: Optional[NameFilter] = None,
+                 years: Optional[List[str]] = None,
                  delay: int = 5, robots_checker = None, 
                  sleep_func: Callable[[int], None] = time.sleep,
                  soup_factory: Callable[[str, str], BeautifulSoup] = None) -> None:
@@ -76,7 +111,6 @@ class PageParser:
         """
         self.session = session
         self.name_filter = name_filter
-        self.exact_match = exact_match
         self.years = years or []
         self.delay = delay
         self.robots_checker = robots_checker
@@ -149,34 +183,18 @@ class PageParser:
         """
         return not self.years or year in self.years
 
-    def _should_include_organization(self, org_name: str) -> bool:
-        """指定された団体名を含めるべきかどうかを判断
-
-        Args:
-            org_name: 団体名
-
-        Returns:
-            bool: 含める場合はTrue、そうでない場合はFalse
-        """
-        if not self.name_filter:
-            return True
-            
-        if self.exact_match:
-            return self.name_filter == org_name
-            
-        return self.name_filter in org_name
-
-    def _extract_year_urls_from_soup(self, soup: BeautifulSoup, base_url: str) -> List[YearUrl]:
+    def _extract_year_urls_from_soup(self, soup: BeautifulSoup, base_url: str, seasonal_report_only: bool) -> List[YearPageUrl]:
         """BeautifulSoupオブジェクトから年度URLを抽出
 
         Args:
             soup: BeautifulSoupオブジェクト
             base_url: ベースURL
+            seasonal_report_only: 定期公表のみをチェックするかどうか
 
         Returns:
             List[YearUrl]: 年度URLのリスト
         """
-        year_urls: List[YearUrl] = []
+        year_urls: List[YearPageUrl] = []
         
         # 「令和X年分」などのパターンを含むリンクを探す
         for link in soup.find_all('a'):
@@ -190,34 +208,25 @@ class PageParser:
             logger.debug("リンク: %s, テキスト: %s", href, text)
             
             # 特定のURLパターンを直接チェック
-            if 'SS' in href and '/reports/' in href:
+            if '/reports/' in href and any(re.search(pattern, text) for pattern in YEAR_PATTERNS):
+                if seasonal_report_only and not '/reports/SS' in href:
+                    continue
+
                 # 例: /senkyo/seiji_s/seijishikin/reports/SS20241129/
-                full_url = urljoin(base_url, href)
-                
-                # URLから年度を抽出
-                year = None
-                for pattern, year_value in SPECIFIC_YEAR_MAPPING.items():
-                    if pattern in href:
-                        year = year_value
-                        break
-                
-                if year and self._should_include_year(year):
-                    year_urls.append(YearUrl(url=full_url, year=year))
-                    logger.debug("年度URLを追加: %s (%s)", full_url, year)
-            
-            # テキストパターンでもチェック
-            elif any(re.search(pattern, text) for pattern in YEAR_PATTERNS):
                 full_url = urljoin(base_url, href)
                 year = extract_year_from_url(text)
                 
-                # 指定された年度のみをフィルタリング
                 if year and self._should_include_year(year):
-                    year_urls.append(YearUrl(url=full_url, year=year))
-                    logger.debug("年度URLを追加: %s (%s)", full_url, year)
+                    if '/reports/SS' in href:
+                        year_urls.append(YearPageUrl(url=full_url, year=year))
+                        logger.debug("年度URLを追加: %s (%s)", full_url, year)
+                    else:
+                        year_urls.append(ReportListPageUrl(url=full_url, year=year))
+                        logger.debug("報告書一覧URLを追加: %s (%s)", full_url, year)
         
         return year_urls
 
-    def get_year_urls(self) -> List[YearUrl]:
+    def get_year_and_report_urls(self) -> List[Union[YearPageUrl, ReportListPageUrl]]:
         """公表年ごとのURLを取得
 
         Returns:
@@ -230,20 +239,48 @@ class PageParser:
             return []
             
         soup = self._create_soup(html)
-        return self._extract_year_urls_from_soup(soup, BASE_URL)
+        return self._extract_year_urls_from_soup(soup, BASE_URL, seasonal_report_only=True)
 
-    def _extract_direct_pdf_links(self, soup: BeautifulSoup, year_url: str) -> List[PageLink]:
-        """BeautifulSoupオブジェクトから直接PDFリンクを抽出
+    def _extract_report_list_links(self, soup: BeautifulSoup, base_url: str) -> List[PageLink]:
+        """BeautifulSoupオブジェクトから報告書一覧リンクを抽出
 
         Args:
             soup: BeautifulSoupオブジェクト
-            year_url: 年度ページのURL
+            base_url: ベースURL
 
         Returns:
             List[PageLink]: ページリンクのリスト
         """
         # URLの末尾にスラッシュがあることを確認
-        year_url = self._ensure_url_ends_with_slash(year_url)
+        base_url = self._ensure_url_ends_with_slash(base_url)
+        links: List[PageLink] = []
+        
+        report_link_regex = re.compile(r'.*/reports/[A-Z]+[0-9]+/[A-Z]+/[a-zA-Z0-9]+\.html$')
+        for link in soup.find_all('a'):
+            href = link.get('href')
+            text = link.get_text().strip()
+            
+            if not href or not text:
+                continue
+            
+            if report_link_regex.match(href):
+                report_url = urljoin(base_url, href)
+                links.append(PageLink(url=report_url, text=text))
+        
+        return links
+
+    def _extract_direct_pdf_links(self, soup: BeautifulSoup, base_url: str) -> List[PageLink]:
+        """BeautifulSoupオブジェクトから直接PDFリンクを抽出
+
+        Args:
+            soup: BeautifulSoupオブジェクト
+            base_url: ベースURL
+
+        Returns:
+            List[PageLink]: ページリンクのリスト
+        """
+        # URLの末尾にスラッシュがあることを確認
+        base_url = self._ensure_url_ends_with_slash(base_url)
         links: List[PageLink] = []
         
         for link in soup.find_all('a'):
@@ -253,14 +290,10 @@ class PageParser:
             if not href or not text:
                 continue
             
-            # 団体名でフィルタリング
-            if not self._should_include_organization(text):
-                continue
-            
             # PDFへの直接リンクかどうかを確認
             if href.lower().endswith('.pdf'):
-                pdf_url = urljoin(year_url, href)
-                links.append(PageLink(url=pdf_url, text=text, link_type=LinkType.PDF))
+                pdf_url = urljoin(base_url, href)
+                links.append(PdfLink(url=pdf_url, text=text))
         
         return links
 
@@ -299,77 +332,6 @@ class PageParser:
         
         return None
 
-    def _extract_links_from_category(self, category_header: object, year_url: str) -> List[PageLink]:
-        """カテゴリ見出し以降のリンクを抽出
-
-        Args:
-            category_header: カテゴリ見出し
-            year_url: 年度ページのURL
-
-        Returns:
-            List[PageLink]: ページリンクのリスト
-        """
-        # URLの末尾にスラッシュがあることを確認
-        year_url = self._ensure_url_ends_with_slash(year_url)
-        links: List[PageLink] = []
-        
-        # 次の見出しを探す
-        next_header = None
-        for tag in category_header.find_all_next(['h1', 'h2', 'h3']):
-            next_header = tag
-            break
-        
-        # カテゴリ見出し以降、次の見出しまでのすべてのリンクを抽出
-        for link in category_header.find_all_next('a'):
-            # 次の見出しに到達したら終了
-            if next_header and link.sourceline > next_header.sourceline:
-                break
-                
-            href = link.get('href')
-            text = link.get_text().strip()
-            
-            if href and text:
-                # 団体名でフィルタリング
-                if self._should_include_organization(text):
-                    # PDFへの直接リンクかどうかを確認
-                    if href.lower().endswith('.pdf'):
-                        # PDFファイルを直接ダウンロード
-                        pdf_url = urljoin(year_url, href)
-                        links.append(PageLink(url=pdf_url, text=text, link_type=LinkType.PDF))
-                    else:
-                        # 団体ページを処理
-                        org_url = urljoin(year_url, href)
-                        links.append(PageLink(url=org_url, text=text, link_type=LinkType.ORGANIZATION))
-        
-        return links
-
-    def _extract_category_links(self, soup: BeautifulSoup, year_url: str) -> List[PageLink]:
-        """カテゴリごとのリンクを抽出
-
-        Args:
-            soup: BeautifulSoupオブジェクト
-            year_url: 年度ページのURL
-
-        Returns:
-            List[PageLink]: ページリンクのリスト
-        """
-        links: List[PageLink] = []
-        
-        # カテゴリごとのセクションを探す
-        for section_text, category in CATEGORY_MAPPING.items():
-            # カテゴリ見出しを探す
-            category_header = self._find_category_header(soup, section_text)
-            
-            if not category_header:
-                logger.warning("カテゴリ見出しが見つかりませんでした: %s", section_text)
-                continue
-            
-            # カテゴリ見出し以降のリンクを探す
-            category_links = self._extract_links_from_category(category_header, year_url)
-            links.extend(category_links)
-        
-        return links
-
     def parse_year_page(self, year_url: str) -> List[PageLink]:
         """年度ページを解析し、PDFリンクまたは団体ページへのリンクを取得
 
@@ -387,75 +349,37 @@ class PageParser:
             
         soup = self._create_soup(html)
         
-        # テスト用のHTMLでは、カテゴリリンクを優先して抽出
-        if "政党本部" in html and "政党支部" in html:
-            # カテゴリごとのリンクを抽出
-            category_links = self._extract_category_links(soup, year_url)
-            if category_links:
-                logger.info("カテゴリリンクを見つけました: %d件", len(category_links))
-                return category_links
-        
-        # 通常の処理：直接PDFリンクを探す
-        pdf_links = self._extract_direct_pdf_links(soup, year_url)
-        if pdf_links:
-            logger.info("直接PDFリンクを見つけました: %d件", len(pdf_links))
-            return pdf_links
-        
-        # 直接PDFリンクが見つからない場合は、カテゴリごとのリンクを抽出
-        category_links = self._extract_category_links(soup, year_url)
-        if category_links:
-            logger.info("カテゴリリンクを見つけました: %d件", len(category_links))
-            return category_links
+        report_list_links = self._extract_report_list_links(soup, year_url)
+        if report_list_links:
+            logger.info("報告書一覧リンクを見つけました: %d件", len(report_list_links))
+            return report_list_links
+        else:
+            logger.warning("報告書一覧リンクが見つかりませんでした: %s", year_url)
         
         return []
 
-    def _extract_pdf_links_from_soup(self, soup: BeautifulSoup, org_url: str, org_name: str) -> List[PdfLink]:
-        """BeautifulSoupオブジェクトからPDFリンクを抽出
+    def parse_report_list_page(self, report_list_url: ReportListPageUrl) -> List[PageLink]:
+        """報告書一覧ページを解析し、PDFリンクを取得
 
         Args:
-            soup: BeautifulSoupオブジェクト
-            org_url: 団体ページのURL
-            org_name: 団体名
+            report_list_url: 報告書一覧ページのURL
 
         Returns:
-            List[PdfLink]: PDFリンクのリスト
+            List[PageLink]: ページリンクのリスト
         """
-        # URLの末尾にスラッシュがあることを確認
-        org_url = self._ensure_url_ends_with_slash(org_url)
-        pdf_links: List[PdfLink] = []
+        logger.info("報告書一覧ページを解析しています: %s", report_list_url.url)
         
-        for link in soup.find_all('a'):
-            href = link.get('href')
-            text = link.get_text().strip()
-            
-            if href and href.lower().endswith('.pdf'):
-                pdf_url = urljoin(org_url, href)
-                link_text = text if text else org_name
-                
-                # 団体名でフィルタリング（リンクテキストが団体名の場合）
-                if self._should_include_organization(link_text):
-                    pdf_links.append(PdfLink(url=pdf_url, text=link_text))
-        
-        logger.debug("団体 %s から %d 件のPDFリンクを見つけました", org_name, len(pdf_links))
-        return pdf_links
-
-    def parse_organization_page(self, org_url: str, org_name: str) -> List[PdfLink]:
-        """団体ページを解析し、PDFリンクを取得
-
-        Args:
-            org_url: 団体ページのURL
-            org_name: 団体名
-
-        Returns:
-            List[PdfLink]: PDFリンクのリスト
-        """
-        # URLの末尾にスラッシュがあることを確認
-        org_url = self._ensure_url_ends_with_slash(org_url)
-        logger.info("団体ページを解析しています: %s", org_name)
-        
-        html = self._fetch_url(org_url)
+        html = self._fetch_url(report_list_url.url)
         if not html:
             return []
             
         soup = self._create_soup(html)
-        return self._extract_pdf_links_from_soup(soup, org_url, org_name)
+        
+        pdf_links = self._extract_direct_pdf_links(soup, report_list_url.url)
+        if self.name_filter:
+            if self.name_filter.exact_match:
+                pdf_links = [link for link in pdf_links if self.name_filter.name == link.text]
+            else:
+                pdf_links = [link for link in pdf_links if self.name_filter.name in link.text]
+
+        return pdf_links

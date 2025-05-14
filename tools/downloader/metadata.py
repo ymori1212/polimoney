@@ -12,7 +12,6 @@ from dataclasses import dataclass, asdict, field
 
 from .utils import create_directory
 
-
 @dataclass
 class FileMetadata:
     """ファイルメタデータ"""
@@ -119,51 +118,6 @@ class MetadataManager:
             
         # メタデータの統計情報を更新
         self.metadata['statistics'] = self.statistics.to_dict()
-
-    def create_file_metadata(self, filename: str, original_url: str, 
-                            organization: str, category: str, year: str) -> FileMetadata:
-        """ファイルメタデータを作成
-
-        Args:
-            filename: ファイル名
-            original_url: 元のURL
-            organization: 団体名
-            category: カテゴリ
-            year: 年度
-
-        Returns:
-            FileMetadata: ファイルメタデータ
-        """
-        return FileMetadata(
-            filename=filename,
-            original_url=original_url,
-            organization=organization,
-            category=category,
-            year=year
-        )
-
-    def update_file_status(self, metadata: FileMetadata, status: str, 
-                          file_size: int = 0, error: Optional[str] = None) -> FileMetadata:
-        """ファイルステータスを更新
-
-        Args:
-            metadata: ファイルメタデータ
-            status: ダウンロードステータス
-            file_size: ファイルサイズ
-            error: エラーメッセージ
-
-        Returns:
-            FileMetadata: 更新されたファイルメタデータ
-        """
-        metadata.download_status = status
-        
-        if status == 'success':
-            metadata.file_size = file_size
-            metadata.download_date = datetime.datetime.now().isoformat()
-        elif status == 'failed':
-            metadata.error = error
-        
-        return metadata
 
     def save(self) -> bool:
         """メタデータをJSONファイルとして保存
