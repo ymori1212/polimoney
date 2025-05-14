@@ -75,6 +75,17 @@ PDFファイル
     ```
     `.env` ファイルを使用する場合は、スクリプト実行前に `dotenv` を使って読み込むか、`analyze_image_gemini.py` 内で `load_dotenv()` を呼び出すように修正が必要です（現在のスクリプトには含まれていません）。
 
+## lint, format
+
+```bash
+# lint
+poetry run ruff check .
+# format
+poetry run ruff format .
+# type check
+poetry run pyright .
+```
+
 ## 使い方
 
 1.  **PDFを画像に変換**:
