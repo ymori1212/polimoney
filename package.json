@@ -30,6 +30,7 @@
     "@types/pg": "^8.11.14",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "lefthook": "^1.11.12",
     "puppeteer": "^24.7.2",
     "typescript": "^5"
   }
