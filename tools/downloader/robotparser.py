@@ -4,8 +4,8 @@ robots.txtパーサーモジュール
 Webサイトのrobots.txtファイルを解析し、アクセス可能かどうかを判断するクラスを提供します。
 """
 
-import time
 import logging
+import time
 import urllib.robotparser
 from typing import Dict, Optional
 from urllib.parse import urlparse

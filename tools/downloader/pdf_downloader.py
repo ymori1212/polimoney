@@ -4,17 +4,19 @@ PDFダウンロードモジュール
 政治資金収支報告書のPDFファイルをダウンロードするクラスを提供します。
 """
 
+import logging
 import os
 import time
-import logging
-import requests
-from typing import Dict, Optional
 from dataclasses import dataclass
+from typing import Optional
+
+import requests
 from tqdm import tqdm
 
-from .utils import create_directory, sanitize_filename
 from .metadata import FileMetadata
 from .page_parser import PdfLink
+from .utils import create_directory, sanitize_filename
+
 # ロガーの設定
 logger = logging.getLogger(__name__)
 

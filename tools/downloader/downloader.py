@@ -4,17 +4,18 @@
 総務省のウェブサイトから政治資金収支報告書のPDFファイルを自動的にダウンロードするクラスを提供します。
 """
 
-import time
 import logging
-import requests
-from typing import List, Dict, Optional, Any, Set
+import time
 from argparse import Namespace
-from dataclasses import dataclass
-from .config import DEFAULT_OUTPUT_DIR, DEFAULT_DELAY, MIN_DELAY, FULL_USER_AGENT
+from typing import List, Optional
+
+import requests
+
+from .config import FULL_USER_AGENT, MIN_DELAY
+from .metadata import MetadataManager
+from .page_parser import NameFilter, PageParser, PdfLink, ReportListPageUrl
+from .pdf_downloader import PDFDownloader
 from .robotparser import RobotsChecker
-from .page_parser import PageParser, ReportListPageUrl, PdfLink, NameFilter
-from .pdf_downloader import PDFDownloader, DownloadPrepareResult
-from .metadata import MetadataManager, FileMetadata
 
 # ロガーの設定
 logger = logging.getLogger(__name__)
@@ -151,7 +152,7 @@ class SeijishikinDownloader:
                     if not self.dry_run:
                         time.sleep(self.delay)
             else:
-                raise ValueError(f"想定外のリンク: {link.url}")
+                raise ValueError(f"想定外のリンク: {pdf_link.url}")
             
 
     def process_pdf_link(self, pdf_link: PdfLink, year: str) -> bool:

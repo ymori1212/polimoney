@@ -26,14 +26,14 @@
     --metadata-only           PDFをダウンロードせずメタデータのみ収集
 """
 
-import sys
 import argparse
 import logging
+import sys
 from argparse import Namespace
 
-from .utils import setup_logger
-from .config import DEFAULT_OUTPUT_DIR, DEFAULT_DELAY, MIN_DELAY
+from .config import DEFAULT_DELAY, DEFAULT_OUTPUT_DIR, MIN_DELAY
 from .downloader import SeijishikinDownloader
+from .utils import setup_logger
 
 # ロガーの設定
 logger = logging.getLogger(__name__)
@@ -139,7 +139,8 @@ def main() -> int:
 
     # validate arguments
     if args.delay < MIN_DELAY:
-        parser.error(f"待機時間は {MIN_DELAY} 秒以上である必要があります")
+        logger.error(f"待機時間は {MIN_DELAY} 秒以上である必要があります")
+        return 1
     
     # ロガーを設定
     setup_logger(args.log_level)

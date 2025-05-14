@@ -4,13 +4,14 @@
 ダウンロードしたファイルのメタデータを管理するクラスを提供します。
 """
 
-import os
-import json
 import datetime
-from typing import Dict, List, Any, Optional
-from dataclasses import dataclass, asdict, field
+import json
+import os
+from dataclasses import asdict, dataclass
+from typing import Any, Dict, List, Optional
 
 from .utils import create_directory
+
 
 @dataclass
 class FileMetadata:

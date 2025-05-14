@@ -4,9 +4,9 @@
 政治資金収支報告書ダウンロードスクリプトで使用するユーティリティ関数を提供します。
 """
 
+import logging
 import os
 import re
-import logging
 
 # ロガーの設定
 logger = logging.getLogger(__name__)

@@ -4,7 +4,7 @@
 ダウンロードに関する定数や設定を提供します。
 """
 
-from typing import Dict, List, Final
+from typing import Final, List
 
 # 基本設定
 DEFAULT_OUTPUT_DIR: Final[str] = "downloaded_pdfs"

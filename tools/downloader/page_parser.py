@@ -4,17 +4,18 @@
 政治資金収支報告書のウェブページを解析するクラスを提供します。
 """
 
+import logging
 import re
 import time
-import logging
-import requests
 from dataclasses import dataclass
-from enum import Enum, auto
-from typing import List, Optional, Dict, Set, Callable, Union
+from enum import Enum
+from typing import Callable, List, Optional, Union
 from urllib.parse import urljoin
+
+import requests
 from bs4 import BeautifulSoup
 
-from .config import BASE_URL, YEAR_PATTERNS 
+from .config import BASE_URL, YEAR_PATTERNS
 from .utils import extract_year_from_url
 
 # ロガーの設定
