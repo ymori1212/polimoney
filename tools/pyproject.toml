@@ -13,6 +13,9 @@ pdf2image = "^1.17.0"
 google-generativeai = "^0.5.4" # 最新バージョンを確認して指定
 Pillow = "^10.3.0" # pdf2image や PIL.Image のために明示
 pandas = "^2.2.3"
+beautifulsoup4 = "^4.13.4"
+tqdm = "^4.67.1"
+requests = "^2.32.3"
 
 [tool.poetry.group.dev.dependencies]
 # 開発時に便利なツールがあればここに追加 (例: black, flake8, pytest)
@@ -20,6 +23,7 @@ pandas = "^2.2.3"
 # flake8 = "^7.0.0"
 python-dotenv = "^1.0.1" # .env ファイルを使う場合に便利
 pandas-stubs = "^2.2.3.250308"
+pytest = "^8.3.5"
 
 [build-system]
 requires = ["poetry-core"]
