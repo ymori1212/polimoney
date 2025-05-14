@@ -1,4 +1,5 @@
 import google.generativeai as genai
+import google.api_core.exceptions
 import PIL.Image
 import os
 import argparse
@@ -6,14 +7,47 @@ import sys
 import json # JSONの検証や整形のためにインポート
 import glob # ディレクトリ内のファイル検索のため
 import concurrent.futures # 並列処理のため
+import logging # ログ記録のため
+from logging.handlers import QueueHandler, QueueListener
+import time # リトライ間隔の制御のため
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type, before_sleep_log # リトライロジックのため
 
 # 出力ディレクトリ名を定数化
 OUTPUT_JSON_DIR = "output_json"
+ERROR_LOG_FILE = "error_log.json"
+
+# ロガーの設定
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(levelname)s - %(message)s'
+)
+logger = logging.getLogger('analyzer')
+
+# リトライ可能なエラーの定義
+RETRYABLE_EXCEPTIONS = (
+    google.api_core.exceptions.TooManyRequests,
+    google.api_core.exceptions.DeadlineExceeded,
+    google.api_core.exceptions.GatewayTimeout,
+    google.api_core.exceptions.ServiceUnavailable
+)
+
+class AnalysisError(Exception):
+    """分析エラーを表す例外"""
+    def __init__(self, message: str, details: dict):
+        self.message = message
+        self.details = details
+        super().__init__(self.message)
+
+    def __str__(self):
+        return f"{self.message}: {self.details}"
+
 class GeminiClient:
     def __init__(self, key):
         self.key = key
         self.model_name = 'gemini-2.5-pro-preview-05-06'
         self.model = genai.GenerativeModel(self.model_name)
+        self.rate_limit_error_additional_wait_time = 30
+        self.error_items = []
 
     def clean_response(self, text):
         """Gemini応答からマークダウンコードブロック指示子を削除する"""
@@ -28,7 +62,43 @@ class GeminiClient:
 
         return text
 
-    def analyze_image_with_gemini(self, image_path):
+    @retry(
+        retry=retry_if_exception_type(RETRYABLE_EXCEPTIONS),
+        stop=stop_after_attempt(5),  # 最大5回リトライ
+        wait=wait_exponential(multiplier=1, min=2, max=60),  # 指数バックオフ: 2秒、4秒、8秒、16秒、32秒
+        before_sleep=before_sleep_log(logger, logging.WARNING)
+    )
+    def _generate_content_with_retry(self, prompt, img):
+        """
+        リトライロジックを実装したGemini API呼び出し。
+        generate_content()のrequest_optionsにretryパラメータを渡してリトライを実装すると
+        エラー種別ごとのハンドリングが難しいため、tenacityのretryを使用している。
+        
+        Args:
+            prompt: プロンプト
+            img: 画像
+            
+        Returns:
+            response: Gemini APIからのレスポンス
+        """
+        try:
+            response = self.model.generate_content(
+                contents=[prompt, img],
+                generation_config={
+                    "response_mime_type": "application/json",
+                }
+            )
+            return response
+        except Exception as e:
+            # HTTP 429エラー（レートリミット）の場合は特別な処理
+            if isinstance(e, google.api_core.exceptions.TooManyRequests):
+                logger.warning(f"レートリミットエラー発生: {e}. リトライします...")
+                time.sleep(self.rate_limit_error_additional_wait_time)
+            # その他のネットワークエラーなど
+            logger.warning(f"API呼び出しエラー: {type(e).__name__}: {e}. リトライします...")
+            raise  # 例外を再度発生させてリトライロジックに処理させる
+
+    def analyze_image_with_gemini(self, image_path: str)->str:
         """
         指定した画像ファイルをGemini APIで解析し、Google推奨のJSON形式でテキスト情報を返します。
 
@@ -37,6 +107,8 @@ class GeminiClient:
 
         Returns:
             str: Geminiからの解析結果（JSON文字列を想定）。エラーの場合は "エラー:" で始まるメッセージを返します。
+        Raises:
+            AnalysisError: 解析エラーが発生した場合
         """
         # genai.configure(api_key=api_key)
         # モデルはgemini-2.5-pro-preview-05-06です。これが現在の最新なのでいじらないでください。
@@ -157,12 +229,20 @@ categoryの候補
             img = PIL.Image.open(image_path)
             # print("Gemini APIにリクエストを送信中...", file=sys.stderr) # ループ内で冗長なのでコメントアウト
 
-            response = self.model.generate_content(
-                contents=[prompt, img],
-                generation_config={
-                    "response_mime_type": "application/json",
+            # リトライロジックを実装したAPI呼び出し
+            try:
+                response = self._generate_content_with_retry(prompt, img)
+            except Exception as e:
+                # 最大リトライ回数を超えた場合
+                error_info = {
+                    "file": os.path.basename(image_path),
+                    "error_type": type(e).__name__,
+                    "error_message": str(e),
+                    "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
                 }
-            )
+                self.error_items.append(error_info)
+                logger.error(f"最大リトライ回数を超えました: {error_info}")
+                raise AnalysisError(f"最大リトライ回数を超えました: {os.path.basename(image_path)} {type(e).__name__} - {e}", error_info)
 
             raw_result = None
             if hasattr(response, 'text') and response.text:
@@ -190,26 +270,66 @@ categoryの候補
                 else:
                     error_message += f" Response: {response}" # 詳細不明な場合、レスポンス全体を一部表示
                 # print(f"デバッグ情報: {error_message}", file=sys.stderr) # process_single_image で表示するので不要
-                return error_message # エラーメッセージを返す
+                error_info = {
+                    "file": os.path.basename(image_path),
+                    "error_type": "Gemini API Response Error",
+                    "error_message": error_message,
+                    "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+                }
+                self.error_items.append(error_info)
+                raise AnalysisError(error_message, error_info)
 
+        except AnalysisError as e:
+            raise e
         except FileNotFoundError:
-            return f"エラー: 画像ファイルが見つかりません: {image_path}"
+            error_info = {
+                "file": os.path.basename(image_path),
+                "error_type": "FileNotFoundError",
+                "error_message": f"画像ファイルが見つかりません: {image_path}",
+                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+            }
+            self.error_items.append(error_info)
+            logger.error(f"ファイルが見つかりません: {error_info}")
+            raise AnalysisError(f"画像ファイルが見つかりません: {image_path}", error_info)
         except Exception as e:
-            # print(f"予期せぬエラー発生 ({image_path}): {type(e).__name__} - {e}", file=sys.stderr) # process_single_image で表示
-            # response 変数が定義されているか確認してからアクセス
-            # if 'response' in locals() and response:
-            #     print(f"デバッグ情報 (エラー発生時のresponse): {response}", file=sys.stderr)
-            return f"エラーが発生しました ({os.path.basename(image_path)}): {e}" # ファイル名を追加
+            # エラー情報を記録
+            error_info = {
+                "file": os.path.basename(image_path),
+                "error_type": type(e).__name__,
+                "error_message": str(e),
+                "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+            }
+            self.error_items.append(error_info)
+            logger.error(f"予期せぬエラー発生: {error_info}")
+            raise AnalysisError(f"予期せぬエラー発生: {os.path.basename(image_path)} {type(e).__name__} - {e}", error_info)
+    
+    def save_error_log(self, output_dir):
+        """
+        エラー項目をJSONファイルとして保存します。
+        
+        Args:
+            output_dir: 出力ディレクトリ
+        """
+        if not self.error_items:
+            return
+            
+        error_log_path = os.path.join(output_dir, ERROR_LOG_FILE)
+        try:
+            with open(error_log_path, 'w', encoding='utf-8') as f:
+                json.dump({"errors": self.error_items}, f, ensure_ascii=False, indent=2)
+            logger.info(f"エラーログを保存しました: {error_log_path}")
+        except Exception as e:
+            logger.error(f"エラーログの保存に失敗しました: {e}")
 
 
 def process_single_image(image_path, gemini_client, output_dir):
     """単一の画像ファイルを処理し、結果をJSONファイルに保存する"""
-    print(f"画像を解析中: {os.path.basename(image_path)}", file=sys.stderr) # フルパスでなくファイル名表示に
-    result = gemini_client.analyze_image_with_gemini(image_path)
-
-    if result.startswith("エラー:"):
-        print(result, file=sys.stderr) # エラーはコンソールに表示
-        return
+    logger.info(f"画像を解析中: {os.path.basename(image_path)}") # フルパスでなくファイル名表示に
+    try:
+        result = gemini_client.analyze_image_with_gemini(image_path)
+    except AnalysisError as e:
+        logger.error(f"エラー: {e.message}")
+        return False
 
     base_name = os.path.splitext(os.path.basename(image_path))[0]
     output_filename = os.path.join(output_dir, f"{base_name}.json")
@@ -217,15 +337,24 @@ def process_single_image(image_path, gemini_client, output_dir):
     try:
         json.loads(result)
     except json.JSONDecodeError as json_err:
-        print(f"警告 ({os.path.basename(image_path)}): Geminiからの応答は有効なJSONではありません。エラー: {json_err}", file=sys.stderr)
-        print(f"応答内容(最初の200文字): {result[:200]}...", file=sys.stderr)
+        logger.warning(f"警告 ({os.path.basename(image_path)}): Geminiからの応答は有効なJSONではありません。エラー: {json_err}")
+        logger.warning(f"応答内容(最初の200文字): {result[:200]}...")
 
     try:
         with open(output_filename, "w", encoding="utf-8") as f:
             f.write(result)
-        print(f"解析結果を保存しました: {output_filename}", file=sys.stderr)
+        logger.info(f"解析結果を保存しました: {output_filename}")
+        return True  # 処理成功を示す
     except IOError as e:
-        print(f"エラー ({os.path.basename(image_path)}): 解析結果のファイル書き込みに失敗しました: {output_filename} - {e}", file=sys.stderr)
+        error_info = {
+            "file": os.path.basename(image_path),
+            "error_type": "IOError",
+            "error_message": f"解析結果のファイル書き込みに失敗しました: {output_filename} - {e}",
+            "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+        }
+        gemini_client.error_items.append(error_info)
+        logger.error(f"エラー: {os.path.basename(image_path)} 解析結果のファイル書き込みに失敗しました: {output_filename} - {e}")
+        return False  # 処理失敗を示す
 
 
 def get_png_files_to_process(args):
@@ -247,29 +376,29 @@ def get_png_files_to_process(args):
         # ディレクトリ内のPNGファイルを処理
         target_dir = args.directory
         if not os.path.isdir(target_dir):
-            print(f"エラー: 指定されたディレクトリが見つかりません: {target_dir}", file=sys.stderr)
+            logger.error(f"エラー: 指定されたディレクトリが見つかりません: {target_dir}")
             sys.exit(1)
 
-        print(f"ディレクトリ '{target_dir}' 内のPNGファイルを処理します...", file=sys.stderr)
+        logger.info(f"ディレクトリ '{target_dir}' 内のPNGファイルを処理します...")
         # glob を使って PNG ファイルを検索
         png_files = glob.glob(os.path.join(target_dir, '*.png'))
         png_files.sort()  # ファイル順を安定させる
 
         if not png_files:
-            print(f"警告: ディレクトリ '{target_dir}' 内にPNGファイルが見つかりませんでした。", file=sys.stderr)
+            logger.warning(f"警告: ディレクトリ '{target_dir}' 内にPNGファイルが見つかりませんでした。")
         return png_files
 
     elif args.image_file:
         # 単一ファイルを処理
         if not os.path.isfile(args.image_file):
-            print(f"エラー: 指定されたファイルが見つかりません: {args.image_file}", file=sys.stderr)
+            logger.error(f"エラー: 指定されたファイルが見つかりません: {args.image_file}")
             sys.exit(1)
         png_files = [args.image_file]
 
         return png_files
     else:
         # このケースは mutually_exclusive_group(required=True) により発生しないはず
-        print("エラー: 解析対象のファイルまたはディレクトリを指定してください。", file=sys.stderr)
+        logger.error("エラー: 解析対象のファイルまたはディレクトリを指定してください。")
         sys.exit(1)
 
 
@@ -310,17 +439,17 @@ def main():
     args = parser.parse_args()
     api_key = os.getenv("GOOGLE_API_KEY")
     if not api_key:
-         print("エラー: 環境変数 GOOGLE_API_KEY が設定されていません。", file=sys.stderr)
-         sys.exit(1)
+        logger.error("エラー: 環境変数 GOOGLE_API_KEY が設定されていません。")
+        sys.exit(1)
 
     gemini_client = GeminiClient(api_key)
 
     # 出力ディレクトリを作成 (存在しない場合)
     try:
         os.makedirs(args.output_dir, exist_ok=True)
-        print(f"出力ディレクトリ: {args.output_dir}", file=sys.stderr)
+        logger.info(f"出力ディレクトリ: {args.output_dir}")
     except OSError as e:
-        print(f"エラー: 出力ディレクトリ '{args.output_dir}' の作成に失敗しました: {e}", file=sys.stderr)
+        logger.error(f"エラー: 出力ディレクトリ '{args.output_dir}' の作成に失敗しました: {e}")
         sys.exit(1)
 
     # --- 処理の実行 ---
@@ -328,31 +457,43 @@ def main():
     total_files = len(png_files)
 
     if total_files == 0:
-        print("エラー: 処理対象のPNGファイルが見つかりませんでした。", file=sys.stderr)
+        logger.error("エラー: 処理対象のPNGファイルが見つかりませんでした。")
         sys.exit(1)
 
 
-    print(f"{total_files} 個のPNGファイルを処理します。", file=sys.stderr)
+    logger.info(f"{total_files} 個のPNGファイルを処理します。")
 
     # 並列処理の実装
     def process_with_index(args_tuple):
         i, png_file_path = args_tuple
-        print(f"--- Processing file {i+1}/{total_files} ---", file=sys.stderr)
-        process_single_image(png_file_path, gemini_client, args.output_dir)
+        logger.info(f"--- Processing file {i+1}/{total_files} ---")
+        success = process_single_image(png_file_path, gemini_client, args.output_dir)
+        return (png_file_path, success)
 
     # ThreadPoolExecutorを使用して並列処理
     # max_workersはCPUコア数の2倍程度が一般的な目安（I/O待ちが多いため）
     cpu_count = os.cpu_count() or 1
     max_workers = min(32, cpu_count * 2)  # CPUコア数の2倍、最大32
-    print(f"並列処理を開始します（最大 {max_workers} スレッド）", file=sys.stderr)
+    logger.info(f"並列処理を開始します（最大 {max_workers} スレッド）")
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
         # ファイルとインデックスのタプルのリストを作成
         indexed_files = list(enumerate(png_files))
-        # 並列実行
-        list(executor.map(process_with_index, indexed_files))
+        # 並列実行して結果を取得
+        results = list(executor.map(process_with_index, indexed_files))
+        
+        # 成功・失敗の集計
+        success_count = sum(1 for _, success in results if success)
+        failed_count = total_files - success_count
+        
+        # エラーログを保存
+        gemini_client.save_error_log(args.output_dir)
 
-    print(f"--- 全 {total_files} ファイルの処理が完了しました ---", file=sys.stderr)
+    logger.info(f"--- 全 {total_files} ファイルの処理が完了しました ---")
+    logger.info(f"成功: {success_count} ファイル, 失敗: {failed_count} ファイル")
+    
+    if failed_count > 0:
+        logger.error(f"エラーログは {os.path.join(args.output_dir, ERROR_LOG_FILE)} に保存されました")
 
 
 if __name__ == "__main__":
