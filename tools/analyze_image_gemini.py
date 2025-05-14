@@ -15,7 +15,6 @@ class GeminiClient:
         self.model_name = 'gemini-2.5-pro-preview-05-06'
         self.model = genai.GenerativeModel(self.model_name)
 
-
     def clean_response(self, text):
         """Gemini応答からマークダウンコードブロック指示子を削除する"""
         text = text.strip()
