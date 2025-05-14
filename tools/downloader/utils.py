@@ -31,7 +31,9 @@ def setup_logger(log_level):
     console_handler.setLevel(numeric_level)
 
     # フォーマッタの設定
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter(
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    )
     console_handler.setFormatter(formatter)
 
     # ハンドラの追加（既存のハンドラがあれば削除）
@@ -71,14 +73,14 @@ def sanitize_filename(filename):
     """
     # 不正な文字を置換
     invalid_chars = r'[\\/*?:"<>|]'
-    sanitized = re.sub(invalid_chars, '_', filename)
-    
+    sanitized = re.sub(invalid_chars, "_", filename)
+
     # 長すぎる場合は切り詰め（Windows の制限は 255 文字）
     max_length = 240  # 拡張子や区切り文字のための余裕を持たせる
     if len(sanitized) > max_length:
         name, ext = os.path.splitext(sanitized)
-        sanitized = name[:max_length - len(ext)] + ext
-    
+        sanitized = name[: max_length - len(ext)] + ext
+
     return sanitized
 
 
@@ -93,16 +95,16 @@ def extract_year_from_url(url):
     """
     # URLから年度を抽出するパターン
     patterns = [
-        r'令和(\d+)年分.*解散分',  # 令和X年分 解散分
-        r'令和(\d+)年分.*追加分',  # 令和X年分 追加分
-        r'令和(\d+)年分.*定期公表',  # 令和X年分 定期公表
-        r'令和(\d+)～(\d+)年分',  # 令和X～Y年分
-        r'（令和(\d+)年分）',  # （令和X年分）
-        r'（令和(\d+)～(\d+)年分）',  # （令和X～Y年分）
-        r'令和(\d+)年分',  # 令和X年分
-        r'R(\d+)',  # RX
+        r"令和(\d+)年分.*解散分",  # 令和X年分 解散分
+        r"令和(\d+)年分.*追加分",  # 令和X年分 追加分
+        r"令和(\d+)年分.*定期公表",  # 令和X年分 定期公表
+        r"令和(\d+)～(\d+)年分",  # 令和X～Y年分
+        r"（令和(\d+)年分）",  # （令和X年分）
+        r"（令和(\d+)～(\d+)年分）",  # （令和X～Y年分）
+        r"令和(\d+)年分",  # 令和X年分
+        r"R(\d+)",  # RX
     ]
-    
+
     for pattern in patterns:
         match = re.search(pattern, url)
         if match:
@@ -114,14 +116,14 @@ def extract_year_from_url(url):
             elif len(match.groups()) == 2:
                 year_num = max(int(match.group(1)), int(match.group(2)))
                 return f"R{year_num}"
-    
+
     # パターンにマッチしない場合はURLから年を推測
     # SS20241129 のような形式から年を推測（2024年の場合はR6）
-    ss_match = re.search(r'SS(\d{4})', url)
+    ss_match = re.search(r"SS(\d{4})", url)
     if ss_match:
         year = int(ss_match.group(1))
         reiwa_year = year - 2018  # 2019年が令和元年
         return f"R{reiwa_year}"
-    
+
     logger.warning("URLから公表年を抽出できませんでした: %s", url)
     return None

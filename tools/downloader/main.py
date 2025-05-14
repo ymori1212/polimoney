@@ -47,84 +47,78 @@ def parse_arguments() -> Namespace:
     """
     parser = argparse.ArgumentParser(
         description="総務省のウェブサイトから政治資金収支報告書のPDFファイルを自動的にダウンロードします。",
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-    
+
     parser.add_argument(
-        "-o", "--output-dir",
-        default=DEFAULT_OUTPUT_DIR,
-        help="保存先ディレクトリ"
+        "-o", "--output-dir", default=DEFAULT_OUTPUT_DIR, help="保存先ディレクトリ"
     )
-    
+
     parser.add_argument(
-        "-y", "--year",
-        help="公表年（例: R5, R4）、複数指定可能（カンマ区切り）"
+        "-y", "--year", help="公表年（例: R5, R4）、複数指定可能（カンマ区切り）"
     )
-    
+
     parser.add_argument(
-        "-c", "--category",
-        help="団体種別（政党本部,政党支部,政治資金団体,その他）、複数指定可能（カンマ区切り）"
+        "-c",
+        "--category",
+        help="団体種別（政党本部,政党支部,政治資金団体,その他）、複数指定可能（カンマ区切り）",
     )
-    
+
+    parser.add_argument("-n", "--name", help="団体名（部分一致で検索）")
+
     parser.add_argument(
-        "-n", "--name",
-        help="団体名（部分一致で検索）"
+        "-e", "--exact-match", action="store_true", help="団体名の完全一致で検索"
     )
-    
+
     parser.add_argument(
-        "-e", "--exact-match",
-        action="store_true",
-        help="団体名の完全一致で検索"
-    )
-    
-    parser.add_argument(
-        "-d", "--delay",
+        "-d",
+        "--delay",
         type=int,
         default=DEFAULT_DELAY,
-        help=f"リクエスト間の待機時間（秒、最小: {MIN_DELAY}）"
+        help=f"リクエスト間の待機時間（秒、最小: {MIN_DELAY}）",
     )
-    
+
     parser.add_argument(
-        "-f", "--force",
-        action="store_true",
-        help="既存ファイルを上書き"
+        "-f", "--force", action="store_true", help="既存ファイルを上書き"
     )
-    
+
     parser.add_argument(
-        "-l", "--log-level",
+        "-l",
+        "--log-level",
         choices=["DEBUG", "INFO", "WARNING", "ERROR"],
         default="INFO",
-        help="ログレベル"
+        help="ログレベル",
     )
-    
+
     parser.add_argument(
-        "-v", "--verbose",
+        "-v",
+        "--verbose",
         action="store_true",
-        help="詳細な出力を表示（--log-level DEBUGと同等）"
+        help="詳細な出力を表示（--log-level DEBUGと同等）",
     )
-    
+
     parser.add_argument(
         "--dry-run",
         action="store_true",
-        help="実際にダウンロードせずに何が行われるかを表示"
+        help="実際にダウンロードせずに何が行われるかを表示",
     )
-    
+
     parser.add_argument(
         "--metadata-only",
         action="store_true",
-        help="PDFをダウンロードせずメタデータのみ収集"
+        help="PDFをダウンロードせずメタデータのみ収集",
     )
-    
+
     args = parser.parse_args()
-    
+
     # verboseフラグが指定された場合はログレベルをDEBUGに設定
     if args.verbose:
         args.log_level = "DEBUG"
-    
+
     # 待機時間が最小値未満の場合はエラー
     if args.delay < MIN_DELAY:
         parser.error(f"待機時間は {MIN_DELAY} 秒以上である必要があります")
-    
+
     return args
 
 
@@ -141,18 +135,18 @@ def main() -> int:
     if args.delay < MIN_DELAY:
         logger.error(f"待機時間は {MIN_DELAY} 秒以上である必要があります")
         return 1
-    
+
     # ロガーを設定
     setup_logger(args.log_level)
-    
+
     logger.info("政治資金収支報告書ダウンロードスクリプトを開始します")
-    
+
     # ダウンローダーを初期化
     downloader = SeijishikinDownloader(args)
-    
+
     # ダウンロード実行
     success = downloader.download_all()
-    
+
     # 終了コードを設定
     return 0 if success else 1
 

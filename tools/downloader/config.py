@@ -13,18 +13,20 @@ MIN_DELAY: Final[int] = 3
 
 # URL設定
 BASE_URL: Final[str] = "https://www.soumu.go.jp/senkyo/seiji_s/seijishikin/"
-USER_AGENT: Final[str] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+USER_AGENT: Final[str] = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+)
 BOT_NAME: Final[str] = "SeijishikinDownloaderBot"
 FULL_USER_AGENT: Final[str] = f"{BOT_NAME}/1.0 ({USER_AGENT})"
 
 # 年度パターン
 YEAR_PATTERNS: Final[List[str]] = [
-    r'令和\d+年分.*定期公表',  # 令和X年分 定期公表
-    r'令和\d+～\d+年分',  # 令和X～Y年分
-    r'令和\d+年分.*解散分',  # 令和X年分 解散分
-    r'令和\d+年分.*追加分',  # 令和X年分 追加分
-    r'（令和\d+年分）',  # （令和X年分）
-    r'（令和\d+～\d+年分）',  # （令和X～Y年分）
-    r'令和\d+年分',  # 令和X年分
-    r'R\d+',  # RX
+    r"令和\d+年分.*定期公表",  # 令和X年分 定期公表
+    r"令和\d+～\d+年分",  # 令和X～Y年分
+    r"令和\d+年分.*解散分",  # 令和X年分 解散分
+    r"令和\d+年分.*追加分",  # 令和X年分 追加分
+    r"（令和\d+年分）",  # （令和X年分）
+    r"（令和\d+～\d+年分）",  # （令和X～Y年分）
+    r"令和\d+年分",  # 令和X年分
+    r"R\d+",  # RX
 ]

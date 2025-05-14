@@ -40,11 +40,11 @@ class RobotsChecker:
         # URLからドメイン部分を抽出
         parsed_url = urlparse(url)
         domain = f"{parsed_url.scheme}://{parsed_url.netloc}"
-        
+
         # ドメインごとにRobotFileParserを管理
         if domain not in self.parsers or self._should_refresh(domain):
             self._init_parser(domain)
-        
+
         # アクセス可能かどうかを確認
         try:
             can_fetch = self.parsers[domain].can_fetch(self.user_agent, url)
@@ -52,7 +52,9 @@ class RobotsChecker:
                 logger.warning("robots.txtによりアクセスが禁止されています: %s", url)
             return can_fetch
         except Exception as e:
-            logger.error("robots.txtの確認中にエラーが発生しました: %s, エラー: %s", url, e)
+            logger.error(
+                "robots.txtの確認中にエラーが発生しました: %s, エラー: %s", url, e
+            )
             # エラーの場合は安全側に倒してTrueを返す
             return True
 
@@ -68,11 +70,11 @@ class RobotsChecker:
         # URLからドメイン部分を抽出
         parsed_url = urlparse(url)
         domain = f"{parsed_url.scheme}://{parsed_url.netloc}"
-        
+
         # ドメインごとにRobotFileParserを管理
         if domain not in self.parsers or self._should_refresh(domain):
             self._init_parser(domain)
-        
+
         # クロール遅延を取得
         try:
             delay = self.parsers[domain].crawl_delay(self.user_agent)
@@ -80,7 +82,9 @@ class RobotsChecker:
                 logger.debug("robots.txtで指定されたクロール遅延: %s秒", delay)
             return delay
         except Exception as e:
-            logger.error("クロール遅延の取得中にエラーが発生しました: %s, エラー: %s", url, e)
+            logger.error(
+                "クロール遅延の取得中にエラーが発生しました: %s, エラー: %s", url, e
+            )
             return None
 
     def _init_parser(self, domain: str) -> None:
@@ -115,6 +119,6 @@ class RobotsChecker:
         """
         if domain not in self.last_checked:
             return True
-        
+
         current_time = time.time()
         return (current_time - self.last_checked[domain]) > self.check_interval

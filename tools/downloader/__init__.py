@@ -12,13 +12,13 @@ from .metadata import MetadataManager
 from .robotparser import RobotsChecker
 
 __all__ = [
-    'SeijishikinDownloader',
-    'PageParser',
-    'PDFDownloader',
-    'MetadataManager',
-    'RobotsChecker',
-    'DEFAULT_OUTPUT_DIR',
-    'DEFAULT_DELAY',
-    'MIN_DELAY',
-    'FULL_USER_AGENT'
+    "SeijishikinDownloader",
+    "PageParser",
+    "PDFDownloader",
+    "MetadataManager",
+    "RobotsChecker",
+    "DEFAULT_OUTPUT_DIR",
+    "DEFAULT_DELAY",
+    "MIN_DELAY",
+    "FULL_USER_AGENT",
 ]
