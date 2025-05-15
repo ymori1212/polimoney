@@ -7,13 +7,18 @@
 import logging
 import time
 from argparse import Namespace
-from typing import List, Optional
 
 import requests
 
 from .config import FULL_USER_AGENT, MIN_DELAY
 from .metadata import MetadataManager
-from .page_parser import NameFilter, PageParser, PdfLink, ReportListPageUrl
+from .page_parser import (
+    NameFilter,
+    PageParser,
+    PdfLink,
+    ReportListPageLink,
+    YearPageLink,
+)
 from .pdf_downloader import PDFDownloader
 from .robotparser import RobotsChecker
 
@@ -25,16 +30,18 @@ class SeijishikinDownloader:
     """政治資金収支報告書ダウンロードを管理するクラス"""
 
     def __init__(self, args: Namespace) -> None:
-        """初期化
+        """
+        初期化
 
         Args:
             args: コマンドライン引数
+
         """
         self.args = args
         self.output_dir: str = args.output_dir
-        self.years: List[str] = args.year.split(",") if args.year else []
-        self.categories: List[str] = args.category.split(",") if args.category else []
-        self.name_filter: Optional[NameFilter] = (
+        self.years: list[str] = args.year.split(",") if args.year else []
+        self.categories: list[str] = args.category.split(",") if args.category else []
+        self.name_filter: NameFilter | None = (
             NameFilter(args.name, args.exact_match) if args.name else None
         )
         self.delay: int = max(args.delay, MIN_DELAY)  # 最小待機時間を保証
@@ -76,9 +83,9 @@ class SeijishikinDownloader:
             exact_match=self.name_filter.exact_match if self.name_filter else False,
         )
 
-        logger.info("SeijishikinDownloader を初期化しました")
         logger.debug(
-            "設定: 出力先=%s, 年度=%s, カテゴリ=%s, 名前フィルタ=%s, 待機時間=%s秒, 強制上書き=%s, ドライラン=%s, メタデータのみ=%s",
+            "設定: 出力先=%s, 年度=%s, カテゴリ=%s, 名前フィルタ=%s, "
+            "待機時間=%s秒, 強制上書き=%s, ドライラン=%s, メタデータのみ=%s",
             self.output_dir,
             self.years,
             self.categories,
@@ -90,35 +97,41 @@ class SeijishikinDownloader:
         )
 
     def download_all(self) -> bool:
-        """指定された条件に基づいて全てのファイルをダウンロード
+        """
+        指定された条件に基づいて全てのファイルをダウンロード
 
         Returns:
             bool: ダウンロード成功時はTrue、失敗時はFalse
+
         """
         logger.info("ダウンロード処理を開始します")
 
         # 年度ごとのURLを取得
-        report_urls = self.page_parser.get_year_and_report_urls()
-        if not report_urls:
+        links = self.page_parser.get_year_and_report_urls()
+        if not links:
             logger.error("ダウンロード対象の年度URLが見つかりませんでした")
             return False
 
-        logger.info("%d 件の年度URLを取得しました", len(report_urls))
+        logger.info("%d 件の年度URLを取得しました", len(links))
 
         # 各年度のページを処理
-        for report_url in report_urls:
-            if isinstance(report_url, ReportListPageUrl):
+        for link in links:
+            if isinstance(link, ReportListPageLink):
                 logger.info(
                     "報告書一覧 %s の処理を開始します: %s",
-                    report_url.year,
-                    report_url.url,
+                    link.year,
+                    link.url,
                 )
-                self.process_report_list_page(report_url, report_url.year)
-            else:
+                self.process_report_list_page(link)
+            elif isinstance(link, YearPageLink):
                 logger.info(
-                    "年度 %s の処理を開始します: %s", report_url.year, report_url.url
+                    "年度 %s の処理を開始します: %s",
+                    link.year,
+                    link.url,
                 )
-                self.process_year_page(report_url.url, report_url.year)
+                self.process_year_page(link)
+            else:
+                raise ValueError(f"想定外のリンク: {link}")
 
             # 年度ページ処理後にインターバルを設ける
             if not self.dry_run:
@@ -130,7 +143,8 @@ class SeijishikinDownloader:
         # 統計情報を表示
         stats = self.metadata_manager.get_statistics()
         logger.info(
-            "ダウンロード完了: 合計=%d, ダウンロード=%d, スキップ=%d, 失敗=%d, 合計サイズ=%d バイト",
+            "ダウンロード完了: 合計=%d, ダウンロード=%d,"
+            "スキップ=%d, 失敗=%d, 合計サイズ=%d バイト",
             stats.total_files,
             stats.downloaded_files,
             stats.skipped_files,
@@ -140,47 +154,57 @@ class SeijishikinDownloader:
 
         return True
 
-    def process_year_page(self, year_url: str, year: str) -> None:
-        """年度ページを処理
+    def process_year_page(self, yearLink: YearPageLink) -> None:
+        """
+        年度ページを処理.
 
         Args:
             year_url: 年度ページのURL
-            year: 公表年（例: R5）
+            year: 公表年(例: R5)
+
         """
         # 年度ページを解析
-        links = self.page_parser.parse_year_page(year_url)
+        links = self.page_parser.parse_year_page(yearLink)
 
         # 各リンクを処理
         for link in links:
-            self.process_report_list_page(link, year)
+            self.process_report_list_page(link)
 
     def process_report_list_page(
-        self, report_list_url: ReportListPageUrl, year: str
+        self,
+        report_list_link: ReportListPageLink,
     ) -> None:
-        """報告書一覧ページを処理
+        """
+        報告書一覧ページを処理
 
         Args:
             report_list_url: 報告書一覧ページのURL
             year: 公表年
+
         """
         # 報告書一覧ページを解析してリンクを取得
-        pdf_links = self.page_parser.parse_report_list_page(report_list_url)
+        pdf_links = self.page_parser.parse_report_list_page(report_list_link)
 
         # 各リンクを処理
         for pdf_link in pdf_links:
-            if isinstance(pdf_link, PdfLink):
-                if self.process_pdf_link(pdf_link, year):
-                    # インターバルを設ける
-                    if not self.dry_run:
-                        time.sleep(self.delay)
-            else:
-                raise ValueError(f"想定外のリンク: {pdf_link.url}")
+            if isinstance(pdf_link, PdfLink) and self.process_pdf_link(
+                pdf_link, report_list_link.year
+            ):
+                # インターバルを設ける
+                if not self.dry_run:
+                    time.sleep(self.delay)
+            elif not isinstance(pdf_link, PdfLink):
+                msg = f"想定外のリンク: {pdf_link.url}"
+                raise ValueError(msg)
 
     def process_pdf_link(self, pdf_link: PdfLink, year: str) -> bool:
-        """PDFリンクを処理
+        """
+        PDFリンクを処理
 
         Args:
             pdf_link: PDFファイルのURL
+            year: 公表年
+
         """
         # カテゴリフィルタリング
         category_name = pdf_link.category_name()
@@ -193,7 +217,8 @@ class SeijishikinDownloader:
 
         # 既存ファイルのチェック
         existing_metadata = self.pdf_downloader.check_existing_file(
-            result.save_path, result.metadata
+            result.save_path,
+            result.metadata,
         )
         if existing_metadata:
             self.metadata_manager.add_file(existing_metadata)
@@ -201,7 +226,9 @@ class SeijishikinDownloader:
 
         # PDFをダウンロード
         updated_metadata = self.pdf_downloader.download_pdf(
-            pdf_link.url, result.save_path, result.metadata
+            pdf_link.url,
+            result.save_path,
+            result.metadata,
         )
 
         # メタデータを追加

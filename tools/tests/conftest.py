@@ -1,17 +1,17 @@
-"""
-pytestの設定ファイル
-"""
+"""pytestの設定ファイル"""
+
+from typing import Callable
+from unittest.mock import Mock
 
 import pytest
-from unittest.mock import Mock, MagicMock
 import requests
 from bs4 import BeautifulSoup
 
-from downloader.page_parser import PageParser, YearPageUrl, PageLink, PdfLink 
+from downloader.page_parser import PageParser
 
 
 @pytest.fixture
-def mock_session():
+def mock_session() -> tuple[Mock, Mock]:
     """モックセッションを提供するフィクスチャ"""
     mock = Mock(spec=requests.Session)
     mock_response = Mock(spec=requests.Response)
@@ -22,7 +22,7 @@ def mock_session():
 
 
 @pytest.fixture
-def mock_robots_checker():
+def mock_robots_checker() -> Mock:
     """モックrobots_checkerを提供するフィクスチャ"""
     mock = Mock()
     mock.can_fetch.return_value = True
@@ -30,27 +30,32 @@ def mock_robots_checker():
 
 
 @pytest.fixture
-def mock_sleep():
+def mock_sleep() -> Mock:
     """モックsleep関数を提供するフィクスチャ"""
     return Mock()
 
 
 @pytest.fixture
-def page_parser(mock_session, mock_robots_checker, mock_sleep):
+def page_parser(
+    mock_session: tuple[Mock, Mock],
+    mock_robots_checker: Mock,
+    mock_sleep: Mock,
+) -> PageParser:
     """PageParserインスタンスを提供するフィクスチャ"""
     session, _ = mock_session
-    parser = PageParser(
+    return PageParser(
         session=session,
         delay=0,
         robots_checker=mock_robots_checker,
-        sleep_func=mock_sleep
+        sleep_func=mock_sleep,
     )
-    return parser
 
 
 @pytest.fixture
-def soup_factory():
+def soup_factory() -> Callable[[str, str], BeautifulSoup]:
     """BeautifulSoupファクトリ関数を提供するフィクスチャ"""
-    def factory(text, parser):
+
+    def factory(text: str, parser: str) -> BeautifulSoup:
         return BeautifulSoup(text, parser)
+
     return factory
