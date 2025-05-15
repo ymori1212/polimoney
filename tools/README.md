@@ -88,13 +88,22 @@ poetry run pyright .
 
 ## 使い方
 
-1.  **PDFを画像に変換**:
+1.  **政治資金収支報告書をダウンロード**:
+
+    ```bash
+    python -m downloader.main -y R5
+    ```
+
+    詳しくは [downloader/README.md](downloader/README.md) を参照してください。
+
+
+2.  **PDFを画像に変換**:
     ```bash
     python pdf_to_images.py <your_document.pdf> -o output_images
     ```
     これにより、`output_images` ディレクトリに `your_document_page_001.png`, `your_document_page_002.png`, ... が生成されます。
 
-2.  **画像を解析してJSONを生成**:
+3.  **画像を解析してJSONを生成**:
     *   **単一の画像ファイル**:
         ```bash
         python analyze_image_gemini.py output_images/your_document_page_001.png -o output_json
