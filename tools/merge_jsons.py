@@ -26,11 +26,7 @@ def load_all_json(file_paths):
         transactions.extend(file["transactions"])
 
     # all.jsonを作成する
-    all_json = {
-        "year": year,
-        "categories": categories,
-        "transactions": transactions
-    }
+    all_json = {"year": year, "categories": categories, "transactions": transactions}
 
     return all_json
 
