@@ -88,10 +88,7 @@ class RobotsChecker:
             crawl_delay = self.parsers[domain].crawl_delay(self.user_agent)
             if crawl_delay is not None:
                 # 文字列の場合はfloatに変換
-                if isinstance(crawl_delay, str):
-                    delay = float(crawl_delay)
-                else:
-                    delay = float(crawl_delay)
+                delay = float(crawl_delay)
                 logger.debug("robots.txtで指定されたクロール遅延: %s秒", delay)
         except (OSError, ValueError, TypeError):
             logger.exception(

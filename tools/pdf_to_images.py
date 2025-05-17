@@ -1,5 +1,8 @@
-import os
+# ruff: noqa
+"""PDFを画像に変換するスクリプト"""
+
 import argparse
+import os
 from pdf2image import convert_from_path
 import math  # 桁数計算のため
 
