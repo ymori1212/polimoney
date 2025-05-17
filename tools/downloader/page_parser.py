@@ -11,12 +11,11 @@ import re
 import time
 from dataclasses import dataclass
 from enum import Enum
-from typing import Callable, Protocol, Any, cast, Optional, Union
+from typing import Callable, Protocol, cast
 from urllib.parse import urljoin
 
 import requests
 from bs4 import BeautifulSoup, Tag
-from bs4.element import NavigableString, PageElement
 
 from .config import BASE_URL, YEAR_PATTERNS
 from .utils import extract_year_from_url
@@ -264,7 +263,7 @@ class PageParser:
         # 「令和X年分」などのパターンを含むリンクを探す
         for link in soup.find_all("a"):
             # Tagにキャスト
-            link_tag = cast(Tag, link)
+            link_tag = cast("Tag", link)
             href = link_tag.get("href")
             text = link_tag.get_text()
 
@@ -291,7 +290,7 @@ class PageParser:
                 if year and self._should_include_year(year):
                     if "/reports/SS" in href_str:
                         year_urls.append(
-                            YearPageLink(url=full_url, text=text, year=year)
+                            YearPageLink(url=full_url, text=text, year=year),
                         )
                         logger.debug("年度URLを追加: %s (%s)", full_url, year)
                     else:
@@ -301,7 +300,7 @@ class PageParser:
                                 url=full_url,
                                 year=year,
                                 text=text,
-                            )
+                            ),
                         )
                         logger.debug("報告書一覧URLを追加: %s (%s)", full_url, year)
 
@@ -340,6 +339,7 @@ class PageParser:
         Args:
             soup: BeautifulSoupオブジェクト
             base_url: ベースURL
+            year: 年度
 
         Returns:
             list[ReportListPageLink]: 報告書一覧リンクのリスト
@@ -354,7 +354,7 @@ class PageParser:
         )
         for link in soup.find_all("a"):
             # Tagにキャスト
-            link_tag = cast(Tag, link)
+            link_tag = cast("Tag", link)
             href = link_tag.get("href")
             text = link_tag.get_text().strip()
 
@@ -392,7 +392,7 @@ class PageParser:
 
         for link in soup.find_all("a"):
             # Tagにキャスト
-            link_tag = cast(Tag, link)
+            link_tag = cast("Tag", link)
             href = link_tag.get("href")
             text = link_tag.get_text().strip()
 
@@ -459,7 +459,7 @@ class PageParser:
         年度ページを解析し、PDFリンクまたは団体ページへのリンクを取得
 
         Args:
-            year_url: 年度ページのURL
+            link: 年度ページのリンク
 
         Returns:
             list[PageLink]: ページリンクのリスト

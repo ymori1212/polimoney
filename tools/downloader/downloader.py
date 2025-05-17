@@ -131,7 +131,8 @@ class SeijishikinDownloader:
                 )
                 self.process_year_page(link)
             else:
-                raise ValueError(f"想定外のリンク: {link}")
+                error_message = f"想定外のリンクタイプ: {type(link)}"
+                raise TypeError(error_message)
 
             # 年度ページ処理後にインターバルを設ける
             if not self.dry_run:
@@ -154,7 +155,7 @@ class SeijishikinDownloader:
 
         return True
 
-    def process_year_page(self, yearLink: YearPageLink) -> None:
+    def process_year_page(self, year_link: YearPageLink) -> None:
         """
         年度ページを処理.
 
@@ -164,7 +165,7 @@ class SeijishikinDownloader:
 
         """
         # 年度ページを解析
-        links = self.page_parser.parse_year_page(yearLink)
+        links = self.page_parser.parse_year_page(year_link)
 
         # 各リンクを処理
         for link in links:
@@ -188,7 +189,7 @@ class SeijishikinDownloader:
         # 各リンクを処理
         for pdf_link in pdf_links:
             if isinstance(pdf_link, PdfLink) and self.process_pdf_link(
-                pdf_link, report_list_link.year
+                pdf_link, report_list_link.year,
             ):
                 # インターバルを設ける
                 if not self.dry_run:

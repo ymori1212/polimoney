@@ -1,3 +1,4 @@
+# ruff: noqa
 """MetadataManagerクラスのテスト"""
 
 from pathlib import Path

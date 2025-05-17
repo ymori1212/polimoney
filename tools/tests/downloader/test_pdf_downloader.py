@@ -1,3 +1,4 @@
+# ruff: noqa
 """PDFDownloaderクラスのテスト"""
 
 from pathlib import Path

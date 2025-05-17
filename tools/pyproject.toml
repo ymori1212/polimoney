@@ -39,20 +39,33 @@ build-backend = "poetry.core.masonry.api"
 # 上記を使用するには、現在のスクリプトを関数ベースにリファクタリングする必要があります
 
 [tool.ruff]
+line-length = 120
 extend-include = ["*.ipynb"]
+exclude = []
 
 [tool.ruff.lint]
 # チェックしたいルール
 # https://docs.astral.sh/ruff/rules/
-# 最終的にALLにしたいが、現状はエラーが多いので徐々に対応していく
-# select = ["ALL"]
-select = []
+select = [
+    "F",  # pyflakes
+    "E",  # pycodestyle
+    "W",  # pycodestyle warnings
+    "B",  # flake8-bugbear
+    "SIM", # flake8-simplify
+    "I",  # isort
+    "UP", # pyupgrade
+    "N",  # pep8-naming
+]
 # 無視したいルール
-ignore = ["D212", "D400", "D415"]
+ignore = []
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "tests/**/*.py" = [
     "S101", # asserts allowed in tests...
+    "SLF",
+    "TRY",
+    "ANN", # Missing type
+    "D", # Documentation
     "PLR2004", # Magic value used in comparison, ...
 ]
 
