@@ -41,9 +41,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.ruff]
 line-length = 120
 extend-include = ["*.ipynb"]
-exclude = [
-    "prompt.py"
-]
+exclude = []
 
 [tool.ruff.lint]
 # チェックしたいルール
