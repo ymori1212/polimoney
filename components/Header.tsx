@@ -1,17 +1,16 @@
-'use client'
+'use client';
 
-import {Box, Heading, HStack, Text} from '@chakra-ui/react'
-import Link from 'next/link'
-import {usePathname} from 'next/navigation'
+import { Box, HStack, Heading, Text } from '@chakra-ui/react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export function Header() {
-
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   return (
     <Box>
       <HStack
-        justify={{base: 'center', lg: 'space-between'}}
+        justify={{ base: 'center', lg: 'space-between' }}
         alignItems={'center'}
         px={10}
         py={5}
@@ -24,7 +23,12 @@ export function Header() {
           <Heading fontSize={'3xl'}>Polimoney</Heading>
         </Link>
         {pathname !== '/' && (
-          <HStack fontSize={'sm'} fontWeight={'bold'} gap={8} display={{ base: 'none', lg: 'flex' }}>
+          <HStack
+            fontSize={'sm'}
+            fontWeight={'bold'}
+            gap={8}
+            display={{ base: 'none', lg: 'flex' }}
+          >
             <Link href={'#summary'}>収支の流れ</Link>
             <Link href={'#income'}>収入の一覧</Link>
             <Link href={'#expense'}>支出の一覧</Link>
@@ -35,5 +39,5 @@ export function Header() {
         政治資金の流れを見える化するプラットフォームです。透明性の高い政治実現を目指して、オープンソースで開発されています。
       </Text>
     </Box>
-  )
+  );
 }

@@ -1,18 +1,18 @@
-import {BoardContainer} from '@/components/BoardContainer'
-import {HStack, SimpleGrid, Text} from '@chakra-ui/react'
-import {Report} from '@/models/type'
+import { BoardContainer } from '@/components/BoardContainer';
+import type { Report } from '@/models/type';
+import { HStack, SimpleGrid, Text } from '@chakra-ui/react';
 
 type Props = {
-  report: Report
-}
+  report: Report;
+};
 
-export function BoardMetadata({report}: Props) {
+export function BoardMetadata({ report }: Props) {
   return (
     <BoardContainer>
       <Text fontSize={'sm'} fontWeight={'bold'} mb={4}>
         本収支報告に関する情報開示
       </Text>
-      <SimpleGrid columns={{base: 1, lg: 2}} gap={2}>
+      <SimpleGrid columns={{ base: 1, lg: 2 }} gap={2}>
         <HStack>
           <dt>データ引用元</dt>
           <dd>{report.year}年収支報告書</dd>
@@ -51,5 +51,5 @@ export function BoardMetadata({report}: Props) {
         </HStack>
       </SimpleGrid>
     </BoardContainer>
-  )
+  );
 }
