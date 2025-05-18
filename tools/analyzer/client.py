@@ -7,6 +7,7 @@ import logging
 import time
 from typing import TYPE_CHECKING, Any, NoReturn, Protocol
 
+import re
 import google.api_core.exceptions
 import google.generativeai as genai
 import PIL.Image
@@ -283,6 +284,14 @@ class GeminiClient:
         from analyzer.prompt import prompt, prompt_first_page
 
         image_filename = image_path.name
+
+        # ページ番号を特定
+        page_match = re.search(r'_page_(\d+)\.png$', image_filename)
+        page_number_str = page_match.group(1) if page_match else 0
+
+        # int型に変換
+        page_number = int(page_number_str)
+
         try:
             # 依存性注入されたimage_loaderがあれば使用、なければデフォルトの動作
             img = self.image_loader.load_image(image_path) if self.image_loader else PIL.Image.open(image_path)
@@ -290,8 +299,10 @@ class GeminiClient:
             # 1ページ目の場合はprompt_first_pageを使用
             if image_path.name.endswith("_page_01.png"):
                 selected_prompt = prompt_first_page
+
+            # idの重複を防ぐため、ページ数に応じたidを生成
             else:
-                selected_prompt = prompt
+                selected_prompt = prompt.replace("__num__", str(page_number * 1000))
 
             try:
                 response = self._generate_content_with_retry(selected_prompt, img)
