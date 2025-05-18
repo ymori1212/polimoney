@@ -13,8 +13,8 @@ def load_all_json(file_paths):
             json_data = json.load(f)
             jsons.append(json_data)
 
-    # 一番最後のjsonファイルから、年度を読み取る(宣誓書の年)
-    year = jsons[-1]["year"]
+    # 一番最初のjsonファイルから、年度を読み取る(表紙の年)
+    year = jsons[0]["year"]
 
     # 次に、categoriesをマージする
     categories = []

@@ -280,15 +280,21 @@ class GeminiClient:
             AnalysisError: 解析エラーが発生した場合。
 
         """
-        from analyzer.prompt import prompt
+        from analyzer.prompt import prompt, prompt_first_page
 
         image_filename = image_path.name
         try:
             # 依存性注入されたimage_loaderがあれば使用、なければデフォルトの動作
             img = self.image_loader.load_image(image_path) if self.image_loader else PIL.Image.open(image_path)
 
+            # 1ページ目の場合はprompt_first_pageを使用
+            if image_path.name.endswith("_page_01.png"):
+                selected_prompt = prompt_first_page
+            else:
+                selected_prompt = prompt
+
             try:
-                response = self._generate_content_with_retry(prompt, img)
+                response = self._generate_content_with_retry(selected_prompt, img)
                 return self._process_gemini_response(response, image_filename)
             except google.api_core.exceptions.GoogleAPIError as e:
                 self._handle_analysis_error(
