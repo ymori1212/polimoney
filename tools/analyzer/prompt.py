@@ -9,7 +9,6 @@ prompt = """
 # 期待するデータ形式
 
 {
-  "year": 2025,
   "categories": [
     {
       "id": "xxx1",
@@ -82,7 +81,6 @@ categoryの候補
 # 具体例
 
 {
-  "year": 2025,
   "categories": [
     {
       "id": "xxx1",
