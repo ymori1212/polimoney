@@ -22,6 +22,18 @@ npm run dev
 
 詳細は`tools/README.md`を参照してください。
 
+### converter
+
+OCR処理で作成したJSONをウェブフロントエンド用のデータ構造に変換します。
+
+```bash
+# 実行例
+npx tsx data/converter.ts -i data/sample_input.json -o data/sample_output.json
+# エラーを無視してJSONを出力
+npx tsx data/converter.ts --ignore-errors -i data/sample_input.json -o data/sample_output.json
+```
+
+
 ## 貢献ガイドライン
 
 このプロジェクトはオープンソース(APGLライセンス)であり、誰でも貢献することができます。

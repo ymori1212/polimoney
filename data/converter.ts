@@ -153,7 +153,8 @@ function convert(data: InputData): OutputData {
   };
 }
 
-function validateInput(data: any): void {
+function validateInput(data: any): string[] {
+  const errors: string[] = [];
   if (typeof data.year !== 'number') {
     throw new Error('year は数値である必要があります');
   }
@@ -225,7 +226,7 @@ function validateInput(data: any): void {
     .filter((t: any) => expenseCategoryIds.includes(t.category_id))
     .reduce((sum: number, t: any) => sum + t.value, 0);
   if (totalIncome !== totalExpense) {
-    throw new Error(
+    errors.push(
       `income と expense の合計が一致しません: ${totalIncome} !== ${totalExpense}`,
     );
   }
@@ -234,7 +235,14 @@ function validateInput(data: any): void {
     (c: any) => !c.parent,
   ).length;
   if (rootCategoryCount !== 1) {
-    throw new Error('root category はちょうど1つである必要があります');
+    errors.push('root category はちょうど1つである必要があります');
+  }
+  for (const category of data.categories) {
+    if (category.id === category.parent) {
+      throw new Error(
+        `category の id と parent が同じです。 category.id: ${category.id}`,
+      );
+    }
   }
 
   const categoryIds = data.categories.map((c: any) => c.id);
@@ -252,34 +260,43 @@ function validateInput(data: any): void {
       !transaction.date ||
       !transaction.value
     ) {
-      throw new Error(
-        'transaction は id, category_id, name, date, value を持つ必要があります',
+      errors.push(
+        `transaction は id, category_id, name, date, value を持つ必要があります。 transaction.id: ${transaction.id}, transaction.category_id: ${transaction.category_id}, transaction.name: ${transaction.name}, transaction.date: ${transaction.date}, transaction.value: ${transaction.value}`,
       );
     }
     if (!categoryIds.includes(transaction.category_id)) {
-      throw new Error(
-        'transaction の category_id は categories に存在する必要があります',
+      errors.push(
+        `transaction の category_id は categories に存在する必要があります。 transaction.id: ${transaction.id}, transaction.category_id: ${transaction.category_id}`,
       );
     }
     if (!leafCategoryIds.includes(transaction.category_id)) {
-      throw new Error(
-        `transaction の category_id は葉カテゴリである必要があります: ${transaction.category_id}`,
+      errors.push(
+        `transaction の category_id は葉カテゴリである必要があります。 transaction.id: ${transaction.id}, transaction.category_id: ${transaction.category_id}`,
       );
     }
     if (typeof transaction.date !== 'string') {
-      throw new Error('transaction の date は文字列である必要があります');
+      errors.push(
+        `transaction の date は文字列である必要があります。 transaction.id: ${transaction.id}, transaction.date: ${transaction.date}`,
+      );
     }
     if (typeof transaction.value !== 'number' || transaction.value <= 0) {
-      throw new Error('transaction の value は正数である必要があります');
+      errors.push(
+        `transaction の value は正数である必要があります。 transaction.id: ${transaction.id}, transaction.value: ${transaction.value}`,
+      );
     }
   }
+  return errors;
 }
 
-function parseArguments(): { inputFile: string; outputFile: string } {
+function parseArguments(): {
+  inputFile: string;
+  outputFile: string;
+  ignoreErrors: boolean;
+} {
   const args = process.argv.slice(2);
   let inputFile = '';
   let outputFile = '';
-
+  let ignoreErrors = false;
   for (let i = 0; i < args.length; i++) {
     if (args[i] === '-i' && i + 1 < args.length) {
       inputFile = args[i + 1];
@@ -287,28 +304,38 @@ function parseArguments(): { inputFile: string; outputFile: string } {
     } else if (args[i] === '-o' && i + 1 < args.length) {
       outputFile = args[i + 1];
       i++;
+    } else if (args[i] === '--ignore-errors') {
+      ignoreErrors = true;
     }
   }
 
   if (!inputFile || !outputFile) {
     console.error(
-      '使用方法: node generator.js -i <入力JSONファイル> -o <出力JSONファイル>',
+      '使用方法: node generator.js -i <入力JSONファイル> -o <出力JSONファイル> [--ignore-errors]',
     );
     process.exit(1);
   }
 
-  return { inputFile, outputFile };
+  return { inputFile, outputFile, ignoreErrors };
 }
 
 function main(): void {
   try {
-    const { inputFile, outputFile } = parseArguments();
+    const { inputFile, outputFile, ignoreErrors } = parseArguments();
 
     const inputPath = path.resolve(inputFile);
     const rawData = fs.readFileSync(inputPath, 'utf8');
     const data = JSON.parse(rawData);
 
-    validateInput(data);
+    const errors = validateInput(data);
+    if (errors.length > 0) {
+      for (const error of errors) {
+        console.error(`Error: ${error}`);
+      }
+      if (!ignoreErrors) {
+        process.exit(1);
+      }
+    }
 
     const convertedData = convert(data);
 
