@@ -12,6 +12,9 @@ export const metadata: Metadata = {
       ? 'https://polimoney.dd2030.org'
       : 'http://localhost:3000',
   ),
+  openGraph: {
+    images: ['/ogp/polimoney.png'],
+  },
 };
 
 export default function RootLayout({
