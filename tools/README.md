@@ -8,6 +8,7 @@
     *   指定されたPDFファイルの各ページをPNG画像に変換します。
     *   出力ファイル名はゼロ埋めされたページ番号を含み、ソート時に正しい順序になります (例: `document_page_001.png`)。
     *   出力先ディレクトリを指定できます（デフォルト: `output_images`）。
+    *   `--preprocess` オプションで `grayscale` や `binarize` などの前処理を追加実行できます。処理後の画像は `preprocessed_images/` に保存されます。
 *   **画像解析とJSON出力 (`analyze_image_gemini.py`)**:
     *   指定された画像ファイルまたはディレクトリ内の全PNG画像をGoogle Gemini API (gemini-1.5-pro-latest) を使用して解析します。
     *   政治資金収支報告書の画像からテキスト情報を抽出し、構造化されたJSON形式で出力するように設計されたデフォルトプロンプトが含まれています。プロンプトは引数で変更可能です。
@@ -99,9 +100,10 @@ poetry run pyright .
 
 2.  **PDFを画像に変換**:
     ```bash
-    python pdf_to_images.py <your_document.pdf> -o output_images
+    python pdf_to_images.py <your_document.pdf> -o output_images --preprocess grayscale,binarize
     ```
     これにより、`output_images` ディレクトリに `your_document_page_001.png`, `your_document_page_002.png`, ... が生成されます。
+    `--preprocess` を指定すると、`output_images/preprocessed_images/` に処理後の画像も保存されます。
 
 3.  **画像を解析してJSONを生成**:
     *   **単一の画像ファイル**:
