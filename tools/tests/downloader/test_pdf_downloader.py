@@ -229,9 +229,7 @@ def test_download_pdf_success(pdf_downloader: PDFDownloader) -> None:
 
         # レスポンスの設定
         # mock_responseはpdf_downloader.session.get.return_valueとして既に設定済み
-        pdf_downloader.session.get.return_value.iter_content.return_value = [
-            b"test data"
-        ]
+        pdf_downloader.session.get.return_value.iter_content.return_value = [b"test data"]
 
         # tqdmのモック設定
         mock_progress = Mock()

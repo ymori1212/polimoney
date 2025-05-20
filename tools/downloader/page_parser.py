@@ -119,18 +119,7 @@ class PdfLink:
                 return Category.POLITICAL_PARTY_BRANCH
             case "006" | "010":  # 政治資金団体のコード
                 return Category.POLITICAL_FUND_GROUP
-            case (
-                "100"
-                | "101"
-                | "102"
-                | "103"
-                | "104"
-                | "105"
-                | "106"
-                | "107"
-                | "108"
-                | "109"
-            ):
+            case "100" | "101" | "102" | "103" | "104" | "105" | "106" | "107" | "108" | "109":
                 return Category.POLITICAL_GROUP
             case "200":
                 return Category.FUND_GROUP
@@ -292,9 +281,7 @@ class PageParser:
             logger.debug("リンク: %s, テキスト: %s", href_str, text)
 
             # 特定のURLパターンを直接チェック
-            if "/reports/" in href_str and any(
-                re.search(pattern, text) for pattern in YEAR_PATTERNS
-            ):
+            if "/reports/" in href_str and any(re.search(pattern, text) for pattern in YEAR_PATTERNS):
                 if seasonal_report_only and "/reports/SS" not in href_str:
                     continue
 
@@ -523,12 +510,8 @@ class PageParser:
         pdf_links = self._extract_direct_pdf_links(soup, report_list_url.url)
         if self.name_filter:
             if self.name_filter.exact_match:
-                pdf_links = [
-                    link for link in pdf_links if self.name_filter.name == link.text
-                ]
+                pdf_links = [link for link in pdf_links if self.name_filter.name == link.text]
             else:
-                pdf_links = [
-                    link for link in pdf_links if self.name_filter.name in link.text
-                ]
+                pdf_links = [link for link in pdf_links if self.name_filter.name in link.text]
 
         return pdf_links
