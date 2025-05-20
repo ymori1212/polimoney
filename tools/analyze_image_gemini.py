@@ -72,6 +72,14 @@ def main() -> None:
         ),
     )
 
+    parser.add_argument(
+        "-w",
+        "--workers",
+        type=int,
+        default=min(32, os.cpu_count() or 1 * 2),
+        help="並列処理を行うスレッド数。",
+    )
+
     args = parser.parse_args()
     api_key = os.getenv("GOOGLE_API_KEY")
     if not api_key:
@@ -125,8 +133,7 @@ def main() -> None:
         )
         return png_file_path, success
 
-    cpu_count = os.cpu_count() or 1
-    max_workers = min(32, cpu_count * 2)
+    max_workers = args.workers
     logger.info("並列処理を開始します (最大 %s スレッド)", max_workers)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
