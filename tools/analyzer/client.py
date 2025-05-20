@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 import time
 from typing import TYPE_CHECKING, Any, NoReturn, Protocol
 
-import re
 import google.api_core.exceptions
 import google.generativeai as genai
 import PIL.Image
@@ -286,7 +286,7 @@ class GeminiClient:
         image_filename = image_path.name
 
         # ページ番号を特定
-        page_match = re.search(r'_page_(\d+)\.png$', image_filename)
+        page_match = re.search(r"_page_(\d+)\.png$", image_filename)
         page_number_str = page_match.group(1) if page_match else 0
 
         # int型に変換

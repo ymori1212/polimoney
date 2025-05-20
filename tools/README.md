@@ -80,6 +80,8 @@ PDFファイル
 ```bash
 # lint
 poetry run ruff check .
+# lint 自動修正あり
+poetry run ruff check --fix .
 # format
 poetry run ruff format .
 # type check
