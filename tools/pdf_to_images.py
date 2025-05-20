@@ -38,17 +38,13 @@ def pdf_to_png(pdf_path, output_dir="."):
 
         # ページ番号の桁数を計算 (例: 100ページなら3桁)
         total_pages = len(images)
-        num_digits = (
-            math.ceil(math.log10(total_pages + 1)) if total_pages > 0 else 1
-        )  # 0ページや1ページの場合も考慮
+        num_digits = math.ceil(math.log10(total_pages + 1)) if total_pages > 0 else 1  # 0ページや1ページの場合も考慮
 
         print(f"Saving images with {num_digits}-digit zero-padded page numbers...")
         for i, image in enumerate(images):
             page_num = i + 1
             # ページ番号をゼロ埋めしてファイル名を生成
-            output_filename = os.path.join(
-                output_dir, f"{base_filename}_page_{page_num:0{num_digits}d}.png"
-            )
+            output_filename = os.path.join(output_dir, f"{base_filename}_page_{page_num:0{num_digits}d}.png")
             image.save(output_filename, "PNG")
             # print(f"Saved: {output_filename}") # 毎回表示すると冗長なのでコメントアウト
 
@@ -56,15 +52,11 @@ def pdf_to_png(pdf_path, output_dir="."):
 
     except Exception as e:
         print(f"An error occurred during conversion: {e}")
-        print(
-            "Please ensure poppler is installed and in your PATH, or specify poppler_path if needed."
-        )
+        print("Please ensure poppler is installed and in your PATH, or specify poppler_path if needed.")
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Convert PDF pages to PNG images with zero-padded filenames."
-    )
+    parser = argparse.ArgumentParser(description="Convert PDF pages to PNG images with zero-padded filenames.")
     parser.add_argument("pdf_file", help="Path to the input PDF file.")
     parser.add_argument(
         "-o",
