@@ -72,6 +72,7 @@ class Category(Enum):
     POLITICAL_PARTY_HEADQUARTER = "政党本部"
     POLITICAL_PARTY_BRANCH = "政党支部"
     POLITICAL_FUND_GROUP = "政治資金団体"
+    FUND_GROUP = "資金管理団体"
     POLITICAL_GROUP = "国会議員関係政治団体"
     OTHER_POLITICAL_GROUP = "その他の政治団体"
     UNKNOWN = "不明"
@@ -83,6 +84,7 @@ class PdfLink:
 
     url: str
     text: str
+    report_list_url: str
 
     def category_id(self) -> str:
         """PDFリンクURLに含まれるコード値からカテゴリIDを取得する"""
@@ -96,6 +98,19 @@ class PdfLink:
     def category(self) -> Category:
         """カテゴリを取得する"""
         category_id = self.category_id()
+
+        if "/SF/" in self.report_list_url and category_id == "000":
+            return Category.POLITICAL_PARTY_HEADQUARTER
+        if "/SF/" in self.report_list_url:
+            return Category.POLITICAL_FUND_GROUP
+        if "/SL/" in self.report_list_url:
+            return Category.POLITICAL_PARTY_BRANCH
+        if "/SC/" in self.report_list_url:
+            return Category.POLITICAL_GROUP
+        if "/SS/" in self.report_list_url:
+            return Category.FUND_GROUP
+        if "/SO/" in self.report_list_url:
+            return Category.OTHER_POLITICAL_GROUP
 
         match category_id:
             case "000":
@@ -118,9 +133,9 @@ class PdfLink:
             ):
                 return Category.POLITICAL_GROUP
             case "200":
-                return Category.OTHER_POLITICAL_GROUP
+                return Category.FUND_GROUP
             case _:
-                return Category.UNKNOWN
+                return Category.OTHER_POLITICAL_GROUP
 
 
 class PageParser:
@@ -373,7 +388,7 @@ class PageParser:
     def _extract_direct_pdf_links(
         self,
         soup: BeautifulSoup,
-        base_url: str,
+        report_list_url: str,
     ) -> list[PdfLink]:
         """
         BeautifulSoupオブジェクトから直接PDFリンクを抽出
@@ -387,7 +402,7 @@ class PageParser:
 
         """
         # URLの末尾にスラッシュがあることを確認
-        base_url = self._ensure_url_ends_with_slash(base_url)
+        report_list_url_with_slash = self._ensure_url_ends_with_slash(report_list_url)
         links: list[PdfLink] = []
 
         for link in soup.find_all("a"):
@@ -404,8 +419,10 @@ class PageParser:
 
             # PDFへの直接リンクかどうかを確認
             if href_str.lower().endswith(".pdf"):
-                pdf_url = urljoin(base_url, href_str)
-                links.append(PdfLink(url=pdf_url, text=text))
+                pdf_url = urljoin(report_list_url_with_slash, href_str)
+                links.append(
+                    PdfLink(url=pdf_url, text=text, report_list_url=report_list_url),
+                )
 
         return links
 
