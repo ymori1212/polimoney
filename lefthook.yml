@@ -4,14 +4,16 @@ pre-commit:
       glob: '*.{js,ts,jsx,tsx}'
       run: npm run check
       stage_fixed: true
-    ruff:
-      root: "./tools/"
+    ruff-check:
       glob: '*.{py}'
-      run: ruff check --fix .
+      run: cd tools && poetry run ruff check --fix .
       stage_fixed: true
     ruff-format:
-      root: "./tools/"
       glob: '*.{py}'
-      run: ruff format .
+      run: cd tools && poetry run ruff format .
+      stage_fixed: true
+    pyright:
+      glob: '*.{py}'
+      run: cd tools && poetry run pyright .
       stage_fixed: true
 

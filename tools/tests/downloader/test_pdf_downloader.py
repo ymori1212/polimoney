@@ -46,7 +46,11 @@ def test_prepare_download(pdf_downloader: PDFDownloader) -> None:
     """prepare_downloadメソッドのテスト"""
     # メソッドの実行
     result = pdf_downloader.prepare_download(
-        pdf_link=PdfLink(url="https://example.com/test.pdf", text="テスト団体"),
+        pdf_link=PdfLink(
+            url="https://example.com/test.pdf",
+            text="テスト団体",
+            report_list_url="https://example.com/",
+        ),
         year="R5",
     )
 
