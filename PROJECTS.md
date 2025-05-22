@@ -29,5 +29,4 @@ _Polimoney／digitaldemocracy2030_
 * documentation: ドキュメント作成タスクに紐づける
 * duplicate: 重複イシュー
 * enhancement: 機能追加タスクに紐づける
-* documentation: ドキュメント作成タスクに紐づける
 * good first issue: 初めてのコミッターが挑戦しやすいタスクに紐づける
