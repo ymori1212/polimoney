@@ -56,7 +56,7 @@ Polimoneyの改善にご協力いただきありがとうございます！ 🎉
 ### 現在のメンテナー（2025/05/26時点）
 - [@nanocloudx](https://github.com/nanocloudx)
 - [@shumizu418128](https://github.com/shumizu418128)
-- [@adust09](https://github.com/adsut09)
+- [@adust09](https://github.com/adust09)
 - [@moai-redcap](https://github.com/moai-redcap)
 - [@dotneet](https://github.com/dotneet)
 
