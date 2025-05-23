@@ -37,5 +37,11 @@ npx tsx data/converter.ts --ignore-errors -i data/sample_input.json -o data/samp
 ## 貢献ガイドライン
 
 このプロジェクトはオープンソース(APGLライセンス)であり、誰でも貢献することができます。
-Github issueを通じてバグ報告や機能提案を行うことができます。
-また、プルリクエストを通じてコードの改善や新機能の追加を行うことも歓迎します。
+詳細は以下のドキュメントを参照してください。
+- [CONRIBUTING](CONTRIBUTING.md)
+- [LICENSE](LICENSE)
+- [CLA](CLA.md)
+- [PROJECTS](PROJECTS.md)
+- [CODE_REVIEW_GUIDELINES](CODE_REVIEW_GUIDELINES.md)
+- [DEVIN_COLLABORATION](DEVIN_COLLABORATION.md)
+- [ADR](docs/adr/ADR.md)
