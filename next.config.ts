@@ -1,4 +1,4 @@
-import type {NextConfig} from 'next'
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   output: 'export',
@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   experimental: {
     optimizePackageImports: ['@chakra-ui/react'],
-  }
-}
+  },
+};
 
-export default nextConfig
+export default nextConfig;
