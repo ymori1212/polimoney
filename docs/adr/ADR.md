@@ -88,5 +88,5 @@ ADRは、以下のセクションを含むMarkdownファイルとして記述し
 
 -   [Michael Nygard, "Documenting Architecture Decisions"](http://thinkrelevance.com/blog/2011/11/15/documenting-architecture-decisions)
 -   [ADR GitHub organization](https://adr.github.io/)
--   [architecture-decision-record](architecture-decision-record)
+-   [architecture-decision-record](https://github.com/joelparkerhenderson/architecture-decision-record)
 
