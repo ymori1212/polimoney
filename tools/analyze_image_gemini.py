@@ -1,4 +1,5 @@
 """Gemini APIを使用して画像の内容を解析し、結果をJSONファイルとして保存するスクリプト。"""
+
 from __future__ import annotations
 
 import argparse
@@ -66,10 +67,15 @@ def main() -> None:
         "-o",
         "--output-dir",
         default=OUTPUT_JSON_DIR,
-        help=(
-            "解析結果のJSONファイルを保存するディレクトリ。\n"
-            f"デフォルト: '{OUTPUT_JSON_DIR}'"
-        ),
+        help=(f"解析結果のJSONファイルを保存するディレクトリ。\nデフォルト: '{OUTPUT_JSON_DIR}'"),
+    )
+
+    parser.add_argument(
+        "-w",
+        "--workers",
+        type=int,
+        default=min(32, os.cpu_count() or 1 * 2),
+        help="並列処理を行うスレッド数。",
     )
 
     args = parser.parse_args()
@@ -94,7 +100,8 @@ def main() -> None:
         logger.info("出力ディレクトリ: %s", output_dir)
     except OSError:
         logger.exception(
-            "エラー: 出力ディレクトリ '%s' の作成に失敗しました。", output_dir,
+            "エラー: 出力ディレクトリ '%s' の作成に失敗しました。",
+            output_dir,
         )
         sys.exit(1)
 
@@ -121,12 +128,12 @@ def main() -> None:
         i, png_file_path = args_tuple
         logger.info("--- Processing file %s/%s ---", i + 1, total_files)
         success = image_processor.process_single_image(
-            png_file_path, output_dir,
+            png_file_path,
+            output_dir,
         )
         return png_file_path, success
 
-    cpu_count = os.cpu_count() or 1
-    max_workers = min(32, cpu_count * 2)
+    max_workers = args.workers
     logger.info("並列処理を開始します (最大 %s スレッド)", max_workers)
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
@@ -143,7 +150,8 @@ def main() -> None:
 
     if failed_count > 0:
         logger.error(
-            "エラーログは %s に保存されました", output_dir / "error_log.json",
+            "エラーログは %s に保存されました",
+            output_dir / "error_log.json",
         )
 
 

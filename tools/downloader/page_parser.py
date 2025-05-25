@@ -72,6 +72,7 @@ class Category(Enum):
     POLITICAL_PARTY_HEADQUARTER = "政党本部"
     POLITICAL_PARTY_BRANCH = "政党支部"
     POLITICAL_FUND_GROUP = "政治資金団体"
+    FUND_GROUP = "資金管理団体"
     POLITICAL_GROUP = "国会議員関係政治団体"
     OTHER_POLITICAL_GROUP = "その他の政治団体"
     UNKNOWN = "不明"
@@ -83,6 +84,7 @@ class PdfLink:
 
     url: str
     text: str
+    report_list_url: str
 
     def category_id(self) -> str:
         """PDFリンクURLに含まれるコード値からカテゴリIDを取得する"""
@@ -97,6 +99,19 @@ class PdfLink:
         """カテゴリを取得する"""
         category_id = self.category_id()
 
+        if "/SF/" in self.report_list_url and category_id == "000":
+            return Category.POLITICAL_PARTY_HEADQUARTER
+        if "/SF/" in self.report_list_url:
+            return Category.POLITICAL_FUND_GROUP
+        if "/SL/" in self.report_list_url:
+            return Category.POLITICAL_PARTY_BRANCH
+        if "/SC/" in self.report_list_url:
+            return Category.POLITICAL_GROUP
+        if "/SS/" in self.report_list_url:
+            return Category.FUND_GROUP
+        if "/SO/" in self.report_list_url:
+            return Category.OTHER_POLITICAL_GROUP
+
         match category_id:
             case "000":
                 return Category.POLITICAL_PARTY_HEADQUARTER
@@ -104,23 +119,12 @@ class PdfLink:
                 return Category.POLITICAL_PARTY_BRANCH
             case "006" | "010":  # 政治資金団体のコード
                 return Category.POLITICAL_FUND_GROUP
-            case (
-                "100"
-                | "101"
-                | "102"
-                | "103"
-                | "104"
-                | "105"
-                | "106"
-                | "107"
-                | "108"
-                | "109"
-            ):
+            case "100" | "101" | "102" | "103" | "104" | "105" | "106" | "107" | "108" | "109":
                 return Category.POLITICAL_GROUP
             case "200":
-                return Category.OTHER_POLITICAL_GROUP
+                return Category.FUND_GROUP
             case _:
-                return Category.UNKNOWN
+                return Category.OTHER_POLITICAL_GROUP
 
 
 class PageParser:
@@ -277,9 +281,7 @@ class PageParser:
             logger.debug("リンク: %s, テキスト: %s", href_str, text)
 
             # 特定のURLパターンを直接チェック
-            if "/reports/" in href_str and any(
-                re.search(pattern, text) for pattern in YEAR_PATTERNS
-            ):
+            if "/reports/" in href_str and any(re.search(pattern, text) for pattern in YEAR_PATTERNS):
                 if seasonal_report_only and "/reports/SS" not in href_str:
                     continue
 
@@ -373,7 +375,7 @@ class PageParser:
     def _extract_direct_pdf_links(
         self,
         soup: BeautifulSoup,
-        base_url: str,
+        report_list_url: str,
     ) -> list[PdfLink]:
         """
         BeautifulSoupオブジェクトから直接PDFリンクを抽出
@@ -387,7 +389,7 @@ class PageParser:
 
         """
         # URLの末尾にスラッシュがあることを確認
-        base_url = self._ensure_url_ends_with_slash(base_url)
+        report_list_url_with_slash = self._ensure_url_ends_with_slash(report_list_url)
         links: list[PdfLink] = []
 
         for link in soup.find_all("a"):
@@ -404,8 +406,10 @@ class PageParser:
 
             # PDFへの直接リンクかどうかを確認
             if href_str.lower().endswith(".pdf"):
-                pdf_url = urljoin(base_url, href_str)
-                links.append(PdfLink(url=pdf_url, text=text))
+                pdf_url = urljoin(report_list_url_with_slash, href_str)
+                links.append(
+                    PdfLink(url=pdf_url, text=text, report_list_url=report_list_url),
+                )
 
         return links
 
@@ -506,12 +510,8 @@ class PageParser:
         pdf_links = self._extract_direct_pdf_links(soup, report_list_url.url)
         if self.name_filter:
             if self.name_filter.exact_match:
-                pdf_links = [
-                    link for link in pdf_links if self.name_filter.name == link.text
-                ]
+                pdf_links = [link for link in pdf_links if self.name_filter.name == link.text]
             else:
-                pdf_links = [
-                    link for link in pdf_links if self.name_filter.name in link.text
-                ]
+                pdf_links = [link for link in pdf_links if self.name_filter.name in link.text]
 
         return pdf_links

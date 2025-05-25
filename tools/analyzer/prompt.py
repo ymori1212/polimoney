@@ -9,20 +9,19 @@ prompt = """
 # 期待するデータ形式
 
 {
-  "year": 2025,
   "categories": [
     {
-      "id": "xxx1",
+      "id": "category-__num__",
       "name": "個人からの寄付",
-      "parent": "xxx66",
+      "parent": "category-__num__",
       "direction": "income"
     },
     ...
   ],
   "transactions": [
     {
-      "id": "xxx1",
-      "category_id": "xxxcc",
+      "id": "transaction-__num__",
+      "category_id": "category-__num__",
       "name": "飲食代",
       "date": "R5/6/28",
       "value": 10200
@@ -39,7 +38,8 @@ directionは "income", "expense" のどちらかを指定してください。
 
 ## categoriesについて
 
-- idは任意の文字列で構いません (例: "xxx1", "xxx2"など)
+- idはtransactionsと関連がある場合は、idを合わせてください
+- idをつける際、ほかのファイルとのid重複を防ぐため、数字は__num__以上の値を利用してください。
 - parentは親カテゴリのidを指定します。最上位カテゴリの場合はnullを指定してください
 - nameは以下のカテゴリから選んでください。ただし、当てはまるものがなく、明らかにカテゴリとして適切な物があった場合は、その他 ({{読み取れたカテゴリ}}) として立項して構いません。
 
@@ -73,7 +73,8 @@ categoryの候補
 
 ## transactionsについて
 
-- idは任意の文字列で構いません (例: "xxx1", "xxx2"など)
+- idはcategoriesと関連がある場合は、idを合わせてください
+- idをつける際、ほかのファイルとのid重複を防ぐため、数字は__num__以上の値を利用してください。
 - category_idは、categoriesで定義したidのいずれかを指定してください
 - dateは年月日という項目に 6 9 30 などの区分で入っています。これは令和6年9月30日を示すので、 R6.9.30 という文字列に変換してください
 - nameは具体的な項目を、画像に記載の通り入力してください
@@ -82,16 +83,15 @@ categoryの候補
 # 具体例
 
 {
-  "year": 2025,
   "categories": [
     {
-      "id": "xxx1",
+      "id": "category-__num__",
       "name": "個人からの寄付",
-      "parent": "xxx66",
+      "parent": "category-__num__",
       "direction": "income"
     },
     {
-      "id": "xxx66",
+      "id": "category-__num__",
       "name": "総収入",
       "parent": null,
       "direction": "income"
@@ -99,12 +99,32 @@ categoryの候補
   ],
   "transactions": [
     {
-      "id": "xxx1",
-      "category_id": "xxx1",
+      "id": "transaction-__num__",
+      "category_id": "category-__num__",
       "name": "田中太郎",
       "date": "R6.6.29",
       "value": 10000
     }
   ]
 }
+"""
+
+prompt_first_page = """
+この画像は日本の政治資金収支報告書の1ページ目です。
+以下の手順で報告書の年度を特定し、西暦で出力してください：
+
+1. 画像内で「令和X年分」という記述を探してください
+2. Xの数字を取得し、令和の年数として解釈してください
+3. 令和の年数を西暦に変換してください（令和1年 = 2019年）
+4. 結果を以下のJSON形式で出力してください：
+    "year": YYYY
+
+例：
+- 「令和5年分」と記載されている場合 → "year": 2023
+- 「令和6年分」と記載されている場合 → "year": 2024
+
+注意：
+- 必ずJSON形式で出力してください
+- 年度は必ず西暦で出力してください
+- 令和の年数が見つからない場合は、画像内の他の日付情報から推測してください
 """

@@ -46,7 +46,11 @@ def test_prepare_download(pdf_downloader: PDFDownloader) -> None:
     """prepare_downloadメソッドのテスト"""
     # メソッドの実行
     result = pdf_downloader.prepare_download(
-        pdf_link=PdfLink(url="https://example.com/test.pdf", text="テスト団体"),
+        pdf_link=PdfLink(
+            url="https://example.com/test.pdf",
+            text="テスト団体",
+            report_list_url="https://example.com/",
+        ),
         year="R5",
     )
 
@@ -229,9 +233,7 @@ def test_download_pdf_success(pdf_downloader: PDFDownloader) -> None:
 
         # レスポンスの設定
         # mock_responseはpdf_downloader.session.get.return_valueとして既に設定済み
-        pdf_downloader.session.get.return_value.iter_content.return_value = [
-            b"test data"
-        ]
+        pdf_downloader.session.get.return_value.iter_content.return_value = [b"test data"]
 
         # tqdmのモック設定
         mock_progress = Mock()

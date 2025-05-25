@@ -153,7 +153,8 @@ function convert(data: InputData): OutputData {
   };
 }
 
-function validateInput(data: any): void {
+function validateInput(data: InputData): string[] {
+  const errors: string[] = [];
   if (typeof data.year !== 'number') {
     throw new Error('year は数値である必要があります');
   }
@@ -182,21 +183,25 @@ function validateInput(data: any): void {
     }
   }
 
-  if (!data.categories.find((c: any) => c.name === '前年からの繰越額')) {
+  if (
+    !data.categories.find((c: InputCategory) => c.name === '前年からの繰越額')
+  ) {
     throw new Error('カテゴリ「前年からの繰越額」が存在する必要があります');
   }
-  if (!data.categories.find((c: any) => c.name === '翌年への繰越額')) {
+  if (
+    !data.categories.find((c: InputCategory) => c.name === '翌年への繰越額')
+  ) {
     throw new Error('カテゴリ「翌年への繰越額」が存在する必要があります');
   }
 
   const previousYearCategory = data.categories.find(
-    (c: any) => c.name === '前年からの繰越額',
+    (c: InputCategory) => c.name === '前年からの繰越額',
   );
   const nextYearCategory = data.categories.find(
-    (c: any) => c.name === '翌年への繰越額',
+    (c: InputCategory) => c.name === '翌年への繰越額',
   );
   const previousYearTransactions = data.transactions.filter(
-    (t: any) => t.category_id === previousYearCategory.id,
+    (t: InputTransaction) => t.category_id === previousYearCategory?.id,
   );
   if (previousYearTransactions.length !== 1) {
     throw new Error(
@@ -204,7 +209,7 @@ function validateInput(data: any): void {
     );
   }
   const nextYearTransactions = data.transactions.filter(
-    (t: any) => t.category_id === nextYearCategory.id,
+    (t: InputTransaction) => t.category_id === nextYearCategory?.id,
   );
   if (nextYearTransactions.length !== 1) {
     throw new Error(
@@ -213,37 +218,44 @@ function validateInput(data: any): void {
   }
 
   const incomeCategoryIds = data.categories
-    .filter((c: any) => c.direction === 'income')
-    .map((c: any) => c.id);
+    .filter((c: InputCategory) => c.direction === 'income')
+    .map((c: InputCategory) => c.id);
   const expenseCategoryIds = data.categories
-    .filter((c: any) => c.direction === 'expense')
-    .map((c: any) => c.id);
+    .filter((c: InputCategory) => c.direction === 'expense')
+    .map((c: InputCategory) => c.id);
   const totalIncome = data.transactions
-    .filter((t: any) => incomeCategoryIds.includes(t.category_id))
-    .reduce((sum: number, t: any) => sum + t.value, 0);
+    .filter((t: InputTransaction) => incomeCategoryIds.includes(t.category_id))
+    .reduce((sum: number, t: InputTransaction) => sum + t.value, 0);
   const totalExpense = data.transactions
-    .filter((t: any) => expenseCategoryIds.includes(t.category_id))
-    .reduce((sum: number, t: any) => sum + t.value, 0);
+    .filter((t: InputTransaction) => expenseCategoryIds.includes(t.category_id))
+    .reduce((sum: number, t: InputTransaction) => sum + t.value, 0);
   if (totalIncome !== totalExpense) {
-    throw new Error(
+    errors.push(
       `income と expense の合計が一致しません: ${totalIncome} !== ${totalExpense}`,
     );
   }
 
   const rootCategoryCount = data.categories.filter(
-    (c: any) => !c.parent,
+    (c: InputCategory) => !c.parent,
   ).length;
   if (rootCategoryCount !== 1) {
-    throw new Error('root category はちょうど1つである必要があります');
+    errors.push('root category はちょうど1つである必要があります');
+  }
+  for (const category of data.categories) {
+    if (category.id === category.parent) {
+      throw new Error(
+        `category の id と parent が同じです。 category.id: ${category.id}`,
+      );
+    }
   }
 
-  const categoryIds = data.categories.map((c: any) => c.id);
+  const categoryIds = data.categories.map((c: InputCategory) => c.id);
   const parentCategoryIds = data.categories
-    .map((c: any) => c.parent)
-    .filter((p: any) => p !== null);
+    .map((c: InputCategory) => c.parent)
+    .filter((p: string | null) => p !== null);
   const leafCategoryIds = data.categories
-    .filter((c: any) => !parentCategoryIds.includes(c.id))
-    .map((c: any) => c.id);
+    .filter((c: InputCategory) => !parentCategoryIds.includes(c.id))
+    .map((c: InputCategory) => c.id);
   for (const transaction of data.transactions) {
     if (
       !transaction.id ||
@@ -252,34 +264,43 @@ function validateInput(data: any): void {
       !transaction.date ||
       !transaction.value
     ) {
-      throw new Error(
-        'transaction は id, category_id, name, date, value を持つ必要があります',
+      errors.push(
+        `transaction は id, category_id, name, date, value を持つ必要があります。 transaction.id: ${transaction.id}, transaction.category_id: ${transaction.category_id}, transaction.name: ${transaction.name}, transaction.date: ${transaction.date}, transaction.value: ${transaction.value}`,
       );
     }
     if (!categoryIds.includes(transaction.category_id)) {
-      throw new Error(
-        'transaction の category_id は categories に存在する必要があります',
+      errors.push(
+        `transaction の category_id は categories に存在する必要があります。 transaction.id: ${transaction.id}, transaction.category_id: ${transaction.category_id}`,
       );
     }
     if (!leafCategoryIds.includes(transaction.category_id)) {
-      throw new Error(
-        `transaction の category_id は葉カテゴリである必要があります: ${transaction.category_id}`,
+      errors.push(
+        `transaction の category_id は葉カテゴリである必要があります。 transaction.id: ${transaction.id}, transaction.category_id: ${transaction.category_id}`,
       );
     }
     if (typeof transaction.date !== 'string') {
-      throw new Error('transaction の date は文字列である必要があります');
+      errors.push(
+        `transaction の date は文字列である必要があります。 transaction.id: ${transaction.id}, transaction.date: ${transaction.date}`,
+      );
     }
     if (typeof transaction.value !== 'number' || transaction.value <= 0) {
-      throw new Error('transaction の value は正数である必要があります');
+      errors.push(
+        `transaction の value は正数である必要があります。 transaction.id: ${transaction.id}, transaction.value: ${transaction.value}`,
+      );
     }
   }
+  return errors;
 }
 
-function parseArguments(): { inputFile: string; outputFile: string } {
+function parseArguments(): {
+  inputFile: string;
+  outputFile: string;
+  ignoreErrors: boolean;
+} {
   const args = process.argv.slice(2);
   let inputFile = '';
   let outputFile = '';
-
+  let ignoreErrors = false;
   for (let i = 0; i < args.length; i++) {
     if (args[i] === '-i' && i + 1 < args.length) {
       inputFile = args[i + 1];
@@ -287,28 +308,38 @@ function parseArguments(): { inputFile: string; outputFile: string } {
     } else if (args[i] === '-o' && i + 1 < args.length) {
       outputFile = args[i + 1];
       i++;
+    } else if (args[i] === '--ignore-errors') {
+      ignoreErrors = true;
     }
   }
 
   if (!inputFile || !outputFile) {
     console.error(
-      '使用方法: node generator.js -i <入力JSONファイル> -o <出力JSONファイル>',
+      '使用方法: node generator.js -i <入力JSONファイル> -o <出力JSONファイル> [--ignore-errors]',
     );
     process.exit(1);
   }
 
-  return { inputFile, outputFile };
+  return { inputFile, outputFile, ignoreErrors };
 }
 
 function main(): void {
   try {
-    const { inputFile, outputFile } = parseArguments();
+    const { inputFile, outputFile, ignoreErrors } = parseArguments();
 
     const inputPath = path.resolve(inputFile);
     const rawData = fs.readFileSync(inputPath, 'utf8');
     const data = JSON.parse(rawData);
 
-    validateInput(data);
+    const errors = validateInput(data);
+    if (errors.length > 0) {
+      for (const error of errors) {
+        console.error(`Error: ${error}`);
+      }
+      if (!ignoreErrors) {
+        process.exit(1);
+      }
+    }
 
     const convertedData = convert(data);
 

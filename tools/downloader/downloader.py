@@ -41,9 +41,7 @@ class SeijishikinDownloader:
         self.output_dir: str = args.output_dir
         self.years: list[str] = args.year.split(",") if args.year else []
         self.categories: list[str] = args.category.split(",") if args.category else []
-        self.name_filter: NameFilter | None = (
-            NameFilter(args.name, args.exact_match) if args.name else None
-        )
+        self.name_filter: NameFilter | None = NameFilter(args.name, args.exact_match) if args.name else None
         self.delay: int = max(args.delay, MIN_DELAY)  # 最小待機時間を保証
         self.force: bool = args.force
         self.dry_run: bool = args.dry_run
@@ -144,8 +142,7 @@ class SeijishikinDownloader:
         # 統計情報を表示
         stats = self.metadata_manager.get_statistics()
         logger.info(
-            "ダウンロード完了: 合計=%d, ダウンロード=%d,"
-            "スキップ=%d, 失敗=%d, 合計サイズ=%d バイト",
+            "ダウンロード完了: 合計=%d, ダウンロード=%d,スキップ=%d, 失敗=%d, 合計サイズ=%d バイト",
             stats.total_files,
             stats.downloaded_files,
             stats.skipped_files,
@@ -189,7 +186,8 @@ class SeijishikinDownloader:
         # 各リンクを処理
         for pdf_link in pdf_links:
             if isinstance(pdf_link, PdfLink) and self.process_pdf_link(
-                pdf_link, report_list_link.year,
+                pdf_link,
+                report_list_link.year,
             ):
                 # インターバルを設ける
                 if not self.dry_run:
