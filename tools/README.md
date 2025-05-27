@@ -101,9 +101,10 @@ poetry run pyright .
 
 2.  **PDFを画像に変換**:
     ```bash
-    python pdf_to_images.py <your_document.pdf> -o output_images
+    python pdf_to_images.py <your_document.pdf> -o output_images --preprocess grayscale binarize
     ```
-    これにより、`output_images` ディレクトリに `your_document_page_001.png`, `your_document_page_002.png`, ... が生成されます。
+    これにより、`output_images` ディレクトリに `your_document_page_001.png`, `your_document_page_002.png`, ... が生成されます。  
+    `--preprocess` オプションを指定すると、変換後に画像の前処理を行い、結果を `output_images/processed` に保存します。
 
 3.  **画像を解析してJSONを生成**:
     *   **単一の画像ファイル**:

@@ -3,17 +3,22 @@
 
 import argparse
 import os
-from pdf2image import convert_from_path
 import math  # 桁数計算のため
+from pathlib import Path
+
+from pdf2image import convert_from_path
+
+from preprocess import ImagePreprocessor, save_log
 
 
-def pdf_to_png(pdf_path, output_dir="."):
+def pdf_to_png(pdf_path: str, output_dir: str = "output_images", preprocess: list[str] | None = None) -> None:
     """
     Converts each page of a PDF file to a PNG image with zero-padded page numbers.
 
     Args:
         pdf_path (str): Path to the input PDF file.
-        output_dir (str): Directory to save the output PNG images. Defaults to current directory.
+        output_dir (str): Directory to save the output PNG images. Defaults to the current directory.
+        preprocess (list[str] | None): List of preprocessing steps to apply (grayscale, binarize, denoise).
     """
     if not os.path.exists(pdf_path):
         print(f"Error: PDF file not found at {pdf_path}")
@@ -41,12 +46,29 @@ def pdf_to_png(pdf_path, output_dir="."):
         num_digits = math.ceil(math.log10(total_pages + 1)) if total_pages > 0 else 1  # 0ページや1ページの場合も考慮
 
         print(f"Saving images with {num_digits}-digit zero-padded page numbers...")
+        processor = ImagePreprocessor(preprocess) if preprocess else None
+        processed_dir = Path(output_dir) / "processed"
+        log_entries: list[dict] = []
+
         for i, image in enumerate(images):
             page_num = i + 1
             # ページ番号をゼロ埋めしてファイル名を生成
             output_filename = os.path.join(output_dir, f"{base_filename}_page_{page_num:0{num_digits}d}.png")
             image.save(output_filename, "PNG")
             # print(f"Saved: {output_filename}") # 毎回表示すると冗長なのでコメントアウト
+
+            if processor:
+                processed_path = processor.process_file(Path(output_filename), processed_dir)
+                log_entries.append(
+                    {
+                        "source": output_filename,
+                        "processed": str(processed_path),
+                        "steps": processor.steps,
+                    }
+                )
+
+        if processor:
+            save_log(processed_dir / "preprocess_log.json", log_entries)
 
         print(f"Conversion complete. {total_pages} images saved in {output_dir}")
 
@@ -64,6 +86,12 @@ if __name__ == "__main__":
         default="output_images",
         help="Output directory for PNG images (default: output_images).",
     )  # デフォルトを変更
+    parser.add_argument(
+        "--preprocess",
+        nargs="*",
+        help="Apply preprocessing steps (grayscale, binarize, denoise) after conversion",
+    )
+
     # parser.add_argument("--poppler_path", help="Path to the poppler installation directory (bin).")
 
     args = parser.parse_args()
@@ -72,4 +100,4 @@ if __name__ == "__main__":
     output_directory = args.output if args.output != "." else "output_images"
 
     # poppler_path_arg = args.poppler_path if hasattr(args, 'poppler_path') else None
-    pdf_to_png(args.pdf_file, output_directory)  # poppler_path=poppler_path_arg
+    pdf_to_png(args.pdf_file, output_directory, preprocess=args.preprocess)
