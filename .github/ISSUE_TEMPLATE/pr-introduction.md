@@ -1,5 +1,5 @@
 ---
-name: 導入フロー
+name: PR導入フロー
 about: 導入フローに関するIssue
 title: ""
 labels: ["PR", "introduction"]
