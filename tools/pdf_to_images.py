@@ -100,8 +100,9 @@ if __name__ == "__main__":
     )  # デフォルトを変更
     parser.add_argument(
         "--preprocess",
-        nargs="*",
-        help="Apply preprocessing steps (grayscale, binarize, denoise) after conversion",
+        nargs="+",
+        choices=["grayscale", "binarize", "denoise"],
+        help="Apply preprocessing steps (grayscale, binarize, denoise) after conversion. At least one step must be specified.",
     )
     parser.add_argument(
         "--binarize-threshold",
