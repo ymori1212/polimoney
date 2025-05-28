@@ -1,5 +1,5 @@
 ---
-name: PR
+name: PRその他のIssue
 about: PR、マーケに関するその他のIssue
 title: ""
 labels: ["PR"]
