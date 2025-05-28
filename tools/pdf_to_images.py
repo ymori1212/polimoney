@@ -80,7 +80,9 @@ def pdf_to_png(
                 )
 
         if processor:
-            save_log(processed_dir / "preprocess_log.json", log_entries)
+            log_path = processed_dir / "preprocess_log.json"
+            if not save_log(log_path, log_entries):
+                print(f"Warning: Failed to save preprocessing log to {log_path}")
 
         print(f"Conversion complete. {total_pages} images saved in {output_dir}")
 

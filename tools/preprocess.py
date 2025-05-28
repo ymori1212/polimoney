@@ -65,7 +65,28 @@ class ImagePreprocessor:
         return output_path
 
 
-def save_log(path: Path, entries: list[dict]) -> None:
-    """Save preprocessing log as JSON."""
-    with path.open("w", encoding="utf-8") as f:
-        json.dump(entries, f, ensure_ascii=False, indent=2)
+def save_log(path: Path, entries: list[dict]) -> bool:
+    """
+    Save preprocessing log as JSON.
+
+    Args:
+        path: Path to save the log file
+        entries: List of log entries to save
+
+    Returns:
+        bool: True if save was successful, False otherwise
+    """
+    try:
+        # Ensure parent directory exists
+        path.parent.mkdir(parents=True, exist_ok=True)
+
+        # Write JSON file
+        with path.open("w", encoding="utf-8") as f:
+            json.dump(entries, f, ensure_ascii=False, indent=2)
+            return True
+    except OSError:
+        logger.exception("Failed to save log file to %s", path)
+        return False
+    except json.JSONDecodeError:
+        logger.exception("Failed to encode log entries to JSON")
+        return False
