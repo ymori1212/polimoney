@@ -28,6 +28,14 @@ class ImagePreprocessor:
         if invalid:
             raise ValueError(f"Unknown preprocessing steps: {invalid}")
 
+        # Validate binarize_threshold (should be between 0 and 255)
+        if not isinstance(binarize_threshold, int) or binarize_threshold < 0 or binarize_threshold > 255:
+            raise ValueError(f"binarize_threshold must be an integer between 0 and 255, got {binarize_threshold}")
+
+        # Validate denoise_filter_size (should be a positive odd integer)
+        if not isinstance(denoise_filter_size, int) or denoise_filter_size <= 3 or denoise_filter_size % 2 == 0:
+            raise ValueError(f"denoise_filter_size must be a positive odd integer, got {denoise_filter_size}")
+
         self.binarize_threshold = binarize_threshold
         self.denoise_filter_size = denoise_filter_size
 
