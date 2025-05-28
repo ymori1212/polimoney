@@ -11,7 +11,13 @@ from pdf2image import convert_from_path
 from preprocess import ImagePreprocessor, save_log
 
 
-def pdf_to_png(pdf_path: str, output_dir: str = "output_images", preprocess: list[str] | None = None) -> None:
+def pdf_to_png(
+    pdf_path: str, 
+    output_dir: str = "output_images", 
+    preprocess: list[str] | None = None,
+    binarize_threshold: int = 128,
+    denoise_filter_size: int = 3
+) -> None:
     """
     Converts each page of a PDF file to a PNG image with zero-padded page numbers.
 
@@ -19,6 +25,8 @@ def pdf_to_png(pdf_path: str, output_dir: str = "output_images", preprocess: lis
         pdf_path (str): Path to the input PDF file.
         output_dir (str): Directory to save the output PNG images. Defaults to the current directory.
         preprocess (list[str] | None): List of preprocessing steps to apply (grayscale, binarize, denoise).
+        binarize_threshold (int): Threshold for binarization (0-255, default: 128).
+        denoise_filter_size (int): Filter size for denoising (odd integer, default: 3).
     """
     if not os.path.exists(pdf_path):
         print(f"Error: PDF file not found at {pdf_path}")
@@ -46,7 +54,11 @@ def pdf_to_png(pdf_path: str, output_dir: str = "output_images", preprocess: lis
         num_digits = math.ceil(math.log10(total_pages + 1)) if total_pages > 0 else 1  # 0ページや1ページの場合も考慮
 
         print(f"Saving images with {num_digits}-digit zero-padded page numbers...")
-        processor = ImagePreprocessor(preprocess) if preprocess else None
+        processor = ImagePreprocessor(
+            preprocess, 
+            binarize_threshold=binarize_threshold,
+            denoise_filter_size=denoise_filter_size
+        ) if preprocess else None
         processed_dir = Path(output_dir) / "processed"
         log_entries: list[dict] = []
 
@@ -91,6 +103,18 @@ if __name__ == "__main__":
         nargs="*",
         help="Apply preprocessing steps (grayscale, binarize, denoise) after conversion",
     )
+    parser.add_argument(
+        "--binarize-threshold",
+        type=int,
+        default=128,
+        help="Threshold for binarization (0-255, default: 128)",
+    )
+    parser.add_argument(
+        "--denoise-filter-size",
+        type=int,
+        default=3,
+        help="Filter size for denoising (odd integer, default: 3)",
+    )
 
     # parser.add_argument("--poppler_path", help="Path to the poppler installation directory (bin).")
 
@@ -100,4 +124,10 @@ if __name__ == "__main__":
     output_directory = args.output if args.output != "." else "output_images"
 
     # poppler_path_arg = args.poppler_path if hasattr(args, 'poppler_path') else None
-    pdf_to_png(args.pdf_file, output_directory, preprocess=args.preprocess)
+    pdf_to_png(
+        args.pdf_file, 
+        output_directory, 
+        preprocess=args.preprocess,
+        binarize_threshold=args.binarize_threshold,
+        denoise_filter_size=args.denoise_filter_size
+    )
