@@ -1,4 +1,4 @@
 User-agent: *
-Disallow: /public/demo-ryosukeidei.jpg
-Disallow: /public/demo-takahiroanno.jpg
+Disallow: /demo-ryosukeidei.jpg
+Disallow: /demo-takahiroanno.jpg
 Allow: / 
