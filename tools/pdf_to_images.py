@@ -12,11 +12,11 @@ from preprocess import ImagePreprocessor, save_log
 
 
 def pdf_to_png(
-    pdf_path: str, 
-    output_dir: str = "output_images", 
+    pdf_path: str,
+    output_dir: str = "output_images",
     preprocess: list[str] | None = None,
     binarize_threshold: int = 128,
-    denoise_filter_size: int = 3
+    denoise_filter_size: int = 3,
 ) -> None:
     """
     Converts each page of a PDF file to a PNG image with zero-padded page numbers.
@@ -54,11 +54,13 @@ def pdf_to_png(
         num_digits = math.ceil(math.log10(total_pages + 1)) if total_pages > 0 else 1  # 0ページや1ページの場合も考慮
 
         print(f"Saving images with {num_digits}-digit zero-padded page numbers...")
-        processor = ImagePreprocessor(
-            preprocess, 
-            binarize_threshold=binarize_threshold,
-            denoise_filter_size=denoise_filter_size
-        ) if preprocess else None
+        processor = (
+            ImagePreprocessor(
+                preprocess, binarize_threshold=binarize_threshold, denoise_filter_size=denoise_filter_size
+            )
+            if preprocess
+            else None
+        )
         processed_dir = Path(output_dir) / "processed"
         log_entries: list[dict] = []
 
@@ -125,9 +127,9 @@ if __name__ == "__main__":
 
     # poppler_path_arg = args.poppler_path if hasattr(args, 'poppler_path') else None
     pdf_to_png(
-        args.pdf_file, 
-        output_directory, 
+        args.pdf_file,
+        output_directory,
         preprocess=args.preprocess,
         binarize_threshold=args.binarize_threshold,
-        denoise_filter_size=args.denoise_filter_size
+        denoise_filter_size=args.denoise_filter_size,
     )
