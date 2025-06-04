@@ -120,6 +120,7 @@ prompt_first_page = """
     "year": YYYY,
     "basic_info": {
       "representative": "代表者の氏名",
+      "address_of_office": "主たる事務所の所在地",
       "accounting_manager": "会計責任者の氏名",
       "organization": "政治団体の名称"
     }
