@@ -15,6 +15,9 @@ export const metadata: Metadata = {
   openGraph: {
     images: ['/ogp/polimoney.png'],
   },
+  other: {
+    thumbnail: '/ogp/polimoney.png',
+  },
 };
 
 export default function RootLayout({
