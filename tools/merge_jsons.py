@@ -25,6 +25,7 @@ def load_all_json(file_paths):
 
     # 一番最初のjsonファイルから、年度を読み取る(表紙の年)
     year = jsons[0]["year"]
+    basic_info = jsons[0]["basic_info"]
 
     # 次に、categoriesをマージする
     categories = []
@@ -53,7 +54,12 @@ def load_all_json(file_paths):
                 transactions.append(transaction)
 
     # all.jsonを作成する
-    all_json = {"year": year, "categories": categories, "transactions": transactions}
+    all_json = {
+        "year": year,
+        "basic_info": basic_info,
+        "categories": categories,
+        "transactions": transactions,
+    }
 
     return all_json
 
@@ -62,6 +68,8 @@ def main():
     target_dir = os.path.join(os.getcwd(), "output_json")
     file_paths = glob.glob(os.path.join(target_dir, "*.json"))
 
+    file_paths = sorted(file_paths)
+    print(file_paths)
     all_json = load_all_json(file_paths)
 
     merged_dir = os.path.join(os.getcwd(), "tools", "merged_files")

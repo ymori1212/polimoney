@@ -117,7 +117,12 @@ prompt_first_page = """
 2. Xの数字を取得し、令和の年数として解釈してください
 3. 令和の年数を西暦に変換してください（令和1年 = 2019年）
 4. 結果を以下のJSON形式で出力してください：
-    "year": YYYY
+    "year": YYYY,
+    "basic_info": {
+      "representative": "代表者の氏名",
+      "accounting_manager": "会計責任者の氏名",
+      "organization": "政治団体の名称"
+    }
 
 例：
 - 「令和5年分」と記載されている場合 → "year": 2023
