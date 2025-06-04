@@ -17,12 +17,7 @@ class ImagePreprocessor:
 
     AVAILABLE_STEPS = {"grayscale", "binarize", "denoise"}
 
-    def __init__(
-        self, 
-        steps: Iterable[str], 
-        binarize_threshold: int = 128, 
-        denoise_filter_size: int = 3
-    ) -> None:
+    def __init__(self, steps: Iterable[str], binarize_threshold: int = 128, denoise_filter_size: int = 3) -> None:
         self.steps: list[str] = list(steps)
         invalid = [s for s in self.steps if s not in self.AVAILABLE_STEPS]
         if invalid:
@@ -47,9 +42,9 @@ class ImagePreprocessor:
     def process_file(self, input_path: Path, output_dir: Path) -> Path:
         try:
             image = Image.open(input_path)
-        except (IOError, FileNotFoundError) as e:
+        except (OSError, FileNotFoundError) as e:
             logger.error("Failed to open image %s: %s", input_path, str(e))
-            raise IOError(f"Failed to open image {input_path}: {str(e)}") from e
+            raise OSError(f"Failed to open image {input_path}: {str(e)}") from e
 
         processed = self.apply(image)
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -58,9 +53,9 @@ class ImagePreprocessor:
         try:
             processed.save(output_path)
             logger.info("Saved preprocessed image: %s", output_path)
-        except (IOError, OSError) as e:
+        except OSError as e:
             logger.error("Failed to save processed image to %s: %s", output_path, str(e))
-            raise IOError(f"Failed to save processed image to {output_path}: {str(e)}") from e
+            raise OSError(f"Failed to save processed image to {output_path}: {str(e)}") from e
 
         return output_path
 
