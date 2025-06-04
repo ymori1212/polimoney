@@ -25,7 +25,7 @@ def load_all_json(file_paths):
 
     # 一番最初のjsonファイルから、年度を読み取る(表紙の年)
     year = jsons[0]["year"]
-    basic_info = jsons[0]["basic_info"]
+    basic_info = jsons[0].get("basic_info", {})
 
     # 次に、categoriesをマージする
     categories = []
