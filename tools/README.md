@@ -32,7 +32,7 @@ PDFファイル
 
 ## 必要なもの
 
-*   **Python**: 3.8 以上推奨
+*   **Python**: 3.10 以上推奨
 *   **Poppler**: `pdf2image` がPDFを処理するために必要です。
     *   **macOS**: `brew install poppler`
     *   **Debian/Ubuntu**: `sudo apt-get update && sudo apt-get install -y poppler-utils`
@@ -113,7 +113,7 @@ poetry run pyright .
         ```
     *   **ディレクトリ内の全PNG画像**:
         ```bash
-        python analyze_image_gemini.py -d output_images -o output_json
+        python analyze_image_gemini.py -i output_images -o output_json
         ```
     これにより、`output_json` ディレクトリに `your_document_page_001.json`, `your_document_page_002.json`, ... が生成されます。
 
