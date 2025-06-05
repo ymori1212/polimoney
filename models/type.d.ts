@@ -32,7 +32,7 @@ export type Flow = {
 
 export type Transaction = {
   id: string;
-  direction: string;
+  direction: 'income' | 'expense';
   category: string;
   subCategory: string;
   purpose: string;

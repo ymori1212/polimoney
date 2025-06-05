@@ -1,5 +1,6 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import type { Profile, Report, Transaction } from '@/models/type';
 
 // import { Summary, Flow, Transaction } from '../type';
 type Summary = {
@@ -14,14 +15,6 @@ type Flow = {
   direction: 'income' | 'expense';
   value: number;
   parent: string | null;
-};
-type Transaction = {
-  id: string;
-  name: string;
-  date: string;
-  value: number;
-  category: string;
-  percentage: number;
 };
 
 type InputCategory = {
@@ -39,12 +32,32 @@ type InputTransaction = {
 };
 type InputData = {
   year: number;
+  basic_info: BasicInfo;
   categories: InputCategory[];
   transactions: InputTransaction[];
 };
 
-type OutputData = {
+type OutputDataOld = {
   summary: Summary;
+  flows: Flow[];
+  incomeTransactions: Transaction[];
+  expenseTransactions: Transaction[];
+};
+
+type BasicInfo = {
+  orgName: string;
+  activityArea: string;
+  representative: string;
+  fundManagementOrg: string;
+  accountingManager: string;
+  administrativeManager: string;
+  lastUpdate: string;
+};
+
+type OutputData = {
+  profile: Profile;
+  report: Report;
+  reports: Report[];
   flows: Flow[];
   incomeTransactions: Transaction[];
   expenseTransactions: Transaction[];
@@ -93,25 +106,38 @@ function convert(data: InputData): OutputData {
     },
     {},
   );
+  const categoryIdToParentId = data.categories.reduce(
+    (acc: Record<string, string>, c: InputCategory) => {
+      acc[c.id] = c.parent || '';
+      return acc;
+    },
+    {},
+  );
 
-  const incomeTransactions = incomeInputTransactions.map(
+  const incomeTransactions: Transaction[] = incomeInputTransactions.map(
     (t: InputTransaction) => ({
       id: t.id,
       name: t.name,
       date: t.date,
-      value: t.value,
-      category: categoryIdToName[t.category_id],
+      direction: 'income',
+      amount: t.value || 0,
+      category: categoryIdToName[categoryIdToParentId[t.category_id]] || '',
+      subCategory: categoryIdToName[t.category_id] || '',
+      purpose: '',
       percentage: (t.value * 100.0) / totalIncome,
     }),
   );
 
-  const expenseTransactions = expenseInputTransactions.map(
+  const expenseTransactions: Transaction[] = expenseInputTransactions.map(
     (t: InputTransaction) => ({
       id: t.id,
       name: t.name,
+      direction: 'expense',
       date: t.date,
-      value: t.value,
-      category: categoryIdToName[t.category_id],
+      amount: t.value || 0,
+      category: categoryIdToName[categoryIdToParentId[t.category_id]] || '',
+      subCategory: categoryIdToName[t.category_id],
+      purpose: '',
       percentage: (t.value * 100.0) / totalExpense,
     }),
   );
@@ -146,7 +172,28 @@ function convert(data: InputData): OutputData {
   }
 
   return {
-    summary,
+    profile: {
+      name: 'テスト太郎',
+      title: 'テスト党',
+      party: 'テスト党',
+      image: '/demo-example.png',
+    },
+    report: {
+      id: 'TODO',
+      totalIncome: totalIncome,
+      totalExpense: totalExpense,
+      totalBalance: balanceTransaction ? balanceTransaction.value : 0,
+      year: data.year,
+      orgType: 'TODO',
+      orgName: data.basic_info.orgName,
+      activityArea: data.basic_info.activityArea,
+      representative: data.basic_info.representative,
+      fundManagementOrg: data.basic_info.fundManagementOrg,
+      accountingManager: data.basic_info.accountingManager,
+      administrativeManager: data.basic_info.administrativeManager,
+      lastUpdate: data.basic_info.lastUpdate,
+    },
+    reports: [],
     flows,
     incomeTransactions,
     expenseTransactions,
