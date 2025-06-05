@@ -68,11 +68,13 @@ def load_all_json(file_paths):
 def main():
     parser = argparse.ArgumentParser(description="JSONファイルをマージしてall.jsonを作成します")
     parser.add_argument(
+        "-t",
         "--target-dir",
         default=os.path.join(os.getcwd(), "output_json"),
         help="マージするJSONファイルがあるディレクトリ (デフォルト: ./output_json)",
     )
     parser.add_argument(
+        "-m",
         "--merged-dir",
         default=os.path.join(os.getcwd(), "tools", "merged_files"),
         help="マージしたall.jsonを保存するディレクトリ (デフォルト: ./tools/merged_files)",
