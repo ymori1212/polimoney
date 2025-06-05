@@ -46,6 +46,7 @@ type OutputDataOld = {
 
 type BasicInfo = {
   orgName: string;
+  orgType: string;
   activityArea: string;
   representative: string;
   fundManagementOrg: string;
@@ -170,30 +171,31 @@ function convert(data: InputData): OutputData {
   if (rootFlow) {
     rootFlow.value /= 2;
   }
+  const report: Report = {
+    id: 'TODO',
+    totalIncome: totalIncome,
+    totalExpense: totalExpense,
+    totalBalance: balanceTransaction ? balanceTransaction.value : 0,
+    year: data.year,
+    orgType: data.basic_info.orgType,
+    orgName: data.basic_info.orgName,
+    activityArea: data.basic_info.activityArea,
+    representative: data.basic_info.representative,
+    fundManagementOrg: data.basic_info.fundManagementOrg,
+    accountingManager: data.basic_info.accountingManager,
+    administrativeManager: data.basic_info.administrativeManager,
+    lastUpdate: data.basic_info.lastUpdate,
+  };
 
   return {
     profile: {
-      name: 'テスト太郎',
-      title: 'テスト党',
-      party: 'テスト党',
+      name: data.basic_info.representative,
+      title: data.basic_info.representative,
+      party: data.basic_info.orgName,
       image: '/demo-example.png',
     },
-    report: {
-      id: 'TODO',
-      totalIncome: totalIncome,
-      totalExpense: totalExpense,
-      totalBalance: balanceTransaction ? balanceTransaction.value : 0,
-      year: data.year,
-      orgType: 'TODO',
-      orgName: data.basic_info.orgName,
-      activityArea: data.basic_info.activityArea,
-      representative: data.basic_info.representative,
-      fundManagementOrg: data.basic_info.fundManagementOrg,
-      accountingManager: data.basic_info.accountingManager,
-      administrativeManager: data.basic_info.administrativeManager,
-      lastUpdate: data.basic_info.lastUpdate,
-    },
-    reports: [],
+    report: report,
+    reports: [report],
     flows,
     incomeTransactions,
     expenseTransactions,
