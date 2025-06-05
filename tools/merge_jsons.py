@@ -4,6 +4,7 @@ import glob
 import json
 import re
 import pandas as pd
+import argparse
 
 
 def load_all_json(file_paths):
@@ -65,16 +66,42 @@ def load_all_json(file_paths):
 
 
 def main():
-    target_dir = os.path.join(os.getcwd(), "output_json")
+    parser = argparse.ArgumentParser(description="JSONファイルをマージしてall.jsonを作成します")
+    parser.add_argument(
+        "--target-dir",
+        default=os.path.join(os.getcwd(), "output_json"),
+        help="マージするJSONファイルがあるディレクトリ (デフォルト: ./output_json)",
+    )
+    parser.add_argument(
+        "--merged-dir",
+        default=os.path.join(os.getcwd(), "tools", "merged_files"),
+        help="マージしたall.jsonを保存するディレクトリ (デフォルト: ./tools/merged_files)",
+    )
+
+    args = parser.parse_args()
+
+    target_dir = args.target_dir
+    merged_dir = args.merged_dir
+
+    # ディレクトリが存在しない場合は作成
+    os.makedirs(merged_dir, exist_ok=True)
+
     file_paths = glob.glob(os.path.join(target_dir, "*.json"))
 
     file_paths = sorted(file_paths)
-    print(file_paths)
+    print(f"対象ファイル: {file_paths}")
+
+    if not file_paths:
+        print(f"警告: {target_dir} にJSONファイルが見つかりませんでした")
+        return
+
     all_json = load_all_json(file_paths)
 
-    merged_dir = os.path.join(os.getcwd(), "tools", "merged_files")
-    with open(os.path.join(merged_dir, "all.json"), "w", encoding="utf-8") as f:
+    output_path = os.path.join(merged_dir, "all.json")
+    with open(output_path, "w", encoding="utf-8") as f:
         json.dump(all_json, f, ensure_ascii=False, indent=2)
+
+    print(f"マージ完了: {output_path}")
 
 
 if __name__ == "__main__":
