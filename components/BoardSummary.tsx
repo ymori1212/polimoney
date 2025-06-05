@@ -16,15 +16,23 @@ import {
 } from '@chakra-ui/react';
 import { LandmarkIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { BoardChartFixed } from './BoardChartFixed';
 
 type Props = {
   profile: Profile;
   report: Report;
   otherReports: Report[];
   flows: Flow[];
+  useFixedBoardChart?: boolean;
 };
 
-export function BoardSummary({ profile, report, otherReports, flows }: Props) {
+export function BoardSummary({
+  profile,
+  report,
+  otherReports,
+  flows,
+  useFixedBoardChart = false,
+}: Props) {
   const router = useRouter();
   // const [selectedTab, setSelectedTab] = useState('amount')
 
@@ -172,7 +180,11 @@ export function BoardSummary({ profile, report, otherReports, flows }: Props) {
       {/*  </Tabs.Root>*/}
       {/*</Box>*/}
       {/* チャート */}
-      <BoardChart flows={flows} />
+      {useFixedBoardChart ? (
+        <BoardChartFixed flows={flows} />
+      ) : (
+        <BoardChart flows={flows} />
+      )}
     </BoardContainer>
   );
 }
