@@ -1,8 +1,8 @@
 ---
-name: 💡DEV改善提案
-about: 機能やユーザー体験の改善案を提案する
+name: PRその他のIssue
+about: PR、マーケに関するその他のIssue
 title: ""
-labels: ["DEV", "enhancement"]
+labels: ["PR"]
 assignees: ""
 ---
 

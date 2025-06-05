@@ -15,13 +15,59 @@ export const metadata: Metadata = {
   openGraph: {
     images: ['/ogp/polimoney.png'],
   },
+  other: {
+    thumbnail: '/ogp/polimoney.png',
+  },
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const structuredWebSite = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    url: 'https://polimoney.dd2030.org/',
+    name: 'Polimoney (ポリマネー)',
+    description:
+      '政治資金の流れを見える化するプラットフォームです。透明性の高い政治実現を目指して、オープンソースで開発されています。',
+    image: {
+      '@type': 'ImageObject',
+      url: 'https://polimoney.dd2030.org/ogp/polimoney.png',
+    },
+    author: {
+      '@type': 'Organization',
+      name: 'デジタル民主主義2030プロジェクト',
+    },
+  };
+
+  const structuredDataOrganization = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    url: 'https://dd2030.org/',
+    logo: 'https://polimoney.dd2030.org/dd2030_logo.png',
+    name: 'デジタル民主主義2030プロジェクト',
+    description:
+      '「デジタル民主主義2030」は、技術の力で市民の声を活かし、政治をより良い形に進化させることを目指したプロジェクトです。透明性と信頼を重視し、多くの人々が政策に参加できる未来を目指しています。',
+  };
+
   return (
     <html lang="ja" suppressHydrationWarning>
+      <head>
+        <script
+          type="application/ld+json"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(structuredWebSite),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(structuredDataOrganization),
+          }}
+        />
+      </head>
       <body>
         <Provider>
           <Box maxW="1200px" mx="auto" p={{ base: 5, lg: 10 }}>
