@@ -315,39 +315,39 @@ def remove_empty_categories(all_json):
 def main():
     parser = argparse.ArgumentParser(description="JSONファイルをマージしてall.jsonを作成します")
     parser.add_argument(
-        "-t",
-        "--target-dir",
+        "-i",
+        "--input",
         default=os.path.join(os.getcwd(), "output_json"),
         help="マージするJSONファイルがあるディレクトリ (デフォルト: ./output_json)",
     )
     parser.add_argument(
-        "-m",
-        "--merged-dir",
-        default=os.path.join(os.getcwd(), "tools", "merged_files"),
-        help="マージしたall.jsonを保存するディレクトリ (デフォルト: ./tools/merged_files)",
+        "-o",
+        "--output",
+        default=os.path.join(os.getcwd(), "tools", "merged_files", "all.json"),
+        help="マージしたall.jsonを保存するファイル (デフォルト: ./tools/merged_files/all.json)",
     )
 
     args = parser.parse_args()
 
-    target_dir = args.target_dir
-    merged_dir = args.merged_dir
+    input_dir = args.input
+    output_path = args.output
 
     # ディレクトリが存在しない場合は作成
-    os.makedirs(merged_dir, exist_ok=True)
+    dirname = os.path.dirname(output_path)
+    os.makedirs(dirname, exist_ok=True)
 
-    file_paths = glob.glob(os.path.join(target_dir, "*.json"))
+    file_paths = glob.glob(os.path.join(input_dir, "*.json"))
 
     file_paths = sorted(file_paths)
     print(f"対象ファイル: {file_paths}")
 
     if not file_paths:
-        print(f"警告: {target_dir} にJSONファイルが見つかりませんでした")
+        print(f"警告: {input_dir} にJSONファイルが見つかりませんでした")
         return
 
     all_json = load_all_json(file_paths)
     all_json = fix_duplicate_categories(all_json)
 
-    output_path = os.path.join(merged_dir, "all.json")
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(all_json, f, ensure_ascii=False, indent=2)
 

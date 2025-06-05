@@ -58,8 +58,8 @@ def main() -> None:
         help="解析する単一の画像ファイルのパス。",
     )
     input_group.add_argument(
-        "-d",
-        "--directory",
+        "-i",
+        "--input",
         help="解析するPNG画像が含まれるディレクトリのパス。",
     )
 
@@ -107,7 +107,7 @@ def main() -> None:
 
     # 処理対象のPNGファイルを取得
     try:
-        directory = Path(args.directory) if args.directory else None
+        directory = Path(args.input) if args.input else None
         image_file = Path(args.image_file) if args.image_file else None
         png_files = ImageProcessor.get_png_files_to_process(directory, image_file)
     except ValueError:
