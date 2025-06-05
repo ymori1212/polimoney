@@ -35,7 +35,7 @@ def load_all_json(file_paths):
         "id": ROOT_CATEGORY_ID,
         "name": "総収入",
         "parent": None,
-        "direction": "income",
+        "direction": "expense",
     }
     categories = []
     categories.append(root_category)
