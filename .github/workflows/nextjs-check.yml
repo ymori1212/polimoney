@@ -1,4 +1,4 @@
-name: Lint Pull Request
+name: Check Next.js
 
 on:
   pull_request:
@@ -57,4 +57,12 @@ jobs:
             npm run lint
           else
             yarn run lint
+          fi
+      
+      - name: Build
+        run: |
+          if [ "${{ steps.detect-package-manager.outputs.manager }}" = "npm" ]; then
+            npm run build
+          else
+            yarn run build
           fi

@@ -25,7 +25,7 @@ export type Report = {
 export type Flow = {
   id: string; // ID
   name: string; // 項目名
-  direction: 'income' | 'expense'; // 収入or支出
+  direction: string; // 収入or支出
   value: number; // 金額
   parent: string | null; // 親要素のID
 };

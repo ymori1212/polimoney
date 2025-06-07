@@ -34,6 +34,17 @@ npm install --legacy-peer-deps
 npm run dev
 ```
 
+### PDFからWeb表示用のJSONを作成
+
+** 前提条件 **
+
+ - tools/README.md を参照して、Pythonの環境をセットアップしておく。
+ - 環境変数 GOOGLE_API_KEY を設定しておく。
+
+```bash
+./scripts/create-json-for-web.sh hoge.pdf ./public/reports/hoge.json
+```
+
 ### データ処理ツール
 
 - **Python**

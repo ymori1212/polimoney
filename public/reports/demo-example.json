@@ -1,0 +1,107 @@
+{
+  "profile": {
+    "name": "テスト太郎",
+    "title": "テスト党",
+    "party": "テスト党",
+    "image": "/demo-example.png"
+  },
+  "report": {
+    "id": "TODO",
+    "totalIncome": 111111,
+    "totalExpense": 100000,
+    "totalBalance": 11111,
+    "year": 2023,
+    "orgType": "TODO",
+    "orgName": "テストの会",
+    "activityArea": "2以上の都道府県の区域等",
+    "representative": "テスト花子",
+    "fundManagementOrg": "有",
+    "accountingManager": "テスト花子",
+    "administrativeManager": "テスト花子"
+  },
+  "reports": [],
+  "flows": [
+    {
+      "id": "category-0",
+      "name": "総収入",
+      "direction": "expense",
+      "value": 111111,
+      "parent": null
+    },
+    {
+      "id": "category-2000",
+      "name": "収入総額",
+      "direction": "income",
+      "value": 111111,
+      "parent": "category-0"
+    },
+    {
+      "id": "category-2002",
+      "name": "本年の収入額",
+      "direction": "income",
+      "value": 111111,
+      "parent": "category-2000"
+    },
+    {
+      "id": "category-2004",
+      "name": "寄附",
+      "direction": "income",
+      "value": 111111,
+      "parent": "category-2002"
+    },
+    {
+      "id": "category-2005",
+      "name": "個人からの寄附",
+      "direction": "income",
+      "value": 111111,
+      "parent": "category-2004"
+    },
+    {
+      "id": "category-6000",
+      "name": "その他 (経常経費)",
+      "direction": "expense",
+      "value": 100000,
+      "parent": "category-0"
+    },
+    {
+      "id": "category-6001",
+      "name": "人件費",
+      "direction": "expense",
+      "value": 100000,
+      "parent": "category-6000"
+    },
+    {
+      "id": "category-2010",
+      "name": "翌年への繰越額",
+      "direction": "income",
+      "value": 11111,
+      "parent": "category-0"
+    }
+  ],
+  "incomeTransactions": [
+    {
+      "id": "transaction-2005",
+      "name": "個人からの寄附(111名)",
+      "date": "unknown",
+      "direction": "income",
+      "amount": 111111,
+      "category": "寄附",
+      "subCategory": "個人からの寄附",
+      "purpose": "",
+      "percentage": 100.0
+    }
+  ],
+  "expenseTransactions": [
+    {
+      "id": "transaction-6001",
+      "name": "人件費",
+      "direction": "expense",
+      "date": "unknown",
+      "amount": 100000,
+      "category": "その他 (経常経費)",
+      "subCategory": "人件費",
+      "purpose": "",
+      "percentage": 100.0
+    }
+  ]
+}
