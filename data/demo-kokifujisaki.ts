@@ -122,27 +122,42 @@ const flowsByYear: Record<number, Flow[]> = {
     },
   ],
   2023: [
-    // TODO: 2023年のflowsデータをここに追加
+    // --- 2023年の更新データ開始 ---
     // 収入
     {
       id: 'i1',
       name: '前年からの繰越額',
       direction: 'income',
-      value: 0, // TODO: 2023年の値を設定
+      value: 374300, //
       parent: '総収入',
     },
     {
       id: 'i2',
       name: '本年の収入額',
       direction: 'income',
-      value: 0, // TODO: 2023年の値を設定
+      value: 233200, //
       parent: '総収入',
     },
+    {
+      id: 'i3',
+      name: '個人の負担する党費又は会費',
+      direction: 'income',
+      value: 33200, //
+      parent: '本年の収入額',
+    },
+    {
+      id: 'i4',
+      name: '本部又は支部から供与された交付金',
+      direction: 'income',
+      value: 200000, //
+      parent: '本年の収入額',
+    },
+    // 総収入
     {
       id: 'i_total',
       name: '総収入',
       direction: 'expense',
-      value: 607500, // 2023年の総収入
+      value: 607500, //
       parent: null,
     },
     // 支出
@@ -150,15 +165,22 @@ const flowsByYear: Record<number, Flow[]> = {
       id: 'e2',
       name: '政治活動費',
       direction: 'expense',
-      value: 250000, // 2023年の総支出
+      value: 250000, //
       parent: '総収入',
+    },
+    {
+      id: 'e3',
+      name: '組織活動費',
+      direction: 'expense',
+      value: 250000, //
+      parent: '政治活動費',
     },
     // 翌年への繰越
     {
       id: 'e_next',
       name: '翌年への繰越',
       direction: 'expense',
-      value: 357500, // 2023年の残高
+      value: 357500, //
       parent: '総収入',
     },
   ],
@@ -236,30 +258,30 @@ const incomeTransactionsByYear: Record<number, OldTransaction[]> = {
     },
   ],
   2023: [
-    // TODO: 2023年のincomeTransactionsデータをここに追加
+    // --- 2023年の更新データ開始 ---
     {
       id: 'i1',
       name: '前年からの繰越額',
       date: '2023/1/1',
       category: '前年繰越',
-      value: 0, // TODO: 2023年の値を設定
-      percentage: 0, // TODO: 計算して設定
+      value: 374300, //
+      percentage: +((374300 / 607500) * 100).toFixed(1),
     },
     {
       id: 'i2',
       name: '個人の負担する党費又は会費',
       date: '2023/12/31',
       category: '党費・会費',
-      value: 0, // TODO: 2023年の値を設定
-      percentage: 0, // TODO: 計算して設定
+      value: 33200, //
+      percentage: +((33200 / 607500) * 100).toFixed(1),
     },
     {
       id: 'i3',
       name: '本部又は支部から供与された交付金',
       date: '2023/12/31',
       category: '交付金',
-      value: 0, // TODO: 2023年の値を設定
-      percentage: 0, // TODO: 計算して設定
+      value: 200000, //
+      percentage: +((200000 / 607500) * 100).toFixed(1),
     },
   ],
   2024: [
@@ -378,13 +400,12 @@ const expenseTransactionsByYear: Record<number, OldTransaction[]> = {
     },
   ],
   2023: [
-    // TODO: 2023年のexpenseTransactionsデータをここに追加
     {
       id: 'e1',
       name: '人件費',
       date: '2023/12/31',
       category: '経常経費',
-      value: 0, // TODO: 2023年の値を設定
+      value: 0,
       percentage: 0,
     },
     {
@@ -392,7 +413,7 @@ const expenseTransactionsByYear: Record<number, OldTransaction[]> = {
       name: '光熱水費',
       date: '2023/12/31',
       category: '経常経費',
-      value: 0, // TODO: 2023年の値を設定
+      value: 0,
       percentage: 0,
     },
     {
@@ -400,7 +421,7 @@ const expenseTransactionsByYear: Record<number, OldTransaction[]> = {
       name: '備品・消耗品費',
       date: '2023/12/31',
       category: '経常経費',
-      value: 0, // TODO: 2023年の値を設定
+      value: 0,
       percentage: 0,
     },
     {
@@ -408,7 +429,7 @@ const expenseTransactionsByYear: Record<number, OldTransaction[]> = {
       name: '事務所費',
       date: '2023/12/31',
       category: '経常経費',
-      value: 0, // TODO: 2023年の値を設定
+      value: 0,
       percentage: 0,
     },
     {
@@ -416,15 +437,15 @@ const expenseTransactionsByYear: Record<number, OldTransaction[]> = {
       name: '組織活動費',
       date: '2023/12/31',
       category: '政治活動費',
-      value: 0, // TODO: 2023年の値を設定
-      percentage: 0,
+      value: 250000, //
+      percentage: +((250000 / 250000) * 100).toFixed(1),
     },
     {
       id: 'e6',
       name: '選挙関係費',
       date: '2023/12/31',
       category: '政治活動費',
-      value: 0, // TODO: 2023年の値を設定
+      value: 0,
       percentage: 0,
     },
     {
@@ -432,7 +453,7 @@ const expenseTransactionsByYear: Record<number, OldTransaction[]> = {
       name: '機関紙誌の発行その他の事業費',
       date: '2023/12/31',
       category: '政治活動費',
-      value: 0, // TODO: 2023年の値を設定
+      value: 0,
       percentage: 0,
     },
     {
@@ -440,7 +461,7 @@ const expenseTransactionsByYear: Record<number, OldTransaction[]> = {
       name: '調査研究費',
       date: '2023/12/31',
       category: '政治活動費',
-      value: 0, // TODO: 2023年の値を設定
+      value: 0,
       percentage: 0,
     },
     {
@@ -448,7 +469,7 @@ const expenseTransactionsByYear: Record<number, OldTransaction[]> = {
       name: '寄附・交付金',
       date: '2023/12/31',
       category: '政治活動費',
-      value: 0, // TODO: 2023年の値を設定
+      value: 0,
       percentage: 0,
     },
     {
@@ -456,7 +477,7 @@ const expenseTransactionsByYear: Record<number, OldTransaction[]> = {
       name: 'その他の経費',
       date: '2023/12/31',
       category: '政治活動費',
-      value: 0, // TODO: 2023年の値を設定
+      value: 0,
       percentage: 0,
     },
   ],
