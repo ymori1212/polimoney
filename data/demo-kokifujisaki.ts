@@ -361,38 +361,38 @@ const incomeTransactions: OldTransaction[] = incomeTransactionsByYear[2022];
 
 const expenseTransactionsByYear: Record<number, OldTransaction[]> = {
   2022: [
-    {
-      id: 'e1',
-      name: '人件費',
-      date: '2022/12/31',
-      category: '経常経費',
-      value: 0, //
-      percentage: 0,
-    },
-    {
-      id: 'e2',
-      name: '光熱水費',
-      date: '2022/12/31',
-      category: '経常経費',
-      value: 0, //
-      percentage: 0,
-    },
-    {
-      id: 'e3',
-      name: '備品・消耗品費',
-      date: '2022/12/31',
-      category: '経常経費',
-      value: 0, //
-      percentage: 0,
-    },
-    {
-      id: 'e4',
-      name: '事務所費',
-      date: '2022/12/31',
-      category: '経常経費',
-      value: 0, //
-      percentage: 0,
-    },
+    // {
+    //   id: 'e1',
+    //   name: '人件費',
+    //   date: '2022/12/31',
+    //   category: '経常経費',
+    //   value: 0, //
+    //   percentage: 0,
+    // },
+    // {
+    //   id: 'e2',
+    //   name: '光熱水費',
+    //   date: '2022/12/31',
+    //   category: '経常経費',
+    //   value: 0, //
+    //   percentage: 0,
+    // },
+    // {
+    //   id: 'e3',
+    //   name: '備品・消耗品費',
+    //   date: '2022/12/31',
+    //   category: '経常経費',
+    //   value: 0, //
+    //   percentage: 0,
+    // },
+    // {
+    //   id: 'e4',
+    //   name: '事務所費',
+    //   date: '2022/12/31',
+    //   category: '経常経費',
+    //   value: 0, //
+    //   percentage: 0,
+    // },
     {
       id: 'e5',
       name: '組織活動費',
@@ -401,80 +401,80 @@ const expenseTransactionsByYear: Record<number, OldTransaction[]> = {
       value: 120000, //
       percentage: +((120000 / 120000) * 100).toFixed(1),
     },
-    {
-      id: 'e6',
-      name: '選挙関係費',
-      date: '2022/12/31',
-      category: '政治活動費',
-      value: 0, //
-      percentage: 0,
-    },
-    {
-      id: 'e7',
-      name: '機関紙誌の発行その他の事業費',
-      date: '2022/12/31',
-      category: '政治活動費',
-      value: 0, //
-      percentage: 0,
-    },
-    {
-      id: 'e8',
-      name: '調査研究費',
-      date: '2022/12/31',
-      category: '政治活動費',
-      value: 0, //
-      percentage: 0,
-    },
-    {
-      id: 'e9',
-      name: '寄附・交付金',
-      date: '2022/12/31',
-      category: '政治活動費',
-      value: 0, //
-      percentage: 0,
-    },
-    {
-      id: 'e10',
-      name: 'その他の経費',
-      date: '2022/12/31',
-      category: '政治活動費',
-      value: 0, //
-      percentage: 0,
-    },
+    // {
+    //   id: 'e6',
+    //   name: '選挙関係費',
+    //   date: '2022/12/31',
+    //   category: '政治活動費',
+    //   value: 0, //
+    //   percentage: 0,
+    // },
+    // {
+    //   id: 'e7',
+    //   name: '機関紙誌の発行その他の事業費',
+    //   date: '2022/12/31',
+    //   category: '政治活動費',
+    //   value: 0, //
+    //   percentage: 0,
+    // },
+    // {
+    //   id: 'e8',
+    //   name: '調査研究費',
+    //   date: '2022/12/31',
+    //   category: '政治活動費',
+    //   value: 0, //
+    //   percentage: 0,
+    // },
+    // {
+    //   id: 'e9',
+    //   name: '寄附・交付金',
+    //   date: '2022/12/31',
+    //   category: '政治活動費',
+    //   value: 0, //
+    //   percentage: 0,
+    // },
+    // {
+    //   id: 'e10',
+    //   name: 'その他の経費',
+    //   date: '2022/12/31',
+    //   category: '政治活動費',
+    //   value: 0, //
+    //   percentage: 0,
+    // },
   ],
   2023: [
-    {
-      id: 'e1',
-      name: '人件費',
-      date: '2023/12/31',
-      category: '経常経費',
-      value: 0,
-      percentage: 0,
-    },
-    {
-      id: 'e2',
-      name: '光熱水費',
-      date: '2023/12/31',
-      category: '経常経費',
-      value: 0,
-      percentage: 0,
-    },
-    {
-      id: 'e3',
-      name: '備品・消耗品費',
-      date: '2023/12/31',
-      category: '経常経費',
-      value: 0,
-      percentage: 0,
-    },
-    {
-      id: 'e4',
-      name: '事務所費',
-      date: '2023/12/31',
-      category: '経常経費',
-      value: 0,
-      percentage: 0,
-    },
+    // {
+    //   id: 'e1',
+    //   name: '人件費',
+    //   date: '2023/12/31',
+    //   category: '経常経費',
+    //   value: 0,
+    //   percentage: 0,
+    // },
+    // {
+    //   id: 'e2',
+    //   name: '光熱水費',
+    //   date: '2023/12/31',
+    //   category: '経常経費',
+    //   value: 0,
+    //   percentage: 0,
+    // },
+    // {
+    //   id: 'e3',
+    //   name: '備品・消耗品費',
+    //   date: '2023/12/31',
+    //   category: '経常経費',
+    //   value: 0,
+    //   percentage: 0,
+    // },
+    // {
+    //   id: 'e4',
+    //   name: '事務所費',
+    //   date: '2023/12/31',
+    //   category: '経常経費',
+    //   value: 0,
+    //   percentage: 0,
+    // },
     {
       id: 'e5',
       name: '組織活動費',
@@ -483,89 +483,89 @@ const expenseTransactionsByYear: Record<number, OldTransaction[]> = {
       value: 250000, //
       percentage: +((250000 / 250000) * 100).toFixed(1),
     },
-    {
-      id: 'e6',
-      name: '選挙関係費',
-      date: '2023/12/31',
-      category: '政治活動費',
-      value: 0,
-      percentage: 0,
-    },
-    {
-      id: 'e7',
-      name: '機関紙誌の発行その他の事業費',
-      date: '2023/12/31',
-      category: '政治活動費',
-      value: 0,
-      percentage: 0,
-    },
-    {
-      id: 'e8',
-      name: '調査研究費',
-      date: '2023/12/31',
-      category: '政治活動費',
-      value: 0,
-      percentage: 0,
-    },
-    {
-      id: 'e9',
-      name: '寄附・交付金',
-      date: '2023/12/31',
-      category: '政治活動費',
-      value: 0,
-      percentage: 0,
-    },
-    {
-      id: 'e10',
-      name: 'その他の経費',
-      date: '2023/12/31',
-      category: '政治活動費',
-      value: 0,
-      percentage: 0,
-    },
+    // {
+    //   id: 'e6',
+    //   name: '選挙関係費',
+    //   date: '2023/12/31',
+    //   category: '政治活動費',
+    //   value: 0,
+    //   percentage: 0,
+    // },
+    // {
+    //   id: 'e7',
+    //   name: '機関紙誌の発行その他の事業費',
+    //   date: '2023/12/31',
+    //   category: '政治活動費',
+    //   value: 0,
+    //   percentage: 0,
+    // },
+    // {
+    //   id: 'e8',
+    //   name: '調査研究費',
+    //   date: '2023/12/31',
+    //   category: '政治活動費',
+    //   value: 0,
+    //   percentage: 0,
+    // },
+    // {
+    //   id: 'e9',
+    //   name: '寄附・交付金',
+    //   date: '2023/12/31',
+    //   category: '政治活動費',
+    //   value: 0,
+    //   percentage: 0,
+    // },
+    // {
+    //   id: 'e10',
+    //   name: 'その他の経費',
+    //   date: '2023/12/31',
+    //   category: '政治活動費',
+    //   value: 0,
+    //   percentage: 0,
+    // },
   ],
   2024: [
     // --- 2024年の更新データ開始 ---
-    {
-      id: 'e1',
-      name: '人件費',
-      date: '2024/12/31',
-      category: '経常経費',
-      value: 0, //
-      percentage: 0,
-    },
-    {
-      id: 'e2',
-      name: '光熱水費',
-      date: '2024/12/31',
-      category: '経常経費',
-      value: 0, //
-      percentage: 0,
-    },
-    {
-      id: 'e3',
-      name: '備品・消耗品費',
-      date: '2024/12/31',
-      category: '経常経費',
-      value: 0, //
-      percentage: 0,
-    },
-    {
-      id: 'e4',
-      name: '事務所費',
-      date: '2024/12/31',
-      category: '経常経費',
-      value: 0, //
-      percentage: 0,
-    },
-    {
-      id: 'e5',
-      name: '組織活動費',
-      date: '2024/12/31',
-      category: '政治活動費',
-      value: 0, //
-      percentage: 0,
-    },
+    // {
+    //   id: 'e1',
+    //   name: '人件費',
+    //   date: '2024/12/31',
+    //   category: '経常経費',
+    //   value: 0, //
+    //   percentage: 0,
+    // },
+    // {
+    //   id: 'e2',
+    //   name: '光熱水費',
+    //   date: '2024/12/31',
+    //   category: '経常経費',
+    //   value: 0, //
+    //   percentage: 0,
+    // },
+    // {
+    //   id: 'e3',
+    //   name: '備品・消耗品費',
+    //   date: '2024/12/31',
+    //   category: '経常経費',
+    //   value: 0, //
+    //   percentage: 0,
+    // },
+    // {
+    //   id: 'e4',
+    //   name: '事務所費',
+    //   date: '2024/12/31',
+    //   category: '経常経費',
+    //   value: 0, //
+    //   percentage: 0,
+    // },
+    // {
+    //   id: 'e5',
+    //   name: '組織活動費',
+    //   date: '2024/12/31',
+    //   category: '政治活動費',
+    //   value: 0, //
+    //   percentage: 0,
+    // },
     {
       id: 'e6',
       name: '選挙関係費',
@@ -574,30 +574,30 @@ const expenseTransactionsByYear: Record<number, OldTransaction[]> = {
       value: 1100000, //
       percentage: +((1100000 / 1143920) * 100).toFixed(1),
     },
-    {
-      id: 'e7',
-      name: '機関紙誌の発行その他の事業費',
-      date: '2024/12/31',
-      category: '政治活動費',
-      value: 0, //
-      percentage: 0,
-    },
-    {
-      id: 'e8',
-      name: '調査研究費',
-      date: '2024/12/31',
-      category: '政治活動費',
-      value: 0, //
-      percentage: 0,
-    },
-    {
-      id: 'e9',
-      name: '寄附・交付金',
-      date: '2024/12/31',
-      category: '政治活動費',
-      value: 0, //
-      percentage: 0,
-    },
+    // {
+    //   id: 'e7',
+    //   name: '機関紙誌の発行その他の事業費',
+    //   date: '2024/12/31',
+    //   category: '政治活動費',
+    //   value: 0, //
+    //   percentage: 0,
+    // },
+    // {
+    //   id: 'e8',
+    //   name: '調査研究費',
+    //   date: '2024/12/31',
+    //   category: '政治活動費',
+    //   value: 0, //
+    //   percentage: 0,
+    // },
+    // {
+    //   id: 'e9',
+    //   name: '寄附・交付金',
+    //   date: '2024/12/31',
+    //   category: '政治活動費',
+    //   value: 0, //
+    //   percentage: 0,
+    // },
     {
       id: 'e10',
       name: 'その他の経費',
