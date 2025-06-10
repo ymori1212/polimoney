@@ -2,6 +2,7 @@ import { Footer } from '@/components/Footer';
 import { Header } from '@/components/Header';
 import { Notice } from '@/components/Notice';
 import demoExample from '@/data/demo-example';
+import demoKokiFujisaki from '@/data/demo-kokifujisaki';
 import demoRyosukeIdei from '@/data/demo-ryosukeidei';
 import demoTakahiroAnno from '@/data/demo-takahiroanno';
 import {
@@ -16,7 +17,12 @@ import {
 } from '@chakra-ui/react';
 import Link from 'next/link';
 
-const results = [demoTakahiroAnno, demoRyosukeIdei, demoExample];
+const results = [
+  demoTakahiroAnno,
+  demoRyosukeIdei,
+  demoKokiFujisaki,
+  demoExample,
+];
 
 export const metadata = {
   title: 'Polimoney - 政治資金の透明性を高める',

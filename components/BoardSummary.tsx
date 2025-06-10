@@ -15,7 +15,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { LandmarkIcon } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { BoardChartFixed } from './BoardChartFixed';
 
 type Props = {
@@ -34,7 +34,18 @@ export function BoardSummary({
   useFixedBoardChart = false,
 }: Props) {
   const router = useRouter();
-  // const [selectedTab, setSelectedTab] = useState('amount')
+  const pathname = usePathname();
+
+  // 現在のパスから現在のレポートIDを取得
+  const currentReportId = pathname.startsWith('/')
+    ? pathname.slice(1)
+    : pathname;
+
+  // 全てのレポート（現在のレポートと他のレポート）を結合（重複除去）
+  const allReports = [
+    report,
+    ...otherReports.filter((r) => r.id !== report.id),
+  ];
 
   return (
     <BoardContainer id={'summary'}>
@@ -66,18 +77,17 @@ export function BoardSummary({
               </HStack>
             </Stack>
           </HStack>
-          <NativeSelect.Root
-            w={'300px'}
-            defaultValue={report.id}
-            onChange={(e) => {
-              const target = e.target as HTMLSelectElement;
-              router.push(`/${target.value}`);
-            }}
-          >
-            <NativeSelect.Field>
-              {otherReports.map((report) => (
-                <option key={report.id} value={report.id}>
-                  {report.year}年 {report.orgName}
+          <NativeSelect.Root w={'300px'}>
+            <NativeSelect.Field
+              value={currentReportId}
+              onChange={(e) => {
+                const target = e.target as HTMLSelectElement;
+                router.push(`/${target.value}`);
+              }}
+            >
+              {allReports.map((reportItem) => (
+                <option key={reportItem.id} value={reportItem.id}>
+                  {reportItem.year}年 {reportItem.orgName}
                 </option>
               ))}
             </NativeSelect.Field>
