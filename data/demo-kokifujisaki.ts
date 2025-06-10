@@ -5,7 +5,7 @@ const profile: Profile = {
   title: '自由民主党', //
   party: '自由民主党', //
   district: '東京都墨田区', //
-  image: '/demo-example.png', // 画像は報告書にないためダミーです
+  image: '/demo-kokifujisaki.jpg',
 };
 
 const reports: Report[] = [
