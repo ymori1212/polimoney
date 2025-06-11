@@ -18,8 +18,6 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING, Any
 
-import google.api_core.exceptions
-
 from analyzer.config import LLMConfig
 from analyzer.file_io import FileWriter, ImageLoader
 from analyzer.llm_client import LangChainLLMClient
@@ -32,14 +30,6 @@ ERROR_LOG_FILE = "error_log.json"
 
 # ロガーの設定
 logger = logging.getLogger("analyzer")
-
-# リトライ可能なエラーの定義
-RETRYABLE_EXCEPTIONS = (
-    google.api_core.exceptions.TooManyRequests,
-    google.api_core.exceptions.DeadlineExceeded,
-    google.api_core.exceptions.GatewayTimeout,
-    google.api_core.exceptions.ServiceUnavailable,
-)
 
 
 class AnalysisError(Exception):

@@ -30,8 +30,8 @@ def test_provider(provider: str) -> None:
 
         # Check API key
         try:
-            api_key = config.get_api_key()
-            logger.info(f"✓ API key found: {api_key[:10]}...")
+            _ = config.get_api_key()
+            logger.info("✓ API key found")
         except ValueError as e:
             logger.error(f"✗ API key error: {e}")
             return

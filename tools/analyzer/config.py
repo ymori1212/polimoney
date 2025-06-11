@@ -100,8 +100,7 @@ class LLMConfig(BaseSettings):
             if not self.openai_api_key:
                 raise ValueError("OPENAI_API_KEY is required for OpenAI provider")
             return self.openai_api_key
-        else:
-            raise ValueError(f"Unknown provider: {self.provider}")
+        raise ValueError(f"Unknown provider: {self.provider}")
 
     def get_model_name(self) -> str:
         """Get model name for the configured provider."""
@@ -111,8 +110,7 @@ class LLMConfig(BaseSettings):
             return self.anthropic_model
         elif self.provider == LLMProvider.OPENAI:
             return self.openai_model
-        else:
-            raise ValueError(f"Unknown provider: {self.provider}")
+        raise ValueError(f"Unknown provider: {self.provider}")
 
     def get_model_config(self) -> dict[str, Any]:
         """Get model configuration parameters."""

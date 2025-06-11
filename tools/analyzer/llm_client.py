@@ -130,8 +130,8 @@ class LangChainLLMClient:
                 temperature=model_config["temperature"],
                 max_tokens=model_config["max_tokens"],  # type: ignore
             )
-        else:
-            raise ValueError(f"Unsupported provider: {provider}")
+
+        raise ValueError(f"Unsupported provider: {provider}")
 
     def _handle_analysis_error(
         self,
